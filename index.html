@@ -19,13 +19,14 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Nunito',sans-serif;background:var(--off);color:#111;font-size:16px;line-height:1.6}
-h1,h2,h3,.pop{font-family:'Poppins',sans-serif}
+h1,h2,h3{font-family:'Poppins',sans-serif}
 a{text-decoration:none;color:inherit}
 
 /* ── NAVBAR ── */
-#navbar{position:fixed;top:0;left:0;width:100%;height:60px;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:1000;box-shadow:0 1px 12px rgba(0,0,0,.08)}
-.nb-brand{display:flex;align-items:center;gap:10px;cursor:pointer}
-.nb-logo{height:22px}
+#navbar{position:fixed;top:0;left:0;width:100%;height:60px;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:1000;box-shadow:0 1px 12px rgba(0,0,0,.08);box-sizing:border-box;overflow:hidden}
+.nb-brand{display:flex;align-items:center;gap:8px;cursor:pointer;min-width:0;flex-shrink:1}
+.nb-logo{height:22px;flex-shrink:0}
+.nb-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .beta-pill{background:var(--blue);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;font-family:'Poppins',sans-serif;letter-spacing:.5px}
 .nb-links{display:flex;gap:6px}
 .nb-links a{font-weight:600;font-size:13.5px;padding:6px 12px;border-radius:8px;color:#333;transition:background .2s,color .2s;cursor:pointer}
@@ -162,42 +163,135 @@ a{text-decoration:none;color:inherit}
 .zone-group-title{font-family:"Poppins",sans-serif;font-size:1.1rem;font-weight:800;color:var(--royal)}
 .zone-group-count{font-size:12px;font-weight:600;color:#888;margin-left:4px;align-self:flex-end;padding-bottom:2px}
 .zone-group-line{flex:1;height:1.5px;background:linear-gradient(to right,#e0e4ea,transparent)}
-.zone-ngo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.zone-ngo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;justify-items:stretch}
 /* NGO cards */
-.ngo-card{background:#fff;border:1.5px solid #e0e4ea;border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:10px;transition:box-shadow .25s,border-color .25s,transform .25s;opacity:0;transform:translateY(28px)}
+.ngo-card{background:#fff;border:1.5px solid #e0e4ea;border-radius:14px;padding:18px 16px;display:flex;flex-direction:column;gap:10px;min-width:0;box-sizing:border-box;transition:box-shadow .25s,border-color .25s,transform .25s;opacity:0;transform:translateY(28px)}
 .ngo-card.visible{opacity:1;transform:translateY(0)}
 .ngo-card:hover{box-shadow:0 8px 28px rgba(0,51,102,.10);border-color:#c5d8f5;transform:translateY(-3px)}
-.ngo-card-header{display:flex;align-items:center;gap:10px}
-.ngo-num{font-family:"Poppins",sans-serif;font-size:10px;font-weight:700;color:#bbb;min-width:22px}
-.ngo-name{font-family:"Poppins",sans-serif;font-size:13.5px;font-weight:700;color:var(--royal);flex:1}
-.ngo-actions{display:flex;gap:8px}
-.ngo-db-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border-radius:8px;border:1.5px solid #000;background:#fff;color:#000;font-family:"Nunito",sans-serif;font-weight:700;font-size:12px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s}
+.ngo-card-header{display:flex;align-items:center;gap:8px;min-width:0}
+.ngo-num{font-family:"Poppins",sans-serif;font-size:10px;font-weight:700;color:#bbb;flex-shrink:0}
+.ngo-name{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--royal);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ngo-actions{display:flex;gap:6px;flex-wrap:wrap}
+.ngo-db-btn{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 6px;border-radius:8px;border:1.5px solid #000;background:#fff;color:#000;font-family:"Nunito",sans-serif;font-weight:700;font-size:11px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s;white-space:nowrap;overflow:hidden}
 .ngo-db-btn:hover{background:#000;color:#fff}
-.ngo-dash-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-family:"Nunito",sans-serif;font-weight:700;font-size:12px;cursor:pointer;text-decoration:none;transition:background .2s}
+.ngo-dash-btn{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 6px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-family:"Nunito",sans-serif;font-weight:700;font-size:11px;cursor:pointer;text-decoration:none;transition:background .2s;white-space:nowrap;overflow:hidden}
 .ngo-dash-btn:hover{background:var(--royal)}
-@media(max-width:1000px){.zone-ngo-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:700px){.zone-ngo-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:460px){.zone-ngo-grid{grid-template-columns:1fr}}
-#legacy-hero{background:linear-gradient(135deg,#1a1b1e,#28292d,#3a3b40);color:#fff;padding:100px 24px 60px;text-align:center}
-.legacy-warning{display:flex;align-items:center;gap:12px;background:rgba(244,166,35,.1);border:1px solid rgba(244,166,35,.4);border-radius:12px;padding:14px 20px;margin:24px auto;max-width:680px;font-size:14px;color:#f5c842}
-.trp-card{background:#fff;border:1.5px solid #dde9ff;border-radius:16px;padding:28px;max-width:520px;margin:30px auto;text-align:center}
-.zones-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1000px;margin:40px auto 60px;padding:0 24px}
-.zone-card{background:#fff;border:1.5px solid #e0e4ea;border-radius:16px;overflow:hidden}
-.zone-header{padding:18px 20px;display:flex;align-items:center;gap:10px}
-.zone-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
-.zone-name{font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;color:#111}
-.zone-states{font-size:12px;color:#666;margin-left:auto}
-.zone-ngos{padding:0 16px 16px;display:flex;flex-wrap:wrap;gap:8px}
-.ngo-btn{border:1.5px solid #000;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:none;background:#fff !important;color:#000 !important}
-.zone-open-btn{display:flex;align-items:center;justify-content:center;gap:6px;margin:12px 16px 16px;padding:10px;background:#111;color:#fff;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;border:none}
+@media(max-width:1000px){}
+@media(max-width:700px){}
+@media(max-width:460px){.ngo-actions{flex-direction:column}.ngo-db-btn,.ngo-dash-btn{width:100%;justify-content:center}}
+#legacy-hero{background:linear-gradient(135deg,#e8eaed,#f0f2f5,#dfe3e8);color:#1a1b1e;padding:100px 24px 60px;text-align:center;width:100%;overflow-x:hidden}
+.legacy-warning{display:flex;align-items:flex-start;gap:12px;background:#fff8e6;border:2px solid #e6a817;border-radius:12px;padding:16px 20px;margin:28px auto;max-width:680px;font-size:14px;color:#5a3a00;line-height:1.6}
 
 /* ── PAGE 4: TUTORIALS ── */
+/* ── TRAINING GUIDE (Tutorials page) ── */
+#legacy-guide{padding:60px 24px 80px;max-width:1100px;margin:0 auto}
+.guide-header{text-align:center;margin-bottom:48px}
+.guide-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(118,209,102,.15),rgba(99,201,227,.15));border:1.5px solid rgba(99,201,227,.4);color:var(--blue);font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;margin-bottom:16px;font-family:"Poppins",sans-serif;letter-spacing:.5px}
+.guide-title{font-family:"Poppins",sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);color:var(--royal);margin-bottom:12px}
+.guide-subtitle{color:#666;font-size:15px;max-width:640px;margin:0 auto;line-height:1.7}
+
+/* Benefit cards */
+.benefit-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
+.benefit-card{background:#fff;border:1.5px solid #e0e4ea;border-radius:14px;padding:22px;transition:transform .25s,box-shadow .25s,border-color .25s;opacity:0;transform:translateY(24px)}
+.benefit-card.visible{opacity:1;transform:translateY(0)}
+.benefit-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(0,51,102,.09);border-color:var(--sky)}
+.benefit-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.benefit-card h4{font-family:"Poppins",sans-serif;font-size:13px;color:var(--royal);margin-bottom:6px}
+.benefit-card p{font-size:13px;color:#666;line-height:1.6}
+
+/* Architecture section */
+.arch-section{background:linear-gradient(135deg,#001a40,#003366,#004080);border-radius:20px;padding:40px;margin-bottom:48px;color:#fff;opacity:0;transform:translateY(24px);transition:opacity .5s,transform .5s}
+.arch-section.visible{opacity:1;transform:translateY(0)}
+.arch-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--skyl);margin-bottom:8px;font-family:"Poppins",sans-serif}
+.arch-title{font-family:"Poppins",sans-serif;font-size:1.4rem;margin-bottom:12px}
+.arch-desc{opacity:.8;font-size:14px;line-height:1.7;max-width:680px;margin-bottom:28px}
+.arch-flow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:32px}
+.arch-node{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 16px;font-size:12px;font-weight:700;font-family:"Poppins",sans-serif;white-space:nowrap}
+.arch-arrow{color:var(--greenl);font-size:18px;font-weight:700}
+.arch-node.highlight{background:rgba(118,209,102,.2);border-color:rgba(118,209,102,.5);color:var(--greenl)}
+
+/* Metrics table */
+.metrics-table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px}
+.metrics-table{width:100%;min-width:480px;border-collapse:separate;border-spacing:0;border-radius:12px;overflow:hidden;font-size:13.5px}
+.metrics-table thead tr{background:rgba(255,255,255,.12)}
+.metrics-table th{padding:13px 16px;text-align:left;font-family:"Poppins",sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,.7);text-transform:uppercase;white-space:nowrap}
+.metrics-table td{padding:12px 14px;border-top:1px solid rgba(255,255,255,.08);font-size:12.5px;vertical-align:top}
+.metrics-table tbody tr:hover{background:rgba(255,255,255,.05)}
+.metrics-table .metric-name{font-weight:700;color:rgba(255,255,255,.9);white-space:nowrap}
+.metrics-table .metric-old{color:rgba(255,100,100,.85)}
+.metrics-table .metric-new{color:var(--greenl);font-weight:700}
+.metrics-table .metric-gain{background:rgba(118,209,102,.15);color:var(--greenl);font-weight:800;padding:3px 10px;border-radius:20px;font-size:11px;white-space:nowrap;font-family:"Poppins",sans-serif}
+
+/* Tab workflow */
+.workflow-section{margin-bottom:48px}
+.workflow-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:8px;font-family:"Poppins",sans-serif}
+.workflow-title{font-family:"Poppins",sans-serif;font-size:1.5rem;color:var(--royal);margin-bottom:6px}
+.workflow-desc{color:#666;font-size:14px;margin-bottom:24px}
+.tab-bar{display:flex;gap:0;background:#f0f4fa;border-radius:14px;padding:5px;margin-bottom:0;flex-wrap:wrap;gap:4px}
+.tab-btn{flex:1;min-width:80px;padding:10px 14px;border:none;background:transparent;border-radius:10px;font-family:"Nunito",sans-serif;font-weight:700;font-size:13px;cursor:pointer;color:#666;transition:all .2s;white-space:nowrap}
+.tab-btn.active{background:#fff;color:var(--royal);box-shadow:0 2px 8px rgba(0,51,102,.1)}
+.tab-content{display:none;background:#fff;border:1.5px solid #e0e4ea;border-radius:0 14px 14px 14px;padding:28px;margin-top:-4px;animation:fadeTab .25s ease}
+.tab-content.active{display:block}
+@keyframes fadeTab{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.tab-notice{display:flex;align-items:flex-start;gap:12px;background:#fff8e1;border:1.5px solid #ffe082;border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:13.5px;color:#7a5800}
+.tab-notice.info{background:#e8f4fd;border-color:#90caf9;color:#0d4f8c}
+.tab-notice.success{background:#edfaf2;border-color:#a5d6a7;color:#1b5e20}
+.tab-step{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+.tab-step-num{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-family:"Poppins",sans-serif;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.tab-step-body{flex:1}
+.tab-step-body strong{font-family:"Poppins",sans-serif;font-size:13.5px;color:var(--royal);display:block;margin-bottom:3px}
+.tab-step-body p{font-size:13.5px;color:#555;line-height:1.6;margin:0}
+.coral{color:#ff7f50;font-weight:700}
+
+/* Image gallery */
+.guide-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:20px 0}
+.guide-gallery-img{width:100%;border-radius:10px;border:1.5px solid #e0e4ea;object-fit:cover;cursor:pointer;transition:transform .2s,box-shadow .2s;aspect-ratio:16/9;background:#f5f7fa}
+.guide-gallery-img:hover{transform:scale(1.02);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.guide-img-placeholder{aspect-ratio:16/9;border:2px dashed #c5d8f5;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#aac;background:#f8faff;cursor:pointer;transition:border-color .2s}
+.guide-img-placeholder:hover{border-color:var(--blue)}
+.guide-img-placeholder span{font-size:12px;font-weight:600;font-family:"Poppins",sans-serif;color:#7a96be}
+
+/* PDF viewer */
+.pdf-slot{margin-top:20px;border:1.5px solid #e0e4ea;border-radius:12px;overflow:hidden}
+.pdf-slot-header{background:#f8faff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid #e0e4ea;gap:8px;flex-wrap:wrap}
+.pdf-slot-title{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--royal);display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.pdf-fullscreen-btn{display:inline-flex;align-items:center;gap:5px;background:var(--royal);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;font-family:"Nunito",sans-serif;cursor:pointer;white-space:nowrap;text-decoration:none;transition:background .2s;flex-shrink:0}
+.pdf-fullscreen-btn:hover{background:var(--blue)}
+.pdf-slot iframe{width:100%;height:500px;border:none;display:block}
+.pdf-placeholder{height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#f8faff;color:#aaa}
+.pdf-placeholder span{font-size:13px;font-family:"Poppins",sans-serif;font-weight:600;color:#7a96be}
+
+/* Lightbox */
+#guide-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;align-items:center;justify-content:center;padding:20px}
+#guide-lightbox.open{display:flex}
+#guide-lightbox img{max-width:90vw;max-height:85vh;border-radius:12px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#guide-lightbox-close{position:fixed;top:20px;right:28px;color:#fff;font-size:32px;cursor:pointer;font-weight:300;line-height:1;z-index:2001}
+
+@media(max-width:900px){.arch-flow{flex-direction:column;align-items:flex-start}}
+@media(max-width:560px){.tab-btn{font-size:11px;padding:8px 8px}}
+
 #tut-hero{background:linear-gradient(135deg,#1a0533,#2d1060,#3d1a80);color:#fff;padding:100px 24px 60px;text-align:center}
 .tut-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1000px;margin:40px auto;padding:0 24px}
-.tut-card{background:var(--off);border:1.5px solid #e0e4ea;border-radius:14px;padding:28px;transition:border-color .2s}
+.tut-card{background:var(--off);border:1.5px solid #e0e4ea;border-radius:14px;padding:28px;transition:border-color .2s,box-shadow .2s}
 .tut-card:hover{border-color:var(--sky)}
 .tut-card h3{font-family:'Poppins',sans-serif;font-size:15px;color:var(--royal);margin-bottom:8px}
 .tut-card p{font-size:13px;color:#666}
+.tut-card-clickable{cursor:pointer;transition:border-color .25s,box-shadow .25s,transform .2s}
+.tut-card-clickable:hover{border-color:var(--blue);box-shadow:0 6px 24px rgba(0,89,179,.1);transform:translateY(-2px)}
+.tut-card-trigger{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer}
+.tut-card-chevron{width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.tut-card-chevron svg{width:14px;height:14px;stroke:#fff}
+.tut-card-clickable:hover .tut-card-chevron{background:var(--royal)}
+.live-badge{display:inline-block;margin-top:12px;background:#edfaf2;color:#1a7a4a;border:1px solid #a5d6a7;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px}
+
+/* Managers Guide Modal */
+/* ── GUIDE INLINE VIEW ── */
+#tut-main{transition:opacity .25s}
+#tut-guide-view{display:none;animation:pageIn .32s cubic-bezier(0.22,1,0.36,1) both;padding:0 24px}
+#tut-guide-view.active{display:block}
+#legacy-guide-inner{max-width:1100px;margin:0 auto}
+.guide-back-btn{display:inline-flex;align-items:center;gap:8px;background:var(--off);border:1.5px solid #dde9ff;color:var(--royal);padding:10px 20px;border-radius:24px;font-family:"Nunito",sans-serif;font-weight:700;font-size:14px;cursor:pointer;margin:24px 24px 0;transition:all .2s}
+.guide-back-btn:hover{background:#fff;border-color:var(--blue);color:var(--blue)}
 .wip-badge{display:inline-block;margin-top:12px;background:#f3eaff;color:#6e36c9;border:1px solid #d4b8f5;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px}
 .progress-list{max-width:680px;margin:0 auto 60px;padding:0 24px;display:flex;flex-direction:column;gap:14px}
 .prog-item{display:flex;align-items:center;gap:14px;background:#fff;border:1.5px solid #e0e4ea;border-radius:12px;padding:14px 18px}
@@ -208,12 +302,12 @@ a{text-decoration:none;color:inherit}
 .prog-upcoming .prog-icon{background:#e0e4ea;color:#666}
 
 /* ── PAGE 5: LOGIN ── */
-#page-login{background:linear-gradient(160deg,var(--mintl) 0%,var(--off) 60%);position:relative;overflow:hidden;min-height:100vh;display:none;padding-top:60px;align-items:center;justify-content:center}
-#page-login.active{display:flex}
+#page-login{background:linear-gradient(160deg,var(--mintl) 0%,var(--off) 60%);position:relative;overflow:hidden;min-height:100vh;display:none;padding-top:60px;box-sizing:border-box}
+#page-login.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
 .blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.35;pointer-events:none}
 .blob1{width:320px;height:320px;background:var(--green);top:-80px;left:-80px}
 .blob2{width:280px;height:280px;background:var(--sky);bottom:-60px;right:-60px}
-.login-card{background:#fff;border-radius:22px;box-shadow:0 20px 60px rgba(0,51,102,.12);padding:44px 40px;max-width:400px;width:100%;z-index:1;text-align:center}
+.login-card{background:#fff;border-radius:22px;box-shadow:0 20px 60px rgba(0,51,102,.12);padding:44px 40px;max-width:400px;width:calc(100% - 48px);z-index:1;text-align:center;box-sizing:border-box}
 .login-coming{background:linear-gradient(135deg,#003366,#0059B3);color:#fff;border-radius:12px;padding:12px 20px;font-family:'Poppins',sans-serif;font-weight:700;margin:20px 0;font-size:15px}
 .login-field{width:100%;border:1.5px solid #dde9ff;border-radius:10px;padding:12px 16px;font-size:14px;margin-bottom:12px;font-family:'Nunito',sans-serif;opacity:.5;cursor:not-allowed;background:#f9f9f9}
 .login-submit{width:100%;padding:13px;border-radius:24px;border:none;background:#0059B3;color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;opacity:.4;cursor:not-allowed;margin-bottom:20px}
@@ -308,15 +402,73 @@ a{text-decoration:none;color:inherit}
 .footer-bottom{border-top:1px solid rgba(99,201,163,.25);padding:16px 40px;text-align:center;font-size:12.5px;color:#7aabb0;background:linear-gradient(135deg,#eaf4fd 0%,#f0faf8 50%,#edfaf2 100%)}
 .footer-bottom span{color:#76D166;font-weight:700}
 
+/* ══════════════════════════════════════════════
+   SITE-WIDE ANIMATIONS
+   All wrapped in prefers-reduced-motion guard
+   ══════════════════════════════════════════════ */
+
+/* Page fade-in transition */
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.page.active{animation:pageIn .32s cubic-bezier(0.22,1,0.36,1) both}
+
+/* Mobile menu slide in */
+@keyframes menuSlideIn{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+#mob-menu.open{animation:menuSlideIn .28s cubic-bezier(0.22,1,0.36,1) both}
+.mob-link{opacity:0;transform:translateX(-12px);transition:opacity .25s,transform .25s}
+#mob-menu.open .mob-link:nth-child(1){opacity:1;transform:none;transition-delay:.05s}
+#mob-menu.open .mob-link:nth-child(2){opacity:1;transform:none;transition-delay:.10s}
+#mob-menu.open .mob-link:nth-child(3){opacity:1;transform:none;transition-delay:.15s}
+#mob-menu.open .mob-link:nth-child(4){opacity:1;transform:none;transition-delay:.20s}
+#mob-menu.open .mob-link:nth-child(5){opacity:1;transform:none;transition-delay:.25s}
+#mob-menu.open .mob-link:nth-child(6){opacity:1;transform:none;transition-delay:.30s}
+
+/* Button press tactile effect */
+.btn:active,.btn-signin:active,.admin-save-btn:active,.admin-add-btn:active{transform:scale(.97)}
+
+/* Card hover consistency — all cards get lift */
+.stat-card{transition:transform .22s,box-shadow .22s,border-color .22s}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,89,179,.1)}
+.intro-card{transition:transform .22s,box-shadow .22s,border-color .22s}
+.intro-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,89,179,.08);border-color:var(--sky)}
+.org-card{transition:transform .22s,box-shadow .22s,border-color .22s}
+.org-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,89,179,.08);border-color:var(--sky)}
+.contact-card{transition:transform .22s,box-shadow .22s,border-color .22s}
+.contact-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,89,179,.08);border-color:var(--blue)}
+
+/* Changelog timeline entries */
+@keyframes tlIn{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
+.tl-entry{opacity:0;transform:translateX(-18px);transition:opacity .4s,transform .4s}
+.tl-entry.visible{opacity:1;transform:translateX(0)}
+
+/* Section headings fade in */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.section-title{opacity:0;transform:translateY(16px);transition:opacity .4s,transform .4s}
+.section-title.visible{opacity:1;transform:translateY(0)}
+.section-label{opacity:0;transform:translateY(10px);transition:opacity .3s .05s,transform .3s .05s}
+.section-label.visible{opacity:1;transform:translateY(0)}
+
+/* Footer links */
+.footer-col a:hover{color:#fff;padding-left:4px}
+.footer-col a{transition:color .2s,padding-left .2s}
+
+/* Navbar active link underline polish */
+.nb-links a::after{content:'';display:block;height:2px;background:var(--blue);transform:scaleX(0);transition:transform .2s;border-radius:2px;margin-top:1px}
+.nb-links a:hover::after,.nb-links a.active::after{transform:scaleX(1)}
+.nb-links a:hover,.nb-links a.active{background:transparent!important;color:var(--blue)!important}
+
+/* Reduce motion — zero overhead on low-end / accessibility */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
 /* ── UTILITY ── */
 .t-bm{display:none}
-.gap-12{margin-bottom:12px}
-.gap-24{margin-bottom:24px}
+
 .text-center{text-align:center}
-.mt-40{margin-top:40px}
+
 .section-bg-off{background:var(--off)}
 .section-bg-white{background:#fff}
-.w100{width:100%}
+
 .tag-badge{display:inline-block;background:rgba(99,201,227,.15);border:1px solid rgba(99,201,227,.4);color:#1a7a94;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;font-family:'Poppins',sans-serif}
 
 /* ── RESPONSIVE ── */
@@ -330,6 +482,13 @@ a{text-decoration:none;color:inherit}
   .features-grid,.intro-cards,.tut-cards,.orgs-grid,.kp-pills,.zones-grid,.stats-grid{grid-template-columns:1fr 1fr}
   .form-row{grid-template-columns:1fr}
 }
+@media(max-width:600px){
+  .nb-right .lang-toggle{display:none}
+  .nb-right .btn-signin{display:none}
+  .beta-pill{display:none}
+  #navbar{padding:0 16px}
+  .nb-brand svg{height:18px}
+}
 @media(max-width:560px){
   .features-grid,.intro-cards,.tut-cards,.orgs-grid,.kp-pills,.zones-grid,.stats-grid,.footer-grid{grid-template-columns:1fr}
 }
@@ -339,7 +498,7 @@ a{text-decoration:none;color:inherit}
 
 <!-- ═══════════════════ NAVBAR ═══════════════════ -->
 <nav id="navbar">
-  <div class="nb-brand" onclick="showPage('home')">
+  <div class="nb-brand" onclick="showPageWithAnim('home')">
     <svg class="nb-logo" id="nav-logo-svg" viewBox="0 0 140 36" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C2F0C2"/><stop offset="100%" stop-color="#A7E8A7"/></linearGradient>
@@ -358,19 +517,19 @@ a{text-decoration:none;color:inherit}
     <span class="beta-pill">Beta</span>
   </div>
   <div class="nb-links">
-    <a onclick="showPage('home')" data-page="home" class="active">Home</a>
-    <a onclick="showPage('about')" data-page="about">About</a>
-    <a onclick="showPage('legacy')" data-page="legacy">Legacy</a>
-    <a onclick="showPage('tutorials')" data-page="tutorials">Tutorials</a>
-    <a onclick="showPage('changelogs')" data-page="changelogs">Changelogs</a>
-    <a onclick="showPage('contact')" data-page="contact">Contact</a>
+    <a onclick="showPageWithAnim('home')" data-page="home" class="active">Home</a>
+    <a onclick="showPageWithAnim('about')" data-page="about">About</a>
+    <a onclick="showPageWithAnim('legacy')" data-page="legacy">Legacy</a>
+    <a onclick="showPageWithAnim('tutorials')" data-page="tutorials">Tutorials</a>
+    <a onclick="showPageWithAnim('changelogs')" data-page="changelogs">Changelogs</a>
+    <a onclick="showPageWithAnim('contact')" data-page="contact">Contact</a>
   </div>
   <div class="nb-right">
     <div class="lang-toggle">
       <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
       <button id="btn-bm" onclick="setLang('bm')">BM</button>
     </div>
-    <button class="btn-signin" onclick="showPage('login')">Sign In</button>
+    <button class="btn-signin" onclick="showPageWithAnim('login')">Sign In</button>
   </div>
   <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -379,27 +538,27 @@ a{text-decoration:none;color:inherit}
 
 <!-- Mobile Menu -->
 <div id="mob-menu">
-  <div class="mob-link" onclick="showPage('home');toggleMenu()">
+  <div class="mob-link" onclick="showPageWithAnim('home');toggleMenu()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
     Home
   </div>
-  <div class="mob-link" onclick="showPage('about');toggleMenu()">
+  <div class="mob-link" onclick="showPageWithAnim('about');toggleMenu()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
     About
   </div>
-  <div class="mob-link" onclick="showPage('legacy');toggleMenu()">
+  <div class="mob-link" onclick="showPageWithAnim('legacy');toggleMenu()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
     Legacy
   </div>
-  <div class="mob-link" onclick="showPage('tutorials');toggleMenu()">
+  <div class="mob-link" onclick="showPageWithAnim('tutorials');toggleMenu()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
     Tutorials
   </div>
-  <div class="mob-link" onclick="showPage('changelogs');toggleMenu()">
+  <div class="mob-link" onclick="showPageWithAnim('changelogs');toggleMenu()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     Changelogs
   </div>
-  <div class="mob-link" onclick="showPage('contact');toggleMenu()">
+  <div class="mob-link" onclick="showPageWithAnim('contact');toggleMenu()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
     Contact
   </div>
@@ -408,7 +567,7 @@ a{text-decoration:none;color:inherit}
       <button onclick="setLang('en');toggleMenu()" id="mob-btn-en" class="active">EN</button>
       <button onclick="setLang('bm');toggleMenu()" id="mob-btn-bm">BM</button>
     </div>
-    <button class="btn-signin" style="align-self:flex-start" onclick="showPage('login');toggleMenu()">Sign In</button>
+    <button class="btn-signin" style="align-self:flex-start" onclick="showPageWithAnim('login');toggleMenu()">Sign In</button>
   </div>
 </div>
 
@@ -421,8 +580,8 @@ a{text-decoration:none;color:inherit}
         <h1 class="hero-h1">Health Information<br><em>Vault</em> for Differentiated HIV Services (DHS)</h1>
         <p class="hero-sub">A unified digital platform connecting NGOs, Community Health Workers (CHWs), Community Health Navigators (CHNs), Digital Team, Peer Educators and MOH across Malaysia's HIV response ecosystem.</p>
         <div class="hero-btns">
-          <button class="btn btn-green" onclick="showPage('about')">About the Program</button>
-          <button class="btn btn-outline" onclick="showPage('login')">Sign In →</button>
+          <button class="btn btn-green" onclick="showPageWithAnim('about')">About the Program</button>
+          <button class="btn btn-outline" onclick="showPageWithAnim('login')">Sign In →</button>
         </div>
       </div>
       <div class="preview-cards">
@@ -441,8 +600,8 @@ a{text-decoration:none;color:inherit}
           <h2 class="section-title">A Community Platform for Malaysia's HIV Response</h2>
           <p class="section-sub">HIVnext replaces fragmented Google Sheets infrastructure across 50+ sites with a unified, Hybrid Access Control (RBAC + ABAC) cloud system — purpose-built for Malaysia's Key Population programs.</p>
           <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
-            <button class="btn btn-blue" onclick="showPage('about')">Learn More</button>
-            <button class="btn btn-dark" onclick="showPage('legacy')">Legacy</button>
+            <button class="btn btn-blue" onclick="showPageWithAnim('about')">Learn More</button>
+            <button class="btn btn-dark" onclick="showPageWithAnim('legacy')">Legacy</button>
           </div>
         </div>
         <div class="stats-grid">
@@ -482,7 +641,7 @@ a{text-decoration:none;color:inherit}
     <p style="margin-bottom:12px"><span class="pulse-dot"></span><strong>Tutorials Coming Soon</strong></p>
     <h2 style="font-size:1.8rem;margin-bottom:12px">Learn How to Use HIVnext</h2>
     <p style="opacity:.8;margin-bottom:28px;font-size:15px">Step-by-step guides for Program Managers/Coordinators (PM/PC), CHWs, CHNs, PEs, Supervisors and Admins.</p>
-    <button class="btn btn-green" onclick="showPage('tutorials')">View Tutorials</button>
+    <button class="btn btn-green" onclick="showPageWithAnim('tutorials')">View Tutorials</button>
   </section>
   <div id="home-footer"></div>
 </div>
@@ -773,7 +932,7 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <!-- ═══════════════════ PAGE 3: LEGACY ═══════════════════ -->
-<div class="page" id="page-legacy">
+<div class="page" id="page-legacy" style="overflow-x:hidden">
   <section id="legacy-hero">
     <!-- HIVnext Legacy Logo -->
     <div style="display:flex;justify-content:center;margin-bottom:16px" id="legacy-logo-wrap">
@@ -783,19 +942,19 @@ a{text-decoration:none;color:inherit}
         <rect x="20" y="14" width="7" height="26" rx="2.5" fill="#989ba0"/>
         <rect x="30" y="19" width="7" height="21" rx="2.5" fill="#b8babf"/>
         <rect x="40" y="24" width="7" height="16" rx="2.5" fill="#d7d9dd"/>
-        <text x="55" y="34" font-family="Poppins,sans-serif" font-weight="800" font-size="22" fill="#c8cacd">HIVnext</text>
-        <text x="168" y="34" font-family="Poppins,sans-serif" font-weight="600" font-size="22" fill="#888b90">Legacy</text>
+        <text x="55" y="34" font-family="Poppins,sans-serif" font-weight="800" font-size="22" fill="#2d2f33">HIVnext</text>
+        <text x="168" y="34" font-family="Poppins,sans-serif" font-weight="600" font-size="22" fill="#4a4d52">Legacy</text>
       </svg>
     </div>
-    <p class="section-label" style="color:#aaa;margin-top:4px">Archive System</p>
-    <h1 style="font-size:clamp(1.8rem,3.5vw,2.8rem);margin-bottom:16px">Legacy Portal</h1>
-    <p style="opacity:.7;max-width:580px;margin:0 auto;font-size:15px">Historical DHSKP and TestNow data consolidated and accessible through this archive.</p>
+    <p class="section-label" style="color:#6b7280;margin-top:4px;letter-spacing:1.5px">Archive System</p>
+    <h1 style="font-size:clamp(1.8rem,3.5vw,2.8rem);margin-bottom:16px;color:#111">Legacy Portal</h1>
+    <p style="max-width:580px;margin:0 auto;font-size:15px;color:#444;line-height:1.7">Historical DHSKP and TestNow data consolidated and accessible through this archive.</p>
     <div class="legacy-warning">
       ⚠️ <span><strong>Archive:</strong> Legacy system is an archive of the past 3 years of digitalisation and acts as the bridge to the tailored cloud database management system. The final version of HIVnext system is currently work in progress and the launch will be updated in this webpage from time to time.</span>
     </div>
   </section>
 
-  <div style="padding:30px 24px 0;max-width:1100px;margin:0 auto;text-align:center">
+  <div style="padding:30px 24px 0;max-width:1100px;margin:0 auto;text-align:center;width:100%;box-sizing:border-box">
     <p class="section-label">Implementing Partners</p>
     <h2 class="section-title">Access by NGO</h2>
     <p style="color:#666;font-size:14px;margin-top:-8px;margin-bottom:8px">Each NGO has a <strong>Database</strong> (PM/PC access) and a <strong>Dashboard</strong> (PM/PC, CHWs, CHNs &amp; AOs).</p>
@@ -811,8 +970,22 @@ a{text-decoration:none;color:inherit}
     <h1 style="font-size:clamp(1.8rem,3.5vw,2.8rem);margin-bottom:16px">HIVnext Tutorials</h1>
     <p style="opacity:.8;max-width:540px;margin:0 auto;font-size:15px">Step-by-step guides for every user role — from data entry to analytics.</p>
   </section>
+  <!-- Main tutorials view -->
+  <div id="tut-main">
   <div class="tut-cards">
-    <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">🩺</div><h3>Managers Guide</h3><p>Patient record lookup, referral handling, and linkage to care data updates.</p><span class="wip-badge">🚧 Work in Progress</span></div>
+    <div class="tut-card tut-card-clickable" id="managers-guide-card" onclick="openGuideView()">
+      <div class="tut-card-trigger">
+        <div>
+          <div style="font-size:28px;margin-bottom:12px">🩺</div>
+          <h3>Managers Guide</h3>
+          <p>HIVnext Legacy workflow — Link to Care updates, data architecture, and dashboard training.</p>
+          <span class="live-badge">✅ Available Now</span>
+        </div>
+        <div class="tut-card-chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+    </div>
     <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">🧭</div><h3>Navigators Guide</h3><p>CBC module, client follow-up, and care navigation workflows.</p><span class="wip-badge">🚧 Work in Progress</span></div>
     <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">⚙️</div><h3>Admin Guide</h3><p>User management, RBAC configuration, and site-level settings.</p><span class="wip-badge">🚧 Work in Progress</span></div>
     <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">📈</div><h3>Analytics Guide</h3><p>Reading dashboards, interpreting indicators, and exporting TRP data.</p><span class="wip-badge">🚧 Work in Progress</span></div>
@@ -833,7 +1006,294 @@ a{text-decoration:none;color:inherit}
     <div class="prog-item prog-upcoming"><div class="prog-icon">○</div><div class="prog-label">TestNow dashboard</div></div>
     <div class="prog-item prog-upcoming"><div class="prog-icon">○</div><div class="prog-label">Tutorial content</div></div>
   </div>
-  <div id="tutorials-footer"></div>
+
+  <!-- ═══ HIVnext Legacy Training Guide ═══ -->
+  <div style="background:var(--off);padding:40px 0 0">
+    <div style="max-width:1100px;margin:0 auto;padding:0 24px">
+      <div style="height:2px;background:linear-gradient(to right,transparent,rgba(99,201,227,.5),transparent);margin-bottom:48px"></div>
+    </div>
+  </div>
+
+  
+
+  </div><!-- end #tut-main -->
+
+  <!-- YouTube Channel Banner -->
+  <div id="tut-yt-banner" style="max-width:760px;margin:0 auto 60px;padding:0 24px">
+    <div style="background:linear-gradient(135deg,#1a0533,#2d1060,#3d1a80);border-radius:20px;padding:32px 28px;position:relative;overflow:hidden;text-align:center">
+      <div style="position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none"></div>
+      <div style="position:absolute;left:-30px;bottom:-50px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.03);pointer-events:none"></div>
+      <div style="width:52px;height:52px;background:#FF0000;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 6px 20px rgba(255,0,0,.35)">
+        <svg viewBox="0 0 24 24" style="width:26px;height:26px" fill="#fff"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <span style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.1rem;color:#fff">HIVnext on YouTube</span>
+        <span style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.65);font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;font-family:'Poppins',sans-serif;letter-spacing:.5px;white-space:nowrap">COMING SOON</span>
+      </div>
+      <p style="font-size:14px;color:rgba(255,255,255,.72);line-height:1.65;margin:0 auto 22px;max-width:480px">Step-by-step video tutorials are in production. Subscribe now so you don't miss them — guides for CHWs, Navigators, Admins, and Program Managers.</p>
+      <a href="https://www.youtube.com/@HIVnext" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;background:#FF0000;color:#fff;padding:12px 28px;border-radius:28px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;text-decoration:none;transition:background .2s;box-shadow:0 4px 16px rgba(255,0,0,.35)" onmouseover="this.style.background='#cc0000'" onmouseout="this.style.background='#FF0000'">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;flex-shrink:0" fill="#fff"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        Subscribe to HIVnext
+      </a>
+    </div>
+  </div>
+
+  <!-- Inline Guide View — replaces cards when Managers Guide is clicked -->
+  <div id="tut-guide-view">
+    <button class="guide-back-btn" onclick="closeGuideView()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Tutorials
+    </button>
+    <div id="legacy-guide-inner"></div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="guide-lightbox" onclick="closeLightbox()">
+    <span id="guide-lightbox-close" onclick="closeLightbox()">×</span>
+    <img id="guide-lightbox-img" src="" alt="">
+  </div>
+
+  <div id="legacy-guide" style="position:absolute;width:0;height:0;overflow:hidden;visibility:hidden;pointer-events:none" aria-hidden="true">
+
+    <!-- Header -->
+    <div class="guide-header">
+      <div class="guide-badge">📘 Training Guide · HIVnext Legacy</div>
+      <h2 class="guide-title">HIVnext Legacy — Bridge Ecosystem</h2>
+      <p class="guide-subtitle">A complete walkthrough for Program Managers and end-users transitioning to the new consolidated database and redesigned dashboard environment.</p>
+    </div>
+
+    <!-- Benefit cards -->
+    <div class="benefit-cards">
+      <div class="benefit-card" style="transition-delay:0ms">
+        <div class="benefit-icon" style="background:rgba(118,209,102,.12)">🗄️</div>
+        <h4>Consolidated Databases</h4>
+        <p>All related programme sites merged into a single NGO entity database — no more juggling multiple spreadsheets across different sites.</p>
+      </div>
+      <div class="benefit-card" style="transition-delay:80ms">
+        <div class="benefit-icon" style="background:rgba(99,201,227,.12)">📊</div>
+        <h4>Historical Data Included</h4>
+        <p>2024 and 2025 data is embedded in dailyData, enabling dashboards to display real-time comparisons against current programme targets.</p>
+      </div>
+      <div class="benefit-card" style="transition-delay:160ms">
+        <div class="benefit-icon" style="background:rgba(45,137,229,.12)">⚡</div>
+        <h4>80% Faster Loading</h4>
+        <p>Replaced live IMPORTRANGE and QUERY formulas with a server-side Apps Script ETL pipeline, cutting dashboard load time from 15+ seconds to under 3 seconds.</p>
+      </div>
+      <div class="benefit-card" style="transition-delay:240ms">
+        <div class="benefit-icon" style="background:rgba(167,232,167,.12)">🔁</div>
+        <h4>Automated Daily Shifts</h4>
+        <p>Data refreshes automatically twice a day — Morning and Afternoon shifts — ensuring every manager is always working with the latest snapshot.</p>
+      </div>
+      <div class="benefit-card" style="transition-delay:320ms">
+        <div class="benefit-icon" style="background:rgba(244,166,35,.12)">🎨</div>
+        <h4>Redesigned Dashboard</h4>
+        <p>Completely overhauled Looker Studio interface — streamlined, intuitive, and optimised for quick Link to Care evaluations at a glance.</p>
+      </div>
+      <div class="benefit-card" style="transition-delay:400ms">
+        <div class="benefit-icon" style="background:rgba(0,89,179,.1)">♾️</div>
+        <h4>Infinite Scalability</h4>
+        <p>Static snapshot databases eliminate all concurrent-user lag. Dozens of managers can be online simultaneously with zero performance degradation.</p>
+      </div>
+    </div>
+
+    <!-- Architecture + Metrics -->
+    <div class="arch-section" id="arch-section">
+      <div class="arch-label">Under the Hood</div>
+      <h3 class="arch-title">New Data Architecture & Performance Gains</h3>
+      <p class="arch-desc">We replaced heavy client-side live formulas with a Server-Side Google Apps Script ETL pipeline. The script extracts live data, transforms it, and loads it as a flat static snapshot — making dashboards crash-proof and lightning fast.</p>
+      <div class="arch-flow">
+        <div class="arch-node">📋 Live Google Sheets</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node highlight">⚙️ Apps Script ETL</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">📦 Static Snapshot DB</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node highlight">📊 Looker Studio Dashboard</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">👤 PM / PC View</div>
+      </div>
+      <div class="metrics-table-wrap">
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>Improvement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="metric-name">Dashboard Load Time</td>
+            <td class="metric-old">5–15+ seconds (prone to hanging)</td>
+            <td class="metric-new">1–3 seconds</td>
+            <td><span class="metric-gain">80% faster</span></td>
+          </tr>
+          <tr>
+            <td class="metric-name">System Reliability</td>
+            <td class="metric-old">Frequent formula timeouts</td>
+            <td class="metric-new">100% stable — zero timeouts</td>
+            <td><span class="metric-gain">100% elimination</span></td>
+          </tr>
+          <tr>
+            <td class="metric-name">Concurrent Users</td>
+            <td class="metric-old">Performance degrades with multiple users</td>
+            <td class="metric-new">Infinite scalability</td>
+            <td><span class="metric-gain">Zero browser lag</span></td>
+          </tr>
+          <tr>
+            <td class="metric-name">User Experience</td>
+            <td class="metric-old">Cluttered, slow interface</td>
+            <td class="metric-new">Completely redesigned dashboard</td>
+            <td><span class="metric-gain">Streamlined UX</span></td>
+          </tr>
+          <tr>
+            <td class="metric-name">Data Freshness</td>
+            <td class="metric-old">Fragile live queries (breaks silently)</td>
+            <td class="metric-new">Automated Daily Shifts</td>
+            <td><span class="metric-gain">Morning &amp; Afternoon</span></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- Tab Workflow -->
+    <div class="workflow-section">
+      <p class="workflow-label">Step-by-Step Workflow</p>
+      <h3 class="workflow-title">Updating Link to Care Data</h3>
+      <p class="workflow-desc">Each tab in the database serves a specific purpose. Follow the guide for each tab below — click a tab to see its instructions, images, and downloadable guide.</p>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchGuideTab('actionTask')">📋 actionTask</button>
+        <button class="tab-btn" onclick="switchGuideTab('hiv')">🔴 HIV</button>
+        <button class="tab-btn" onclick="switchGuideTab('syp')">🟠 SYP</button>
+        <button class="tab-btn" onclick="switchGuideTab('hep')">🟡 HEP C</button>
+        <button class="tab-btn" onclick="switchGuideTab('historical')">🗂 2024 / 2025</button>
+      </div>
+
+      <!-- actionTask tab -->
+      <div class="tab-content active" id="guide-tab-actionTask">
+        <div class="tab-notice info">
+          ℹ️ <span><strong>What is actionTask?</strong> This is your master pending list — all reactive HIV, SYP, and HEP C cases that are still awaiting Link to Care confirmation.</span>
+        </div>
+        <div class="tab-step"><div class="tab-step-num">1</div><div class="tab-step-body"><strong>Open the actionTask tab</strong><p>Navigate to the actionTask tab in your NGO's database. You will see a list of all pending reactive cases across all three disease categories.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">2</div><div class="tab-step-body"><strong>Review pending cases</strong><p>Each row represents a client with a reactive result who has not yet been confirmed as linked to care. Review the client's IC number, test date, and disease category.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">3</div><div class="tab-step-body"><strong>Use the Notes column</strong><p>If a case cannot yet be resolved — for example the client is unreachable — enter a justification in the <strong>Notes</strong> column. This keeps the audit trail clean and transparent.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">4</div><div class="tab-step-body"><strong>Act on each case</strong><p>For each case you are ready to update, proceed to the relevant tab — HIV, SYP, or HEP C — to complete the Link to Care entry.</p></div></div>
+        <div id="gallery-actionTask" class="guide-gallery"></div>
+        <div id="pdf-actionTask" class="pdf-slot" style="display:none">
+          <div class="pdf-slot-header">
+            <div class="pdf-slot-title">📄 actionTask — Full Guide</div>
+            <button class="pdf-fullscreen-btn" onclick="(function(){var f=document.getElementById('pdf-actionTask-frame');if(f&&f.requestFullscreen)f.requestFullscreen();else if(f&&f.webkitRequestFullscreen)f.webkitRequestFullscreen();else window.open(document.getElementById('pdf-actionTask-link').href,'_blank');})()">⛶ Full Screen</button><a id="pdf-actionTask-link" href="#" target="_blank" class="btn btn-blue" style="font-size:12px;padding:6px 14px">Open in new tab ↗</a>
+          </div>
+          <iframe id="pdf-actionTask-frame" src=""></iframe>
+        </div>
+        <div id="pdf-actionTask-placeholder" class="pdf-slot">
+          <div class="pdf-slot-header"><div class="pdf-slot-title">📄 actionTask — Full Guide PDF</div></div>
+          <div class="pdf-placeholder"><span style="font-size:28px">📄</span><span>No PDF uploaded yet — add via CMS → Tutorials</span></div>
+        </div>
+      </div>
+
+      <!-- HIV tab -->
+      <div class="tab-content" id="guide-tab-hiv">
+        <div class="tab-notice info">
+          ℹ️ <span><strong>HIV Tab</strong> — Update Link to Care status for all reactive HIV cases. Data entered here will be automatically pushed to dailyData at the next system shift.</span>
+        </div>
+        <div class="tab-step"><div class="tab-step-num">1</div><div class="tab-step-body"><strong>Navigate to the HIV tab</strong><p>Click the HIV tab in your NGO database. You will see all active HIV reactive clients pending Link to Care confirmation.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">2</div><div class="tab-step-body"><strong>Select the client's IC number</strong><p>In the IC Number column, use the <strong>drop-down menu</strong> to select the correct client. Do not type the IC manually — always use the dropdown to ensure data integrity.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">3</div><div class="tab-step-body"><strong>Update editable columns</strong><p>Fill in the remaining editable columns: Link to Care status, date linked, facility name, and any relevant remarks. Non-editable columns are locked and auto-populated by the system.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">4</div><div class="tab-step-body"><strong>Wait for the next system shift</strong><p>Your entry will be automatically extracted and pushed to the dailyData snapshot at the next Morning or Afternoon shift. No manual refresh needed.</p></div></div>
+        <div id="gallery-hiv" class="guide-gallery"></div>
+        <div id="pdf-hiv" class="pdf-slot" style="display:none">
+          <div class="pdf-slot-header">
+            <div class="pdf-slot-title">📄 HIV Tab — Full Guide</div>
+            <button class="pdf-fullscreen-btn" onclick="(function(){var f=document.getElementById('pdf-hiv-frame');if(f&&f.requestFullscreen)f.requestFullscreen();else if(f&&f.webkitRequestFullscreen)f.webkitRequestFullscreen();else window.open(document.getElementById('pdf-hiv-link').href,'_blank');})()">⛶ Full Screen</button><a id="pdf-hiv-link" href="#" target="_blank" class="btn btn-blue" style="font-size:12px;padding:6px 14px">Open in new tab ↗</a>
+          </div>
+          <iframe id="pdf-hiv-frame" src=""></iframe>
+        </div>
+        <div id="pdf-hiv-placeholder" class="pdf-slot">
+          <div class="pdf-slot-header"><div class="pdf-slot-title">📄 HIV Tab — Full Guide PDF</div></div>
+          <div class="pdf-placeholder"><span style="font-size:28px">📄</span><span>No PDF uploaded yet — add via CMS → Tutorials</span></div>
+        </div>
+      </div>
+
+      <!-- SYP tab -->
+      <div class="tab-content" id="guide-tab-syp">
+        <div class="tab-notice info">
+          ℹ️ <span><strong>SYP Tab</strong> — Update Link to Care status for Syphilis reactive cases. Same workflow as HIV — select IC from dropdown, update columns, await next shift.</span>
+        </div>
+        <div class="tab-step"><div class="tab-step-num">1</div><div class="tab-step-body"><strong>Navigate to the SYP tab</strong><p>Click the SYP tab to view all Syphilis reactive clients pending linkage confirmation in your NGO's database.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">2</div><div class="tab-step-body"><strong>Select the client's IC number</strong><p>Use the <strong>drop-down menu</strong> in the IC Number column to select the client. This ensures the system can correctly match the entry to the client's record.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">3</div><div class="tab-step-body"><strong>Update editable columns</strong><p>Complete all editable fields including Link to Care status, date of referral, and clinic details. Leave locked columns untouched.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">4</div><div class="tab-step-body"><strong>Data syncs automatically</strong><p>The Apps Script ETL pipeline will pick up your entry at the next scheduled shift and update the dashboard accordingly.</p></div></div>
+        <div id="gallery-syp" class="guide-gallery"></div>
+        <div id="pdf-syp" class="pdf-slot" style="display:none">
+          <div class="pdf-slot-header">
+            <div class="pdf-slot-title">📄 SYP Tab — Full Guide</div>
+            <button class="pdf-fullscreen-btn" onclick="(function(){var f=document.getElementById('pdf-syp-frame');if(f&&f.requestFullscreen)f.requestFullscreen();else if(f&&f.webkitRequestFullscreen)f.webkitRequestFullscreen();else window.open(document.getElementById('pdf-syp-link').href,'_blank');})()">⛶ Full Screen</button><a id="pdf-syp-link" href="#" target="_blank" class="btn btn-blue" style="font-size:12px;padding:6px 14px">Open in new tab ↗</a>
+          </div>
+          <iframe id="pdf-syp-frame" src=""></iframe>
+        </div>
+        <div id="pdf-syp-placeholder" class="pdf-slot">
+          <div class="pdf-slot-header"><div class="pdf-slot-title">📄 SYP Tab — Full Guide PDF</div></div>
+          <div class="pdf-placeholder"><span style="font-size:28px">📄</span><span>No PDF uploaded yet — add via CMS → Tutorials</span></div>
+        </div>
+      </div>
+
+      <!-- HEP tab -->
+      <div class="tab-content" id="guide-tab-hep">
+        <div class="tab-notice info">
+          ℹ️ <span><strong>HEP C Tab</strong> — Update Link to Care status for Hepatitis C reactive cases. Follows the same dropdown-based workflow as HIV and SYP tabs.</span>
+        </div>
+        <div class="tab-step"><div class="tab-step-num">1</div><div class="tab-step-body"><strong>Navigate to the HEP C tab</strong><p>Click the HEP C tab in your NGO database to view all Hepatitis C reactive clients awaiting Link to Care updates.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">2</div><div class="tab-step-body"><strong>Select the client's IC number</strong><p>Always use the <strong>drop-down menu</strong> for IC number selection. Manual entry will not be recognised by the ETL pipeline.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">3</div><div class="tab-step-body"><strong>Update editable columns</strong><p>Fill in Link to Care status, referral date, facility, and any other editable fields available for the selected client.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">4</div><div class="tab-step-body"><strong>Await next system shift</strong><p>Changes are automatically synced to dailyData at the next Morning or Afternoon shift. The dashboard will reflect updates shortly after.</p></div></div>
+        <div id="gallery-hep" class="guide-gallery"></div>
+        <div id="pdf-hep" class="pdf-slot" style="display:none">
+          <div class="pdf-slot-header">
+            <div class="pdf-slot-title">📄 HEP C Tab — Full Guide</div>
+            <button class="pdf-fullscreen-btn" onclick="(function(){var f=document.getElementById('pdf-hep-frame');if(f&&f.requestFullscreen)f.requestFullscreen();else if(f&&f.webkitRequestFullscreen)f.webkitRequestFullscreen();else window.open(document.getElementById('pdf-hep-link').href,'_blank');})()">⛶ Full Screen</button><a id="pdf-hep-link" href="#" target="_blank" class="btn btn-blue" style="font-size:12px;padding:6px 14px">Open in new tab ↗</a>
+          </div>
+          <iframe id="pdf-hep-frame" src=""></iframe>
+        </div>
+        <div id="pdf-hep-placeholder" class="pdf-slot">
+          <div class="pdf-slot-header"><div class="pdf-slot-title">📄 HEP C Tab — Full Guide PDF</div></div>
+          <div class="pdf-placeholder"><span style="font-size:28px">📄</span><span>No PDF uploaded yet — add via CMS → Tutorials</span></div>
+        </div>
+      </div>
+
+      <!-- Historical tab -->
+      <div class="tab-content" id="guide-tab-historical">
+        <div class="tab-notice" style="background:#fff3ef;border-color:#ffb89a;color:#7a3010">
+          ⚠️ <span><strong>Important:</strong> The 2024 and 2025 tabs contain historical data for clients who still need to be linked to care. Update statuses <strong>directly</strong> in the columns marked in <span class="coral">Coral Pink</span> — these are the only editable fields in the historical tabs.</span>
+        </div>
+        <div class="tab-step"><div class="tab-step-num">1</div><div class="tab-step-body"><strong>Navigate to the 2024 or 2025 tab</strong><p>These tabs hold historical records pre-loaded from previous programme cycles. Each row represents a client who was reactive but whose Link to Care status was not completed at the time.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">2</div><div class="tab-step-body"><strong>Identify the <span class="coral">Coral Pink</span> columns</strong><p>Look for columns highlighted in <span class="coral">Coral Pink (#ff7f50)</span> — these are the only fields you should edit. All other columns are locked historical records and must not be modified.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">3</div><div class="tab-step-body"><strong>Update the Link to Care status directly</strong><p>Unlike the current-year tabs, historical data does not use a dropdown. Type or select the status directly in the <span class="coral">Coral Pink</span> column for each client row you are updating.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">4</div><div class="tab-step-body"><strong>Historical data syncs at next shift</strong><p>Updated historical records are included in the next ETL pipeline run. The dashboard's year-on-year comparison view will reflect your changes at the next Morning or Afternoon shift.</p></div></div>
+        <div class="tab-notice success" style="margin-top:16px">
+          ✅ <span>Historical data from 2024 and 2025 is included in the dashboard's comparison charts, allowing you to evaluate current performance against previous years in real time.</span>
+        </div>
+        <div id="gallery-historical" class="guide-gallery"></div>
+        <div id="pdf-historical" class="pdf-slot" style="display:none">
+          <div class="pdf-slot-header">
+            <div class="pdf-slot-title">📄 2024 / 2025 Historical — Full Guide</div>
+            <button class="pdf-fullscreen-btn" onclick="(function(){var f=document.getElementById('pdf-historical-frame');if(f&&f.requestFullscreen)f.requestFullscreen();else if(f&&f.webkitRequestFullscreen)f.webkitRequestFullscreen();else window.open(document.getElementById('pdf-historical-link').href,'_blank');})()">⛶ Full Screen</button><a id="pdf-historical-link" href="#" target="_blank" class="btn btn-blue" style="font-size:12px;padding:6px 14px">Open in new tab ↗</a>
+          </div>
+          <iframe id="pdf-historical-frame" src=""></iframe>
+        </div>
+        <div id="pdf-historical-placeholder" class="pdf-slot">
+          <div class="pdf-slot-header"><div class="pdf-slot-title">📄 2024 / 2025 Historical — Full Guide PDF</div></div>
+          <div class="pdf-placeholder"><span style="font-size:28px">📄</span><span>No PDF uploaded yet — add via CMS → Tutorials</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+    <div id="tutorials-footer"></div>
 </div>
 
 <!-- ═══════════════════ PAGE 5: LOGIN ═══════════════════ -->
@@ -841,37 +1301,68 @@ a{text-decoration:none;color:inherit}
   <div class="blob blob1"></div>
   <div class="blob blob2"></div>
   <div class="login-card">
-    <div style="display:flex;justify-content:center;margin-bottom:20px">
-      <svg viewBox="0 0 140 36" xmlns="http://www.w3.org/2000/svg" style="height:26px">
-        <defs>
-          <linearGradient id="lb1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C2F0C2"/><stop offset="100%" stop-color="#A7E8A7"/></linearGradient>
-          <linearGradient id="lb2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8DE0F2"/><stop offset="100%" stop-color="#63C9E3"/></linearGradient>
-          <linearGradient id="lb3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D89E5"/><stop offset="100%" stop-color="#0059B3"/></linearGradient>
-          <linearGradient id="lb4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#004D99"/><stop offset="100%" stop-color="#003D80"/></linearGradient>
-          <linearGradient id="lb5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#004D99"/><stop offset="100%" stop-color="#003366"/></linearGradient>
-        </defs>
-        <rect x="0"  y="4"  width="6" height="28" rx="2" fill="url(#lb1)"/>
-        <rect x="8"  y="8"  width="6" height="24" rx="2" fill="url(#lb2)"/>
-        <rect x="16" y="12" width="6" height="20" rx="2" fill="url(#lb3)"/>
-        <rect x="24" y="16" width="6" height="16" rx="2" fill="url(#lb4)"/>
-        <rect x="32" y="20" width="6" height="12" rx="2" fill="url(#lb5)"/>
-        <text x="44" y="27" font-family="Poppins,sans-serif" font-weight="800" font-size="18" fill="#003366">HIVnext</text>
-      </svg>
+    <div style="display:flex;justify-content:center;margin-bottom:24px">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2923.21 460.12" style="height:38px;display:block;margin:0 auto">
+  <defs>
+    <linearGradient id="lc1" x1="597.64" y1=".03" x2="597.64" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c2f0c2"/><stop offset="1" stop-color="#a7e8a7"/></linearGradient>
+    <linearGradient id="lc2" x1="467.71" y1="91.69" x2="467.71" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#95e088"/><stop offset="1" stop-color="#76d166"/></linearGradient>
+    <linearGradient id="lc3" x1="337.78" y1="183.35" x2="337.78" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#8de0f2"/><stop offset="1" stop-color="#63c9e3"/></linearGradient>
+    <linearGradient id="lc4" x1="207.84" y1="275.02" x2="207.84" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2d89e5"/><stop offset="1" stop-color="#0059b3"/></linearGradient>
+    <linearGradient id="lc5" x1="77.91" y1="366.68" x2="77.91" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#004d99"/><stop offset="1" stop-color="#036"/></linearGradient>
+  </defs>
+  <rect fill="url(#lc1)" x="519.73" y=".03" width="155.83" height="439.98" rx="10" ry="10"/>
+  <rect fill="url(#lc2)" x="389.79" y="91.69" width="155.83" height="348.32" rx="10" ry="10"/>
+  <rect fill="url(#lc3)" x="259.86" y="183.35" width="155.83" height="256.65" rx="10" ry="10"/>
+  <rect fill="url(#lc4)" x="129.93" y="275.02" width="155.83" height="164.99" rx="10" ry="10"/>
+  <rect fill="url(#lc5)" y="366.68" width="155.83" height="73.33" rx="10" ry="10"/>
+  <path d="M2098.78,179.24c-5.77,5.9-10.94,12.1-15.49,18.61v-63.58c0-20.25,21.94-32.92,39.48-22.79l49.64,28.66c-28.8,5.38-53.35,18.42-73.63,39.11Z"/>
+  <path d="M2099.35,389.07c19.95,19.95,44.59,32.73,73.89,38.36l-50.47,29.14c-17.54,10.12-39.48-2.54-39.48-22.79v-63.71c4.7,6.68,10.05,13.02,16.06,19.01Z"/>
+  <path d="M2156.59,216.49c12.59-9.81,28.53-14.73,47.8-14.73,16.3,0,30.85,4.65,43.63,13.9,11.62,8.41,19.62,20.78,24.06,37.14.7,2.56-1.27,5.09-3.93,5.09h-131.33c-2.69,0-4.65-2.56-3.91-5.14,4.43-15.32,12.32-27.4,23.68-36.25Z"/>
+  <path d="M2382.13,306.8l-81.36,46.97-24.45-14.11c-1.68-.98-3.84-.63-5.09.87-14.01,16.8-34.08,25.19-60.17,25.19-40.38,0-65.96-15.64-76.73-46.93-.89-2.6,1.09-5.33,3.85-5.33h200.63c1.97,0,3.69-1.42,4-3.37,1.46-9.13,2.19-17.81,2.19-26.07,0-17.2-2.29-33.28-6.84-48.18l43.96,25.39c17.55,10.12,17.55,35.46,0,45.58Z"/>
+  <path d="M1022.7,0h48.61c2.55,0,4.61,2.06,4.61,4.61v430.77c0,2.55-2.06,4.61-4.61,4.61h-48.61c-2.55,0-4.61-2.06-4.61-4.61v-188.78c0-2.55-2.06-4.61-4.61-4.61h-204.49c-2.55,0-4.61,2.06-4.61,4.61v188.78c0,2.55-2.06,4.61-4.61,4.61h-49.24c-2.55,0-4.61-2.06-4.61-4.61V4.61c0-2.55,2.06-4.61,4.61-4.61h49.24c2.55,0,4.61,2.06,4.61,4.61v177.46c0,2.55,2.06,4.61,4.61,4.61h204.49c2.55,0,4.61-2.06,4.61-4.61V4.61c0-2.55,2.06-4.61,4.61-4.61Z"/>
+  <path d="M1174.8,0h49.24c2.55,0,4.61,2.06,4.61,4.61v430.77c0,2.55-2.06,4.61-4.61,4.61h-49.24c-2.55,0-4.61-2.06-4.61-4.61V4.61c0-2.55,2.06-4.61,4.61-4.61Z"/>
+  <path d="M1436.88,436.93L1283.02,6.16c-1.07-3,1.15-6.16,4.34-6.16h53.04c1.96,0,3.71,1.24,4.35,3.09l122.26,351.23c1.44,4.13,7.28,4.12,8.71,0L1597.16,3.1c.64-1.86,2.39-3.1,4.36-3.1h53.65c3.19,0,5.42,3.16,4.34,6.16l-154.45,430.77c-.66,1.83-2.39,3.05-4.34,3.05h-59.5c-1.95,0-3.69-1.22-4.34-3.06Z"/>
+  <path d="M1877.94,116.91c34.35,0,62.75,11.53,85.17,34.57,22.41,23.05,33.63,54.9,33.63,95.54v188.36c0,2.55-2.06,4.61-4.61,4.61h-71.87c-2.55,0-4.61-2.06-4.61-4.61v-178.3c0-20.95-5.66-36.98-16.97-48.08-11.31-11.1-26.4-16.66-45.26-16.66-20.96,0-37.71,6.5-50.28,19.49-12.57,12.99-18.86,32.48-18.86,58.46v165.1c0,2.55-2.06,4.61-4.61,4.61h-71.87c-2.55,0-4.61-2.06-4.61-4.61V130.32c0-2.55,2.06-4.61,4.61-4.61h71.87c2.55,0,4.61,2.06,4.61,4.61v17.1c0,4.25,5.25,6.22,8.06,3.03,19.75-22.35,48.28-33.54,85.6-33.54Z"/>
+  <path d="M2694.25,439.99h-82.32c-1.49,0-2.88-.72-3.75-1.93l-63.07-88.1c-1.84-2.57-5.66-2.57-7.5,0l-63.07,88.09c-.87,1.21-2.26,1.93-3.75,1.93h-82.3c-3.75,0-5.93-4.25-3.74-7.3l108.03-150.45c1.15-1.6,1.15-3.77,0-5.37l-103.02-143.87c-2.18-3.05,0-7.29,3.75-7.29h82.32c1.49,0,2.88.72,3.75,1.93l58.27,81.39c1.84,2.57,5.65,2.57,7.49,0l58.45-81.4c.87-1.21,2.26-1.92,3.74-1.92h81.69c3.75,0,5.93,4.24,3.75,7.29l-102.85,143.66c-1.15,1.6-1.15,3.76,0,5.37l107.88,150.67c2.18,3.05,0,7.29-3.75,7.29Z"/>
+  <path d="M2918.61,203.65h-61.81c-2.55,0-4.61,2.06-4.61,4.61v126.13c0,10.9,2.72,18.86,8.17,23.88,5.44,5.03,13.41,7.86,23.88,8.48,9.36.56,20.75.54,34.15-.07,2.62-.12,4.82,1.98,4.82,4.6v64.56c0,2.36-1.78,4.34-4.13,4.59-53.55,5.57-91.46.18-113.73-16.16-22.85-16.75-34.26-46.72-34.26-89.88v-126.13c0-2.55-2.06-4.61-4.61-4.61h-45.46c-2.55,0-4.61-2.06-4.61-4.61v-68.72c0-2.55,2.06-4.61,4.61-4.61h45.46c2.55,0,4.61-2.06,4.61-4.61v-55.45c0-2.03,1.33-3.82,3.28-4.41l71.87-21.73c2.96-.89,5.94,1.32,5.94,4.41v77.18c0,2.55,2.06,4.61,4.61,4.61h61.81c2.55,0,4.61,2.06,4.61,4.61v68.72c0,2.55-2.06,4.61-4.61,4.61Z"/>
+</svg>
     </div>
     <div class="login-coming">🚀 Coming Soon</div>
     <input class="login-field" type="email" placeholder="Email address" disabled>
     <input class="login-field" type="password" placeholder="Password" disabled>
     <button class="login-submit" disabled>Sign In — Coming Soon</button>
     <div class="login-divider">or access the Legacy system</div>
-    <button class="legacy-login-btn" onclick="showPage('legacy')">
-      <svg style="height:18px" viewBox="0 0 80 20" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="2" width="4" height="16" rx="1" fill="#51545a"/>
-        <rect x="5" y="4" width="4" height="14" rx="1" fill="#989ba0"/>
-        <rect x="10" y="6" width="4" height="12" rx="1" fill="#a3a6ab"/>
-        <rect x="15" y="8" width="4" height="10" rx="1" fill="#b8babf"/>
-        <rect x="20" y="10" width="4" height="8"  rx="1" fill="#e1e3e6"/>
-        <text x="28" y="16" font-family="Poppins,sans-serif" font-weight="700" font-size="12" fill="#444">HIVnext Legacy</text>
-      </svg>
+    <button class="legacy-login-btn" onclick="showPageWithAnim('legacy')">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2923.21 545.32" style="height:26px;display:block;margin:0 auto">
+  <defs>
+    <linearGradient id="ll1" x1="597.64" y1=".03" x2="597.64" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#51545a"/><stop offset="1" stop-color="#28292d"/></linearGradient>
+    <linearGradient id="ll2" x1="467.71" y1="91.69" x2="467.71" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#989ba0"/><stop offset="1" stop-color="#6c6e74"/></linearGradient>
+    <linearGradient id="ll3" x1="337.78" y1="183.35" x2="337.78" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#a3a6ab"/><stop offset="1" stop-color="#7f8288"/></linearGradient>
+    <linearGradient id="ll4" x1="207.84" y1="275.02" x2="207.84" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#b8babf"/><stop offset="1" stop-color="#a5a7ad"/></linearGradient>
+    <linearGradient id="ll5" x1="77.91" y1="366.68" x2="77.91" y2="440.01" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e1e3e6"/><stop offset="1" stop-color="#d7d9dd"/></linearGradient>
+  </defs>
+  <rect fill="url(#ll1)" x="519.73" y=".03" width="155.83" height="439.98" rx="10" ry="10"/>
+  <rect fill="url(#ll2)" x="389.79" y="91.69" width="155.83" height="348.32" rx="10" ry="10"/>
+  <rect fill="url(#ll3)" x="259.86" y="183.35" width="155.83" height="256.65" rx="10" ry="10"/>
+  <rect fill="url(#ll4)" x="129.93" y="275.02" width="155.83" height="164.99" rx="10" ry="10"/>
+  <rect fill="url(#ll5)" y="366.68" width="155.83" height="73.33" rx="10" ry="10"/>
+  <path d="M2098.78,179.24c-5.77,5.9-10.94,12.1-15.49,18.61v-63.58c0-20.25,21.94-32.92,39.48-22.79l49.64,28.66c-28.8,5.38-53.35,18.42-73.63,39.11Z"/>
+  <path d="M2099.35,389.07c19.95,19.95,44.59,32.73,73.89,38.36l-50.47,29.14c-17.54,10.12-39.48-2.54-39.48-22.79v-63.71c4.7,6.68,10.05,13.02,16.06,19.01Z"/>
+  <path d="M2156.59,216.49c12.59-9.81,28.53-14.73,47.8-14.73,16.3,0,30.85,4.65,43.63,13.9,11.62,8.41,19.62,20.78,24.06,37.14.7,2.56-1.27,5.09-3.93,5.09h-131.33c-2.69,0-4.65-2.56-3.91-5.14,4.43-15.32,12.32-27.4,23.68-36.25Z"/>
+  <path d="M2382.13,306.8l-81.36,46.97-24.45-14.11c-1.68-.98-3.84-.63-5.09.87-14.01,16.8-34.08,25.19-60.17,25.19-40.38,0-65.96-15.64-76.73-46.93-.89-2.6,1.09-5.33,3.85-5.33h200.63c1.97,0,3.69-1.42,4-3.37,1.46-9.13,2.19-17.81,2.19-26.07,0-17.2-2.29-33.28-6.84-48.18l43.96,25.39c17.55,10.12,17.55,35.46,0,45.58Z"/>
+  <path d="M1022.7,0h48.61c2.55,0,4.61,2.06,4.61,4.61v430.77c0,2.55-2.06,4.61-4.61,4.61h-48.61c-2.55,0-4.61-2.06-4.61-4.61v-188.78c0-2.55-2.06-4.61-4.61-4.61h-204.49c-2.55,0-4.61,2.06-4.61,4.61v188.78c0,2.55-2.06,4.61-4.61,4.61h-49.24c-2.55,0-4.61-2.06-4.61-4.61V4.61c0-2.55,2.06-4.61,4.61-4.61h49.24c2.55,0,4.61,2.06,4.61,4.61v177.46c0,2.55,2.06,4.61,4.61,4.61h204.49c2.55,0,4.61-2.06,4.61-4.61V4.61c0-2.55,2.06-4.61,4.61-4.61Z"/>
+  <path d="M1174.8,0h49.24c2.55,0,4.61,2.06,4.61,4.61v430.77c0,2.55-2.06,4.61-4.61,4.61h-49.24c-2.55,0-4.61-2.06-4.61-4.61V4.61c0-2.55,2.06-4.61,4.61-4.61Z"/>
+  <path d="M1436.88,436.93L1283.02,6.16c-1.07-3,1.15-6.16,4.34-6.16h53.04c1.96,0,3.71,1.24,4.35,3.09l122.26,351.23c1.44,4.13,7.28,4.12,8.71,0L1597.16,3.1c.64-1.86,2.39-3.1,4.36-3.1h53.65c3.19,0,5.42,3.16,4.34,6.16l-154.45,430.77c-.66,1.83-2.39,3.05-4.34,3.05h-59.5c-1.95,0-3.69-1.22-4.34-3.06Z"/>
+  <path d="M1877.94,116.91c34.35,0,62.75,11.53,85.17,34.57,22.41,23.05,33.63,54.9,33.63,95.54v188.36c0,2.55-2.06,4.61-4.61,4.61h-71.87c-2.55,0-4.61-2.06-4.61-4.61v-178.3c0-20.95-5.66-36.98-16.97-48.08-11.31-11.1-26.4-16.66-45.26-16.66-20.96,0-37.71,6.5-50.28,19.49-12.57,12.99-18.86,32.48-18.86,58.46v165.1c0,2.55-2.06,4.61-4.61,4.61h-71.87c-2.55,0-4.61-2.06-4.61-4.61V130.32c0-2.55,2.06-4.61,4.61-4.61h71.87c2.55,0,4.61,2.06,4.61,4.61v17.1c0,4.25,5.25,6.22,8.06,3.03,19.75-22.35,48.28-33.54,85.6-33.54Z"/>
+  <path d="M2694.25,439.99h-82.32c-1.49,0-2.88-.72-3.75-1.93l-63.07-88.1c-1.84-2.57-5.66-2.57-7.5,0l-63.07,88.09c-.87,1.21-2.26,1.93-3.75,1.93h-82.3c-3.75,0-5.93-4.25-3.74-7.3l108.03-150.45c1.15-1.6,1.15-3.77,0-5.37l-103.02-143.87c-2.18-3.05,0-7.29,3.75-7.29h82.32c1.49,0,2.88.72,3.75,1.93l58.27,81.39c1.84,2.57,5.65,2.57,7.49,0l58.45-81.4c.87-1.21,2.26-1.92,3.74-1.92h81.69c3.75,0,5.93,4.24,3.75,7.29l-102.85,143.66c-1.15,1.6-1.15,3.76,0,5.37l107.88,150.67c2.18,3.05,0,7.29-3.75,7.29Z"/>
+  <path d="M2918.61,203.65h-61.81c-2.55,0-4.61,2.06-4.61,4.61v126.13c0,10.9,2.72,18.86,8.17,23.88,5.44,5.03,13.41,7.86,23.88,8.48,9.36.56,20.75.54,34.15-.07,2.62-.12,4.82,1.98,4.82,4.6v64.56c0,2.36-1.78,4.34-4.13,4.59-53.55,5.57-91.46.18-113.73-16.16-22.85-16.75-34.26-46.72-34.26-89.88v-126.13c0-2.55-2.06-4.61-4.61-4.61h-45.46c-2.55,0-4.61-2.06-4.61-4.61v-68.72c0-2.55,2.06-4.61,4.61-4.61h45.46c2.55,0,4.61-2.06,4.61-4.61v-55.45c0-2.03,1.33-3.82,3.28-4.41l71.87-21.73c2.96-.89,5.94,1.32,5.94,4.41v77.18c0,2.55,2.06,4.61,4.61,4.61h61.81c2.55,0,4.61,2.06,4.61,4.61v68.72c0,2.55-2.06,4.61-4.61,4.61Z"/>
+  <path d="M1707.66,539.92h40.8v4.08h-45.24v-84h4.44v79.92Z"/>
+  <path d="M1924.14,539.92h43.2v4.08h-47.64v-84h47.04v4.08h-42.6v35.52h39.6v4.08h-39.6v36.24Z"/>
+  <path d="M2219.94,505.59v2.28c0,10.48-3.68,19.34-11.04,26.58-7.36,7.24-17.04,10.86-29.04,10.86-12.8,0-23.38-4.18-31.74-12.54-8.36-8.36-12.54-18.62-12.54-30.78s4.14-22.32,12.42-30.72c8.28-8.4,18.66-12.6,31.14-12.6,7.6,0,14.6,1.82,21,5.46,6.4,3.64,11.32,8.54,14.76,14.7l-3.84,2.16c-3.04-5.52-7.42-9.92-13.14-13.2-5.72-3.28-11.98-4.92-18.78-4.92-11.28,0-20.62,3.78-28.02,11.34-7.4,7.56-11.1,16.82-11.1,27.78s3.74,20.22,11.22,27.78c7.48,7.56,17.02,11.34,28.62,11.34,10.4,0,18.84-3,25.32-9,6.48-6,9.96-13.48,10.44-22.44h-37.68v-4.08h42Z"/>
+  <path d="M2448.65,544l-8.65-22.2h-44.05l-8.62,22.2h-4.68l32.88-84h4.8l33,84h-4.68ZM2397.54,517.71h40.88l-20.48-52.56-20.4,52.56Z"/>
+  <path d="M2659.49,545.32c-12.48,0-22.86-4.2-31.14-12.6-8.28-8.4-12.42-18.64-12.42-30.72s4.14-22.32,12.42-30.72c8.28-8.4,18.66-12.6,31.14-12.6,7.44,0,14.36,1.8,20.76,5.4,6.4,3.6,11.36,8.4,14.88,14.4l-3.84,2.28c-3.12-5.44-7.52-9.78-13.2-13.02-5.68-3.24-11.88-4.86-18.6-4.86-11.28,0-20.62,3.78-28.02,11.34-7.4,7.56-11.1,16.82-11.1,27.78s3.7,20.22,11.1,27.78c7.4,7.56,16.74,11.34,28.02,11.34,6.88,0,13.2-1.66,18.96-4.98,5.76-3.32,10.12-7.78,13.08-13.38l3.96,2.16c-3.44,6.16-8.38,11.1-14.82,14.82-6.44,3.72-13.5,5.58-21.18,5.58Z"/>
+  <path d="M2923.02,460l-30.96,49.32v34.68h-4.44v-34.8l-30.84-49.2h4.92l28.18,45.18,28.22-45.18h4.92Z"/>
+</svg>
     </button>
     <p class="login-notice">Need access? Contact <a href="mailto:bino@myaids.org.my">bino@myaids.org.my</a> to request credentials.</p>
   </div>
@@ -902,7 +1393,19 @@ a{text-decoration:none;color:inherit}
   <div class="contact-grid" id="contact-cards">
     <div class="contact-card"><div class="cc-icon">✉️</div><h3>General Enquiries</h3><p>Reach us for questions about the program or platform.</p><a href="mailto:bino@myaids.org.my">bino@myaids.org.my</a></div>
     <div class="contact-card"><div class="cc-icon">🌐</div><h3>Organisation Website</h3><p>Visit the Malaysian AIDS Foundation main website.</p><a href="https://myaids.org.my" target="_blank">myaids.org.my</a></div>
-    <div class="contact-card"><div class="cc-icon">🗂</div><h3>Legacy System Access</h3><p>Request access to the DHSKP Google Sites Legacy portal.</p><a href="#" id="contact-legacy-link" onclick="showPage('legacy')">Open Legacy Portal</a></div>
+    <div class="contact-card">
+      <div class="cc-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <path d="M8 21h8M12 17v4"/>
+          <circle cx="12" cy="10" r="3"/>
+          <path d="M6 10h.01M18 10h.01"/>
+        </svg>
+      </div>
+      <h3>Legacy System Access</h3>
+      <p>Access the HIVnext Legacy portal — databases and dashboards for all implementing NGOs.</p>
+      <a href="#page-legacy" onclick="event.preventDefault();showPageWithAnim('legacy')" style="cursor:pointer">Open Legacy Portal</a>
+    </div>
     <div class="contact-card"><div class="cc-icon">🐛</div><h3>Report a Bug</h3><p>Spotted something wrong? Let us know.</p><a href="mailto:bino@myaids.org.my?subject=HIVnext%20Bug%20Report">bino@myaids.org.my</a></div>
   </div>
   <div id="contact-footer"></div>
@@ -946,6 +1449,7 @@ a{text-decoration:none;color:inherit}
         <button class="admin-tab" onclick="switchAdminTab('faq')">❓ FAQ</button>
         <button class="admin-tab" onclick="switchAdminTab('logo')">🖼 Logo</button>
         <button class="admin-tab" onclick="switchAdminTab('partners')">🔗 Partners</button>
+        <button class="admin-tab" onclick="switchAdminTab('tutorials')">📘 Tutorials</button>
       </div>
 
       <!-- LINKS PANEL -->
@@ -997,6 +1501,20 @@ a{text-decoration:none;color:inherit}
           <div id="faq-entries-list"></div>
         </div>
         <button class="admin-save-btn" onclick="saveFAQ()">💾 Save FAQ</button>
+      </div>
+
+      <!-- TUTORIALS PANEL -->
+      <div class="admin-panel" id="admin-panel-tutorials">
+        <p style="font-size:13px;color:#666;margin-bottom:20px">Upload screenshots and a PDF guide for each workflow tab. Images appear as a gallery; the PDF renders as a scrollable embed with a download link. Max ~5MB per image recommended.</p>
+        <div id="tutorials-cms-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+          <button class="admin-tab active" onclick="switchCMSGuideTab('actionTask')" id="ctab-actionTask">📋 actionTask</button>
+          <button class="admin-tab" onclick="switchCMSGuideTab('hiv')" id="ctab-hiv">🔴 HIV</button>
+          <button class="admin-tab" onclick="switchCMSGuideTab('syp')" id="ctab-syp">🟠 SYP</button>
+          <button class="admin-tab" onclick="switchCMSGuideTab('hep')" id="ctab-hep">🟡 HEP C</button>
+          <button class="admin-tab" onclick="switchCMSGuideTab('historical')" id="ctab-historical">🗂 2024/2025</button>
+        </div>
+        <div id="tutorials-cms-content"></div>
+        <button class="admin-save-btn" onclick="saveTutorials()">💾 Save Tutorials</button>
       </div>
 
       <!-- PARTNERS PANEL -->
@@ -1062,28 +1580,28 @@ a{text-decoration:none;color:inherit}
         <div class="footer-brand">
           <div id="footer-logo-wrap">
             <!-- Footer logo placeholder — upload via CMS → Logo tab -->
-            <div style="display:inline-flex;align-items:center;gap:8px;opacity:.5;border:1.5px dashed rgba(255,255,255,.4);border-radius:8px;padding:7px 14px;cursor:pointer" onclick="showPage('admin')" title="Upload footer logo via CMS">
+            <div style="display:inline-flex;align-items:center;gap:8px;opacity:.5;border:1.5px dashed rgba(255,255,255,.4);border-radius:8px;padding:7px 14px;cursor:pointer" onclick="showPageWithAnim('admin')" title="Upload footer logo via CMS">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
               <span style="font-family:'Poppins',sans-serif;font-size:12px;color:rgba(255,255,255,.6);font-weight:600">HIVnext</span>
             </div>
           </div>
         </div>
         <p class="footer-blurb">Health Information Vault | Cloud Database Management System</p>
-        <p style="font-size:12px;color:#555">A MAF/MAC Program</p>
+        <p style="font-size:12px;color:#7a9abf">Another Initiative by M&amp;E, MAF/MAC</p>
       </div>
       <div class="footer-col">
         <h4>Pages</h4>
-        <a onclick="showPage('home')">Home</a>
-        <a onclick="showPage('about')">About the Program</a>
-        <a onclick="showPage('legacy')">Legacy</a>
-        <a onclick="showPage('tutorials')">Tutorials</a>
-        <a onclick="showPage('changelogs')">Changelogs</a>
+        <a onclick="showPageWithAnim('home')">Home</a>
+        <a onclick="showPageWithAnim('about')">About the Program</a>
+        <a onclick="showPageWithAnim('legacy')">Legacy</a>
+        <a onclick="showPageWithAnim('tutorials')">Tutorials</a>
+        <a onclick="showPageWithAnim('changelogs')">Changelogs</a>
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
         <a href="mailto:bino@myaids.org.my">bino@myaids.org.my</a>
         <a href="https://myaids.org.my" target="_blank">myaids.org.my</a>
-        <a onclick="showPage('contact')">Contact Page</a>
+        <a onclick="showPageWithAnim('contact')">Contact Page</a>
         <a href="mailto:bino@myaids.org.my?subject=HIVnext%20Bug%20Report">Report a Bug</a>
       </div>
     </div>
@@ -1216,7 +1734,7 @@ const DEFAULT_DATA = {
     {
       "date": "2026-06-06",
       "title": "Database replication completed for all NGOs",
-      "desc": "Individual Google Sheets databases successfully replicated and configured for all 21 implementing partner NGOs, with access permissions set for respective Programme Managers and Programme Coordinators."
+      "desc": "Individual Google Sheets databases successfully replicated and configured for all 21 implementing partner NGOs, with access permissions set for respective Program Managers and Programme Coordinators."
     },
     {
       "date": "2026-06-15",
@@ -1236,7 +1754,7 @@ const DEFAULT_DATA = {
     {
       "date": "2026-06-21",
       "title": "Dashboard replication and sharing completed for all NGOs",
-      "desc": "Redesigned dashboards successfully replicated and shared with all 21 implementing partner NGOs. Access granted to Programme Managers, Programme Coordinators, CHWs, CHNs, and Admin Officers."
+      "desc": "Redesigned dashboards successfully replicated and shared with all 21 implementing partner NGOs. Access granted to Program Managers, Programme Coordinators, CHWs, CHNs, and Admin Officers."
     },
     {
       "date": "2026-06-23",
@@ -1247,6 +1765,16 @@ const DEFAULT_DATA = {
       "date": "2026-06-25",
       "title": "New data architecture deployed to further improve dashboard performance",
       "desc": "Advanced data architecture update pushed live \u2014 automated workflow triggers activated. Structural refinements further reduce query times and dashboard load latency across all NGO views."
+    },
+    {
+      "date": "2026-06-26",
+      "title": "Tutorial and YouTube channel launched",
+      "desc": "An interactive Link to Care tutorial for Program Managers has been published in the Tutorials section, providing step-by-step guidance on updating client records in the Legacy system. The HIVnext YouTube channel has also been created as a dedicated hub for future hands-on video tutorials."
+    },
+    {
+      "date": "2026-06-30",
+      "title": "Interactive illustrated guide in progress",
+      "desc": "Development of a fully illustrated, interactive guide is underway to assist Program Managers in navigating and operating the HIVnext system \u2014 combining visual walkthroughs with step-by-step instructions for a more intuitive onboarding experience."
     }
   ],
   "ngos": [
@@ -1374,33 +1902,33 @@ const DEFAULT_DATA = {
   "faq": [
     {
       "qEn": "What is HIVnext?",
-      "aEn": "HIVnext is Malaysia's unified Health Information Vault for HIV services \u2014 a cloud-based platform replacing Google Sheets across 50+ NGO sites.",
+      "aEn": "HIVnext is Malaysia's unified Health Information Vault for Differentiated HIV Services \u2014 a cloud-based platform replacing Google Workspace setup across 50+ sites implemented by 21 NGOs.",
       "qBm": "Apakah HIVnext?",
-      "aBm": "HIVnext adalah Peti Maklumat Kesihatan bersatu Malaysia untuk perkhidmatan HIV \u2014 platform berasaskan cloud yang menggantikan Google Sheets di 50+ tapak NGO."
+      "aBm": "HIVnext adalah Peti Maklumat Kesihatan bersatu Malaysia untuk Perkhidmatan HIV Terdiferensiasi \u2014 platform berasaskan cloud yang menggantikan persediaan Google Workspace merentas 50+ tapak yang dilaksanakan oleh 21 NGO."
     },
     {
       "qEn": "Who can use HIVnext?",
-      "aEn": "HIVnext is designed for Community Health Workers (CHWs), Community Health Navigators, NGO Admins, MOH staff, and program coordinators.",
+      "aEn": "HIVnext is designed for Program Managers/Coordinators (PM/PC), Community Health Workers (CHWs), Community Health Navigators (CHNs), Peer Educators (PE), MAF/MAC Admins & Digital Team, MOH staffs, Supervisors and other related bodies.",
       "qBm": "Siapa yang boleh menggunakan HIVnext?",
-      "aBm": "HIVnext direka untuk Pekerja Kesihatan Komuniti (CHW), Navigatur Kesihatan Komuniti, Admin NGO, staf KKM, dan penyelaras program."
+      "aBm": "HIVnext direka untuk Pengurus/Penyelaras Program (PM/PC), Pekerja Kesihatan Komuniti (CHW), Navigatur Kesihatan Komuniti (CHN), Pendidik Sebaya (PE), Admin & Pasukan Digital MAF/MAC, kakitangan KKM, Penyelia dan badan berkaitan lain."
     },
     {
       "qEn": "How do I access HIVnext?",
       "aEn": "The main HIVnext platform is currently in beta. For access, contact bino@myaids.org.my. Legacy data is available through the HIVnext Legacy portal.",
       "qBm": "Bagaimana saya mengakses HIVnext?",
-      "aBm": "Platform HIVnext utama kini dalam beta. Untuk akses, hubungi bino@myaids.org.my. Sistem perantara tersedia melalui portal HIVnext Legacy."
+      "aBm": "Platform HIVnext utama kini dalam beta. Untuk akses, hubungi bino@myaids.org.my. Data warisan tersedia melalui portal Warisan HIVnext."
     },
     {
       "qEn": "What is the difference between HIVnext and Legacy?",
-      "aEn": "HIVnext is the new MongoDB cloud system. HIVnext Legacy is the archive of previous DHSKP and TestNow data stored in Google Sheets/Sites.",
+      "aEn": "HIVnext is the new, custom-tailored cloud database management system. HIVnext Legacy is the archive of previous DHSKP from 2024 until 2026 and TestNow data stored in Google Workspace.",
       "qBm": "Apakah perbezaan antara HIVnext dan Legacy?",
-      "aBm": "HIVnext adalah sistem cloud MongoDB baharu. HIVnext Legacy adalah sistem arkib bagi data DHSKP dan TestNow terdahulu yang disimpan dalam Google Sheets/Sites."
+      "aBm": "HIVnext adalah sistem pengurusan pangkalan data cloud baharu yang tersuai. Warisan HIVnext adalah arkib DHSKP terdahulu dari 2024 hingga 2026 dan data TestNow yang disimpan dalam Google Workspace."
     },
     {
       "qEn": "Is my data secure in HIVnext?",
       "aEn": "Yes. HIVnext uses RBAC + ABAC (Role-Based and Attribute-Based Access Control) ensuring users only see data relevant to their role and site.",
       "qBm": "Adakah data saya selamat dalam HIVnext?",
-      "aBm": "Ya. HIVnext menggunakan RBAC + ABAC (Kawalan Akses Berasaskan Peranan dan Atribut) memastikan pengguna hanya melihat data yang berkaitan dengan peranan dan tapak mereka."
+      "aBm": "Ya. HIVnext menggunakan RBAC + ABAC memastikan pengguna hanya melihat data yang berkaitan dengan peranan dan tapak mereka."
     }
   ],
   "logo": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgMjkyMy4yMSA0NjAuMTIiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuY2xzLTEgewogICAgICAgIGZpbGw6IHVybCgjbGluZWFyLWdyYWRpZW50LTIpOwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6IHVybCgjbGluZWFyLWdyYWRpZW50LTQpOwogICAgICB9CgogICAgICAuY2xzLTMgewogICAgICAgIGZpbGw6IHVybCgjbGluZWFyLWdyYWRpZW50LTMpOwogICAgICB9CgogICAgICAuY2xzLTQgewogICAgICAgIGZpbGw6IHVybCgjbGluZWFyLWdyYWRpZW50LTUpOwogICAgICB9CgogICAgICAuY2xzLTUgewogICAgICAgIGZpbGw6IHVybCgjbGluZWFyLWdyYWRpZW50KTsKICAgICAgfQogICAgPC9zdHlsZT4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50IiB4MT0iNTk3LjY0IiB5MT0iLjAzIiB4Mj0iNTk3LjY0IiB5Mj0iNDQwLjAxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2MyZjBjMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNhN2U4YTciLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudC0yIiB4MT0iNDY3LjcxIiB5MT0iOTEuNjkiIHgyPSI0NjcuNzEiIHkyPSI0NDAuMDEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjOTVlMDg4Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzc2ZDE2NiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50LTMiIHgxPSIzMzcuNzgiIHkxPSIxODMuMzUiIHgyPSIzMzcuNzgiIHkyPSI0NDAuMDEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjOGRlMGYyIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzYzYzllMyIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50LTQiIHgxPSIyMDcuODQiIHkxPSIyNzUuMDIiIHgyPSIyMDcuODQiIHkyPSI0NDAuMDEiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMmQ4OWU1Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwNTliMyIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50LTUiIHgxPSI3Ny45MSIgeTE9IjM2Ni42OCIgeDI9Ijc3LjkxIiB5Mj0iNDQwLjAxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzAwNGQ5OSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMzYiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8xLTIiIGRhdGEtbmFtZT0iTGF5ZXIgMSI+CiAgICA8ZyBpZD0iQ29sb3VyZWQiPgogICAgICA8Zz4KICAgICAgICA8cmVjdCBjbGFzcz0iY2xzLTUiIHg9IjUxOS43MyIgeT0iLjAzIiB3aWR0aD0iMTU1LjgzIiBoZWlnaHQ9IjQzOS45OCIgcng9IjEwIiByeT0iMTAiLz4KICAgICAgICA8cmVjdCBjbGFzcz0iY2xzLTEiIHg9IjM4OS43OSIgeT0iOTEuNjkiIHdpZHRoPSIxNTUuODMiIGhlaWdodD0iMzQ4LjMyIiByeD0iMTAiIHJ5PSIxMCIvPgogICAgICAgIDxyZWN0IGNsYXNzPSJjbHMtMyIgeD0iMjU5Ljg2IiB5PSIxODMuMzUiIHdpZHRoPSIxNTUuODMiIGhlaWdodD0iMjU2LjY1IiByeD0iMTAiIHJ5PSIxMCIvPgogICAgICAgIDxyZWN0IGNsYXNzPSJjbHMtMiIgeD0iMTI5LjkzIiB5PSIyNzUuMDIiIHdpZHRoPSIxNTUuODMiIGhlaWdodD0iMTY0Ljk5IiByeD0iMTAiIHJ5PSIxMCIvPgogICAgICAgIDxyZWN0IGNsYXNzPSJjbHMtNCIgeT0iMzY2LjY4IiB3aWR0aD0iMTU1LjgzIiBoZWlnaHQ9IjczLjMzIiByeD0iMTAiIHJ5PSIxMCIvPgogICAgICA8L2c+CiAgICAgIDxwYXRoIGQ9Ik0yMDk4Ljc4LDE3OS4yNGMtNS43Nyw1LjktMTAuOTQsMTIuMS0xNS40OSwxOC42MXYtNjMuNThjMC0yMC4yNSwyMS45NC0zMi45MiwzOS40OC0yMi43OWw0OS42NCwyOC42NmMtMjguOCw1LjM4LTUzLjM1LDE4LjQyLTczLjYzLDM5LjExWiIvPgogICAgICA8cGF0aCBkPSJNMjA5OS4zNSwzODkuMDdjMTkuOTUsMTkuOTUsNDQuNTksMzIuNzMsNzMuODksMzguMzZsLTUwLjQ3LDI5LjE0Yy0xNy41NCwxMC4xMi0zOS40OC0yLjU0LTM5LjQ4LTIyLjc5di02My43MWM0LjcsNi42OCwxMC4wNSwxMy4wMiwxNi4wNiwxOS4wMVoiLz4KICAgICAgPHBhdGggZD0iTTIxNTYuNTksMjE2LjQ5YzEyLjU5LTkuODEsMjguNTMtMTQuNzMsNDcuOC0xNC43MywxNi4zLDAsMzAuODUsNC42NSw0My42MywxMy45LDExLjYyLDguNDEsMTkuNjIsMjAuNzgsMjQuMDYsMzcuMTQuNywyLjU2LTEuMjcsNS4wOS0zLjkzLDUuMDloLTEzMS4zM2MtMi42OSwwLTQuNjUtMi41Ni0zLjkxLTUuMTQsNC40My0xNS4zMiwxMi4zMi0yNy40LDIzLjY4LTM2LjI1WiIvPgogICAgICA8cGF0aCBkPSJNMjM4Mi4xMywzMDYuOGwtODEuMzYsNDYuOTctMjQuNDUtMTQuMTFjLTEuNjgtLjk4LTMuODQtLjYzLTUuMDkuODctMTQuMDEsMTYuOC0zNC4wOCwyNS4xOS02MC4xNywyNS4xOS00MC4zOCwwLTY1Ljk2LTE1LjY0LTc2LjczLTQ2LjkzLS44OS0yLjYsMS4wOS01LjMzLDMuODUtNS4zM2gyMDAuNjNjMS45NywwLDMuNjktMS40Miw0LTMuMzcsMS40Ni05LjEzLDIuMTktMTcuODEsMi4xOS0yNi4wNywwLTE3LjItMi4yOS0zMy4yOC02Ljg0LTQ4LjE4bDQzLjk2LDI1LjM5YzE3LjU1LDEwLjEyLDE3LjU1LDM1LjQ2LDAsNDUuNThaIi8+CiAgICAgIDxnPgogICAgICAgIDxwYXRoIGQ9Ik0xMDIyLjcsMGg0OC42MWMyLjU1LDAsNC42MSwyLjA2LDQuNjEsNC42MXY0MzAuNzdjMCwyLjU1LTIuMDYsNC42MS00LjYxLDQuNjFoLTQ4LjYxYy0yLjU1LDAtNC42MS0yLjA2LTQuNjEtNC42MXYtMTg4Ljc4YzAtMi41NS0yLjA2LTQuNjEtNC42MS00LjYxaC0yMDQuNDljLTIuNTUsMC00LjYxLDIuMDYtNC42MSw0LjYxdjE4OC43OGMwLDIuNTUtMi4wNiw0LjYxLTQuNjEsNC42MWgtNDkuMjRjLTIuNTUsMC00LjYxLTIuMDYtNC42MS00LjYxVjQuNjFjMC0yLjU1LDIuMDYtNC42MSw0LjYxLTQuNjFoNDkuMjRjMi41NSwwLDQuNjEsMi4wNiw0LjYxLDQuNjF2MTc3LjQ2YzAsMi41NSwyLjA2LDQuNjEsNC42MSw0LjYxaDIwNC40OWMyLjU1LDAsNC42MS0yLjA2LDQuNjEtNC42MVY0LjYxYzAtMi41NSwyLjA2LTQuNjEsNC42MS00LjYxWiIvPgogICAgICAgIDxwYXRoIGQ9Ik0xMTc0LjgsMGg0OS4yNGMyLjU1LDAsNC42MSwyLjA2LDQuNjEsNC42MXY0MzAuNzdjMCwyLjU1LTIuMDYsNC42MS00LjYxLDQuNjFoLTQ5LjI0Yy0yLjU1LDAtNC42MS0yLjA2LTQuNjEtNC42MVY0LjYxYzAtMi41NSwyLjA2LTQuNjEsNC42MS00LjYxWiIvPgogICAgICAgIDxwYXRoIGQ9Ik0xNDM2Ljg4LDQzNi45M0wxMjgzLjAyLDYuMTZjLTEuMDctMywxLjE1LTYuMTYsNC4zNC02LjE2aDUzLjA0YzEuOTYsMCwzLjcxLDEuMjQsNC4zNSwzLjA5bDEyMi4yNiwzNTEuMjNjMS40NCw0LjEzLDcuMjgsNC4xMiw4LjcxLDBMMTU5Ny4xNiwzLjFjLjY0LTEuODYsMi4zOS0zLjEsNC4zNi0zLjFoNTMuNjVjMy4xOSwwLDUuNDIsMy4xNiw0LjM0LDYuMTZsLTE1NC40NSw0MzAuNzdjLS42NiwxLjgzLTIuMzksMy4wNS00LjM0LDMuMDVoLTU5LjVjLTEuOTUsMC0zLjY5LTEuMjItNC4zNC0zLjA2WiIvPgogICAgICAgIDxwYXRoIGQ9Ik0xODc3Ljk0LDExNi45MWMzNC4zNSwwLDYyLjc1LDExLjUzLDg1LjE3LDM0LjU3LDIyLjQxLDIzLjA1LDMzLjYzLDU0LjksMzMuNjMsOTUuNTR2MTg4LjM2YzAsMi41NS0yLjA2LDQuNjEtNC42MSw0LjYxaC03MS44N2MtMi41NSwwLTQuNjEtMi4wNi00LjYxLTQuNjF2LTE3OC4zYzAtMjAuOTUtNS42Ni0zNi45OC0xNi45Ny00OC4wOC0xMS4zMS0xMS4xLTI2LjQtMTYuNjYtNDUuMjYtMTYuNjYtMjAuOTYsMC0zNy43MSw2LjUtNTAuMjgsMTkuNDktMTIuNTcsMTIuOTktMTguODYsMzIuNDgtMTguODYsNTguNDZ2MTY1LjFjMCwyLjU1LTIuMDYsNC42MS00LjYxLDQuNjFoLTcxLjg3Yy0yLjU1LDAtNC42MS0yLjA2LTQuNjEtNC42MVYxMzAuMzJjMC0yLjU1LDIuMDYtNC42MSw0LjYxLTQuNjFoNzEuODdjMi41NSwwLDQuNjEsMi4wNiw0LjYxLDQuNjF2MTcuMWMwLDQuMjUsNS4yNSw2LjIyLDguMDYsMy4wMywxOS43NS0yMi4zNSw0OC4yOC0zMy41NCw4NS42LTMzLjU0WiIvPgogICAgICAgIDxwYXRoIGQ9Ik0yNjk0LjI1LDQzOS45OWgtODIuMzJjLTEuNDksMC0yLjg4LS43Mi0zLjc1LTEuOTNsLTYzLjA3LTg4LjFjLTEuODQtMi41Ny01LjY2LTIuNTctNy41LDBsLTYzLjA3LDg4LjA5Yy0uODcsMS4yMS0yLjI2LDEuOTMtMy43NSwxLjkzaC04Mi4zYy0zLjc1LDAtNS45My00LjI1LTMuNzQtNy4zbDEwOC4wMy0xNTAuNDVjMS4xNS0xLjYsMS4xNS0zLjc3LDAtNS4zN2wtMTAzLjAyLTE0My44N2MtMi4xOC0zLjA1LDAtNy4yOSwzLjc1LTcuMjloODIuMzJjMS40OSwwLDIuODguNzIsMy43NSwxLjkzbDU4LjI3LDgxLjM5YzEuODQsMi41Nyw1LjY1LDIuNTcsNy40OSwwbDU4LjQ1LTgxLjRjLjg3LTEuMjEsMi4yNi0xLjkyLDMuNzQtMS45Mmg4MS42OWMzLjc1LDAsNS45Myw0LjI0LDMuNzUsNy4yOWwtMTAyLjg1LDE0My42NmMtMS4xNSwxLjYtMS4xNSwzLjc2LDAsNS4zN2wxMDcuODgsMTUwLjY3YzIuMTgsMy4wNSwwLDcuMjktMy43NSw3LjI5WiIvPgogICAgICAgIDxwYXRoIGQ9Ik0yOTE4LjYxLDIwMy42NWgtNjEuODFjLTIuNTUsMC00LjYxLDIuMDYtNC42MSw0LjYxdjEyNi4xM2MwLDEwLjksMi43MiwxOC44Niw4LjE3LDIzLjg4LDUuNDQsNS4wMywxMy40MSw3Ljg2LDIzLjg4LDguNDgsOS4zNi41NiwyMC43NS41NCwzNC4xNS0uMDcsMi42Mi0uMTIsNC44MiwxLjk4LDQuODIsNC42djY0LjU2YzAsMi4zNi0xLjc4LDQuMzQtNC4xMyw0LjU5LTUzLjU1LDUuNTctOTEuNDYuMTgtMTEzLjczLTE2LjE2LTIyLjg1LTE2Ljc1LTM0LjI2LTQ2LjcyLTM0LjI2LTg5Ljg4di0xMjYuMTNjMC0yLjU1LTIuMDYtNC42MS00LjYxLTQuNjFoLTQ1LjQ2Yy0yLjU1LDAtNC42MS0yLjA2LTQuNjEtNC42MXYtNjguNzJjMC0yLjU1LDIuMDYtNC42MSw0LjYxLTQuNjFoNDUuNDZjMi41NSwwLDQuNjEtMi4wNiw0LjYxLTQuNjF2LTU1LjQ1YzAtMi4wMywxLjMzLTMuODIsMy4yOC00LjQxbDcxLjg3LTIxLjczYzIuOTYtLjg5LDUuOTQsMS4zMiw1Ljk0LDQuNDF2NzcuMThjMCwyLjU1LDIuMDYsNC42MSw0LjYxLDQuNjFoNjEuODFjMi41NSwwLDQuNjEsMi4wNiw0LjYxLDQuNjF2NjguNzJjMCwyLjU1LTIuMDYsNC42MS00LjYxLDQuNjFaIi8+CiAgICAgIDwvZz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPg==",
@@ -1427,7 +1955,29 @@ const DEFAULT_DATA = {
       "url": "https://myvas.moh.gov.my/checkin/",
       "logo": "data:image/webp;base64,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TaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJkqNox8yeNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNn8K+OJ402iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02ikUsHlr0+ZPGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGriqbRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMadAUtExptExptExptExptExptExptExptExptExptExptExptExptExptExptExptExpq4RRLDHjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJiikG9EucPLXp8yeNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNca2jTg0vtox8yeNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNwsjRacZhEmNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNoLXick84LbNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNxCHdFe7khj5k8abRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMaa4iLcrDgyeNNomNcZ8XMapXksHlr0+ZPGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGlq4XYKUq4bXeh9Vq0O7/FXlCVSkLj+Epw6IlHJLOPSTVXZbc+fE6MfMnjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJYX5lE5Q2jHzJ402iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iYzWfLqK8aZZxfbRj5k8abRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRK28Nx/rHYHQkxptExptExptExptExptExptExptExptExptExptExptExptExptExptExptExprRe052PajPtox8yZKGe97+XDr3eFNVrhMURrXCMF9tGPmTxptExptExptExptExptExptExptExptExptExptExptExprdfDFlcYkxptExpKcB0ZEuEpjm977SagNPmTxptExptExptExptExptExptExptExptExptExptExptExptExmXYzPcbPLXp8yeMQ/+s6PKK1ezt8jzyeFi3+cPLXp8yeNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNLJZRqvdQQARJjTaJiiZUpIbSZHqhThDSP84eWvT5k8abRMabRMabRMabRMabRMabRMabRMabRMabRMabRMTfnDbuanbRj5k8adAUtExrjW0WnGYRJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJjTaJfizKtseNNol+LNA+REPB5a9PmTxptExptExptExptExptExptExptExptExptExptFXFPRTVXZbc+fhCDElnCURj5k8ad+ss/Y1rbnz8IQYksyRLT2bRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabRMabbitExptExptExptExptExptExptExptExptExptExptExptExptExptExptExptExptIn+cPLXp8yeNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomNNomOy9Za9PmTxptExptExptExptExptExptExptExptExptExptExptExptExptExptExptuK0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0TGm0if5w8tenzJ402iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY02iY7HFn1jLnz8IQYks49JNVdltz5+EIMSWcekmqsGrYQXUYtfJLOPSTVXZbc+fhCDElnHpJqrstufPwARcOjhCDElnHpJqrstuer9LqrstufPwhBiSzJI1W6LOPSTVXZbc+fhCDD4jk1mKYA/voex///9pltvpAVTaAAAARn5dqp6bDVNq8iL8lgTW+TSuRG82Ee+d7Kg2DchhDaBJO/BlUMrF7IJ0eSZIu8AGX1P+ycumId6X/Rkl///6fTPY30Hexm6kbXKRlH6HTzQ2X4fyA6Asz5JWJFQgAAH4AAwBnfnACtU9TL+b/wKdVJAAAAqAAGACN/nACtU9Uf9YZOmOtZL8sAAFkAAwCa/nADf84AIqq1UK2qOpnQAAAAJL+cAK1T0kAAAAFL/doHpjcPS/8AAAJEABgYn5v/AqmZqmkAAAAAAAAAAAAFaSgAAAAAAALi0ubAAAAAa1lo2CpJQAAAErZaNgAAAATVpeDQEIAADfAAYAD/qJpX+okkgAAAAPu0vBoCEAAKslATpXK9nrWO7gpuSAggf9RNJAA2wAGACb/nACtU9Nh/doHqnL6ptZkNkCrveeNyCKHVvriR+ENkRcU+8DSftUeo8EwuYQ82IBYAnJSKE0OGjtP1tkFCfEITE/NQSwpxcTWQDNTfvKmLNZKUQD5nmU8I8MJayk1FPXQBQC2ChkwH2mGAqZAb8y1YirfSVtLVrJhfIf6G23oLxnBVQQcuayP/AjGz9tJZ0IcmY/isVY12IQWNBvWdX1+j7EndkkpPHH6zgI4KcZ+7fYwFIEj/FVJj9aiR9Sc/jWjsgIXyfyknZsLAP9/5ILxwZyyY3T+MegA7Wliq0B4ODRqz9bZ3uhYVm2oUE0NgBJAAAu775/JroJLfZoxySKN9lUP8iofizRUY0GP1pox6HauvdJBaiCEmmmTa14G9lTQZF4J5ikxJegXcFitaot0mWKjtSO5JT3f+AnK9X/f1qhDFOCtt/On7RRwDgAAAABXYH+YLnNf5omCc1fB/Tv2a4IP8iBvKMaav+751OqTtXxsUsiCgbZa5w6JP1JP3S7ckbEbDNQYqiVjJ3UijC9cbP0ewcsPq05huDgB+B6TOLLEtxIgLNjJ5Fgl8v2XXDW06Ua7MKfWluiEbZZlyaNTvAIrIN5kgrueGQ7jB+I1pE1UhDobu/iGeAAAACuwP8wXFV30Ze9cMdJDi+Z/e3fg6dTjRTqFGGd8DGndSKgZN02B9c9KhxasCwOv0iPhRibgNVu7O+2avOBu3NrEHNx7X1d8p96MeBThSiVWexPh+SN3fHkcjaRfv1pRRBRSyBzLxSAntfxUv3c+9mwqJvfuOvOVOlH1jzHihVlMYlSQRYd/EM8AAAABBFahRJyxQYcTINtoEtiF9sLZYGYf2eeLmm1fiZg88Q6LuE/Aii6WLdp6WbeRaMX6VxQCTqqa9l6n//b3rhMGvS2WSneH4+xFKqCTYUkzygyBMdmUWvrpshC2aCusIujk6BpKx4lxDTkbAcAp9DKJ8rDhuK4zIlol1K2Dgi6HS+V0Plm4qvVUw8uGFM5N4bxzWu0TOq8L54TUNcJrkPzZAH/toNt4CMEG8Ir3YWYDK111BjvBOuZIsIZmZm7eQ4p7rRCvBbv62SaqR8P8smQLTwZgI2wKmT31p46nTZONAYPqd6U9t1Vw0x+J8jtmw+sbrkUhj9F+VQL3GFoSPXp58lBentBMQ35Rb4yr8QCbSiBO2EjnhFVTUY0vQ4Sk6fmRFZcllHn0+NhCF669JFMVcT/u6j+tUiY+tC4JiSGn54iVgj6jrhkoXSfRTgDgVobO3Pz4Wjx9Ra0ILRsAAAAz3XCQftzy65z/qtGTBOcp3ycGzrqWzho/7jr1A4aTy82QECZaMzD/BO43cjqppZvfrFdwuie6/6uDRI3kWNPyct5OyJ0D1nhOkuKZPHVcwYP5wes1EEq/fqN6APjKALypXxHuaA4X+KnAqNRARMk92P5YzfOptKaeYEZnIn4/lcdISBA5DNnQJ91KDxn+/NjnrNL2tHSOx/r6rKEjzHbKPJ9w2sUrKKUcS5uAMWvHxfvfEDS3LB3iW7Aml0YAAAHtkh1hl4PfmfzlkvwgfPws9TxEOE418v7e+MzzpQ5KVpsvF0OwyTJAAOhiQ8ynp6cvZ3ej9DmDhWhXLLeu6Bfe8K3bIiVKE7g+fl8TExeZwyRNKwiWD1EeBAQtpWa7DmhR52V9YRPWeQgAACwZcZl8NrPcfrIkC+I/w3sdTOUooAwp++KZ6misBWT0+hFf+TdI8t+X3qTPCu0BvczKWpOC7PMnfsDvtLCoAAQ05D6vll4MNuVXoK0THyl4xknbVk5zbxiEEl+VFtaXg0BCAAASX2OCajNJeMLQRAYa/wHwU915ijWAX9uQyl8irKJoETeyMRdyyB88sXD0zAZN0IgoF6r92jQrN8lWPeHXJBxPSHmJzvEwzcs2mHY9/nISGk6/GbSABB2l4NAQgAAHj/BFk60chg8wY73AlQlvIu0rToBEIGomkgAAAAC1qJpJf1T0kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEn/qV3/KnfTuFv0xh4CbLKxFdbwVxOK2MkcEUEdidEHSafV0sxkBNP+klv8qd9O4W/TGHgJqMz1o4KrdMw6euZKseYwBr38fcs7t0P37SafJfiBmpHdQVTU8KsfHvPfneJ5sABCSjvszkeTGAHWzGiH2WYw3H/9YwtOzsJKCeNGCF2cv/6H8L6vWZqJpIAAUFNBSU4AAAA4QklNA+0AAAAAABABLAAAAAEAAgEsAAAAAQACOEJJTQQoAAAAAAAMAAAAAj/wAAAAAAAAOEJJTQRDAAAAAAAOUGJlVwEQAAYAZAAAAAA="
     }
-  ]
+  ],
+  "tutorials": {
+    "actionTask": {
+      "images": [],
+      "pdf": null
+    },
+    "hiv": {
+      "images": [],
+      "pdf": null
+    },
+    "syp": {
+      "images": [],
+      "pdf": null
+    },
+    "hep": {
+      "images": [],
+      "pdf": null
+    },
+    "historical": {
+      "images": [],
+      "pdf": null
+    }
+  }
 };
 
 // ═══════════════════ STATE ═══════════════════
@@ -1463,6 +2013,8 @@ function showPage(id) {
   if (id === 'changelogs') buildChangelogs();
   if (id === 'legacy') buildZones();
   if (id === 'home') buildFAQ(currentLang);
+  if (id === 'tutorials') { buildGuide(); initGuideAnimations(); }
+  if (id === 'login') { applyCustomLogo(); applyCustomLegacyLogo(); syncLoginLogos(); }
   if (id === 'admin') initAdmin();
 }
 
@@ -1514,7 +2066,6 @@ function buildFAQ(lang) {
 function fixFAQColors() {
   // Colour handling now done via CSS — no JS override needed
 }
-
 
 function toggleFAQ(i) {
   const item = document.getElementById('faq-item-' + i);
@@ -1664,7 +2215,7 @@ function adminLogout() {
 function switchAdminTab(tab) {
   document.querySelectorAll('.admin-tab').forEach((t,i) => t.classList.remove('active'));
   document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-  const tabs = ['links','changelogs','zones','faq','logo','partners'];
+  const tabs = ['links','changelogs','zones','faq','logo','partners','tutorials'];
   const idx = tabs.indexOf(tab);
   document.querySelectorAll('.admin-tab')[idx].classList.add('active');
   document.getElementById('admin-panel-' + tab).classList.add('active');
@@ -1680,6 +2231,7 @@ function renderAdminPanels() {
   renderLogoPreview();
   renderLegacyLogoPreview();
   renderFooterLogoPreview();
+  renderTutorialsAdmin();
 }
 
 // LINKS
@@ -1865,6 +2417,7 @@ function removeLogo() {
 }
 
 function applyCustomLogo() {
+  // ── Navbar ──
   const navSvg = document.getElementById('nav-logo-svg');
   if (CMS.logo) {
     const img = document.createElement('img');
@@ -1872,25 +2425,57 @@ function applyCustomLogo() {
     img.style.cssText = 'height:22px;vertical-align:middle';
     img.id = 'nav-logo-custom';
     if (navSvg) navSvg.replaceWith(img);
-    else {
-      const existing = document.getElementById('nav-logo-custom');
-      if (existing) existing.src = CMS.logo;
-    }
+    else { const ex = document.getElementById('nav-logo-custom'); if (ex) ex.src = CMS.logo; }
   } else {
-    const existing = document.getElementById('nav-logo-custom');
-    if (existing) {
-      const svgCode = `<svg class="nb-logo" id="nav-logo-svg" viewBox="0 0 140 36" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C2F0C2"/><stop offset="100%" stop-color="#A7E8A7"/></linearGradient><linearGradient id="b2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8DE0F2"/><stop offset="100%" stop-color="#63C9E3"/></linearGradient><linearGradient id="b3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D89E5"/><stop offset="100%" stop-color="#0059B3"/></linearGradient><linearGradient id="b4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#004D99"/><stop offset="100%" stop-color="#003D80"/></linearGradient><linearGradient id="b5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#004D99"/><stop offset="100%" stop-color="#003366"/></linearGradient></defs><rect x="0" y="4" width="6" height="28" rx="2" fill="url(#b1)"/><rect x="8" y="8" width="6" height="24" rx="2" fill="url(#b2)"/><rect x="16" y="12" width="6" height="20" rx="2" fill="url(#b3)"/><rect x="24" y="16" width="6" height="16" rx="2" fill="url(#b4)"/><rect x="32" y="20" width="6" height="12" rx="2" fill="url(#b5)"/><text x="44" y="27" font-family="Poppins,sans-serif" font-weight="800" font-size="18" fill="#003366">HIVnext</text></svg>`;
-      existing.outerHTML = svgCode;
+    const ex = document.getElementById('nav-logo-custom');
+    if (ex) { const s = document.createElement('span'); s.id = 'nav-logo-svg-placeholder'; ex.replaceWith(s); }
+  }
+  // ── Login page: clone whatever is in the navbar brand area ──
+  syncLoginLogos();
+}
+
+function applyCustomLegacyLogo() {
+  const FALLBACK = `<svg viewBox="0 0 260 44" xmlns="http://www.w3.org/2000/svg" style="height:36px"><rect x="0" y="4" width="7" height="36" rx="2.5" fill="#51545a"/><rect x="10" y="9" width="7" height="31" rx="2.5" fill="#757880"/><rect x="20" y="14" width="7" height="26" rx="2.5" fill="#989ba0"/><rect x="30" y="19" width="7" height="21" rx="2.5" fill="#b8babf"/><rect x="40" y="24" width="7" height="16" rx="2.5" fill="#d7d9dd"/><text x="55" y="34" font-family="Poppins,sans-serif" font-weight="800" font-size="22" fill="#2d2f33">HIVnext</text><text x="168" y="34" font-family="Poppins,sans-serif" font-weight="600" font-size="22" fill="#4a4d52">Legacy</text></svg>`;
+  // Legacy page hero
+  const wrap = document.getElementById('legacy-logo-wrap');
+  if (wrap) wrap.innerHTML = CMS.logoLegacy ? `<img src="${CMS.logoLegacy}" alt="HIVnext Legacy" style="height:44px;object-fit:contain" id="legacy-logo-custom">` : FALLBACK;
+  // Login page legacy button: clone from legacy-logo-wrap
+  syncLoginLogos();
+}
+
+// Clone the real navbar and legacy logos into the login page slots
+function syncLoginLogos() {
+  // Main logo: clone the navbar brand logo element
+  const loginMain = document.getElementById('login-logo-wrap');
+  if (loginMain) {
+    const navCustom = document.getElementById('nav-logo-custom');
+    const navSvg = document.getElementById('nav-logo-svg');
+    const source = navCustom || navSvg;
+    if (source) {
+      const clone = source.cloneNode(true);
+      clone.removeAttribute('id');
+      clone.removeAttribute('class');
+      if (clone.tagName === 'IMG') clone.style.cssText = 'max-height:40px;object-fit:contain';
+      if (clone.tagName === 'svg' || clone.nodeName === 'svg') clone.style.height = '34px';
+      loginMain.innerHTML = '';
+      loginMain.appendChild(clone);
     }
+  }
+  // Legacy logo: use CMS data directly — same image/SVG as legacy-logo-wrap
+  const loginLegacy = document.getElementById('login-legacy-logo-wrap');
+  if (loginLegacy) {
+    const SMALL = `<svg style="height:20px" viewBox="0 0 260 44" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="4" width="7" height="36" rx="2.5" fill="#51545a"/><rect x="10" y="9" width="7" height="31" rx="2.5" fill="#757880"/><rect x="20" y="14" width="7" height="26" rx="2.5" fill="#989ba0"/><rect x="30" y="19" width="7" height="21" rx="2.5" fill="#b8babf"/><rect x="40" y="24" width="7" height="16" rx="2.5" fill="#d7d9dd"/><text x="55" y="34" font-family="Poppins,sans-serif" font-weight="800" font-size="22" fill="#2d2f33">HIVnext</text><text x="168" y="34" font-family="Poppins,sans-serif" font-weight="600" font-size="22" fill="#4a4d52">Legacy</text></svg>`;
+    loginLegacy.innerHTML = CMS.logoLegacy
+      ? `<img src="${CMS.logoLegacy}" alt="HIVnext Legacy" style="max-height:24px;object-fit:contain">`
+      : SMALL;
   }
 }
 
-// ── LEGACY LOGO (Legacy page header) ─────────────────────────────────────────
 function renderLegacyLogoPreview() {
   const preview = document.getElementById('legacy-logo-current-preview');
   if (!preview) return;
   if (CMS.logoLegacy) {
-    preview.innerHTML = `<p style="font-size:12px;color:#666;margin-bottom:8px">Current custom Legacy logo:</p><img src="${CMS.logoLegacy}" class="logo-preview" alt="Legacy logo" style="max-height:44px;background:#28292d;padding:8px;border-radius:6px;border:1px solid #555">`;
+    preview.innerHTML = `<p style="font-size:12px;color:#666;margin-bottom:8px">Current custom Legacy logo:</p><img src="${CMS.logoLegacy}" class="logo-preview" alt="Legacy logo" style="max-height:44px;background:#e8eaed;padding:8px;border-radius:6px;border:1px solid #ccc">`;
   } else {
     preview.innerHTML = `<p style="font-size:13px;color:#666;margin-bottom:8px">Currently using default greyscale SVG bar logo.</p>`;
   }
@@ -1916,24 +2501,6 @@ function removeLegacyLogo() {
   applyCustomLegacyLogo();
   renderLegacyLogoPreview();
   document.getElementById('legacy-logo-upload-feedback').textContent = '↩ Default greyscale SVG logo restored.';
-}
-
-function applyCustomLegacyLogo() {
-  const wrap = document.getElementById('legacy-logo-wrap');
-  if (!wrap) return;
-  if (CMS.logoLegacy) {
-    wrap.innerHTML = `<img src="${CMS.logoLegacy}" alt="HIVnext Legacy" style="height:44px;object-fit:contain" id="legacy-logo-custom">`;
-  } else {
-    wrap.innerHTML = `<svg viewBox="0 0 260 44" xmlns="http://www.w3.org/2000/svg" style="height:36px">
-      <rect x="0"  y="4"  width="7" height="36" rx="2.5" fill="#51545a"/>
-      <rect x="10" y="9"  width="7" height="31" rx="2.5" fill="#757880"/>
-      <rect x="20" y="14" width="7" height="26" rx="2.5" fill="#989ba0"/>
-      <rect x="30" y="19" width="7" height="21" rx="2.5" fill="#b8babf"/>
-      <rect x="40" y="24" width="7" height="16" rx="2.5" fill="#d7d9dd"/>
-      <text x="55" y="34" font-family="Poppins,sans-serif" font-weight="800" font-size="22" fill="#c8cacd">HIVnext</text>
-      <text x="168" y="34" font-family="Poppins,sans-serif" font-weight="600" font-size="22" fill="#888b90">Legacy</text>
-    </svg>`;
-  }
 }
 
 // ── FOOTER LOGO ───────────────────────────────────────────────────────────────
@@ -2034,6 +2601,7 @@ function removePartnerLogo(i) {
 function savePartners() {
   saveCMS();
   buildFooterPartners();
+  buildGuide();
   alert('✅ Partners saved!');
 }
 
@@ -2055,6 +2623,278 @@ function buildFooterPartners() {
         }).join('')}
       </div>`;
   });
+}
+
+// ═══════════════════ TUTORIALS CMS ═══════════════════
+const CMS_GUIDE_TABS = {
+  actionTask: '📋 actionTask',
+  hiv: '🔴 HIV',
+  syp: '🟠 SYP',
+  hep: '🟡 HEP C',
+  historical: '🗂 2024/2025'
+};
+let activeCMSGuideTab = 'actionTask';
+
+function switchCMSGuideTab(tab) {
+  activeCMSGuideTab = tab;
+  Object.keys(CMS_GUIDE_TABS).forEach(t => {
+    const btn = document.getElementById('ctab-' + t);
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+  renderCMSGuideTab(tab);
+}
+
+function renderCMSGuideTab(tab) {
+  const container = document.getElementById('tutorials-cms-content');
+  if (!container) return;
+  if (!CMS.tutorials) CMS.tutorials = {};
+  if (!CMS.tutorials[tab]) CMS.tutorials[tab] = { images: [], pdf: null };
+  const data = CMS.tutorials[tab];
+  const label = CMS_GUIDE_TABS[tab];
+
+  container.innerHTML = `
+    <div class="admin-card">
+      <h3>${label} — Images (Gallery)</h3>
+      <p style="font-size:13px;color:#666;margin-bottom:14px">Upload screenshot images for this tab's workflow steps. They display as a clickable gallery with lightbox. PNG/JPG recommended.</p>
+      <div id="cms-gallery-${tab}" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px"></div>
+      <label class="admin-add-btn" style="cursor:pointer;display:inline-block">
+        📁 Add Images
+        <input type="file" accept="image/*" multiple style="display:none" onchange="uploadGuideImages(event,'${tab}')">
+      </label>
+    </div>
+    <div class="admin-card">
+      <h3>${label} — PDF Guide</h3>
+      <p style="font-size:13px;color:#666;margin-bottom:14px">Upload a PDF guide for this tab. It will render as a scrollable embed inside the training section. Max ~10MB recommended for browser performance.</p>
+      <div id="cms-pdf-preview-${tab}" style="margin-bottom:12px"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <label class="admin-add-btn" style="cursor:pointer;display:inline-block">
+          📄 Upload PDF
+          <input type="file" accept="application/pdf" style="display:none" onchange="uploadGuidePDF(event,'${tab}')">
+        </label>
+        ${data.pdf ? `<button class="entry-del" onclick="removeGuidePDF('${tab}')">✕ Remove PDF</button>` : ''}
+      </div>
+    </div>`;
+
+  // Render existing images
+  renderCMSGallery(tab);
+  // Render PDF preview
+  renderCMSPDFPreview(tab);
+}
+
+function renderCMSGallery(tab) {
+  const el = document.getElementById('cms-gallery-' + tab);
+  if (!el) return;
+  const images = (CMS.tutorials[tab] || {}).images || [];
+  el.innerHTML = '';
+  if (images.length === 0) {
+    el.innerHTML = '<p style="font-size:13px;color:#aaa">No images yet.</p>';
+    return;
+  }
+  images.forEach((src, i) => {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'position:relative;display:inline-block';
+    wrap.innerHTML = `
+      <img src="${src}" style="height:80px;width:130px;object-fit:cover;border-radius:8px;border:1.5px solid #e0e4ea">
+      <button onclick="removeGuideImage('${tab}',${i})" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#c0392b;color:#fff;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;line-height:1">×</button>`;
+    el.appendChild(wrap);
+  });
+}
+
+function renderCMSPDFPreview(tab) {
+  const el = document.getElementById('cms-pdf-preview-' + tab);
+  if (!el) return;
+  const pdf = (CMS.tutorials[tab] || {}).pdf;
+  if (pdf) {
+    el.innerHTML = `<div style="display:flex;align-items:center;gap:10px;background:#f0f4fa;border-radius:8px;padding:10px 14px"><span>📄</span><span style="font-size:13px;font-weight:600;color:var(--royal)">PDF uploaded</span><a href="${pdf}" target="_blank" style="font-size:12px;color:var(--blue);font-weight:700;margin-left:auto">Preview ↗</a></div>`;
+  } else {
+    el.innerHTML = '<p style="font-size:13px;color:#aaa">No PDF uploaded yet.</p>';
+  }
+}
+
+function uploadGuideImages(event, tab) {
+  const files = Array.from(event.target.files);
+  if (!CMS.tutorials) CMS.tutorials = {};
+  if (!CMS.tutorials[tab]) CMS.tutorials[tab] = { images: [], pdf: null };
+  let loaded = 0;
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      CMS.tutorials[tab].images.push(e.target.result);
+      loaded++;
+      if (loaded === files.length) renderCMSGallery(tab);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function removeGuideImage(tab, idx) {
+  CMS.tutorials[tab].images.splice(idx, 1);
+  renderCMSGallery(tab);
+}
+
+function uploadGuidePDF(event, tab) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    if (!CMS.tutorials) CMS.tutorials = {};
+    if (!CMS.tutorials[tab]) CMS.tutorials[tab] = { images: [], pdf: null };
+    CMS.tutorials[tab].pdf = e.target.result;
+    renderCMSGuideTab(tab);
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeGuidePDF(tab) {
+  if (CMS.tutorials && CMS.tutorials[tab]) CMS.tutorials[tab].pdf = null;
+  renderCMSGuideTab(tab);
+}
+
+function saveTutorials() {
+  saveCMS();
+  buildGuide();
+  alert('✅ Tutorial content saved!');
+}
+
+function renderTutorialsAdmin() {
+  switchCMSGuideTab('actionTask');
+}
+
+// ═══════════════════ TRAINING GUIDE ═══════════════════
+const GUIDE_TABS = ['actionTask','hiv','syp','hep','historical'];
+
+let managersGuideOpen = false;
+let guideBuilt = false;
+
+function toggleManagersGuide() { openGuideView(); }
+
+function openGuideView() {
+  if (!guideBuilt) {
+    const inner = document.getElementById('legacy-guide-inner');
+    const src = document.getElementById('legacy-guide');
+    if (inner && src) { inner.innerHTML = src.innerHTML; guideBuilt = true; }
+    buildGuide();
+    initGuideAnimations();
+  }
+  document.getElementById('tut-main').style.display = 'none';
+  const ytBanner = document.getElementById('tut-yt-banner');
+  if (ytBanner) ytBanner.style.display = 'none';
+  const view = document.getElementById('tut-guide-view');
+  view.classList.add('active');
+  managersGuideOpen = true;
+  window.scrollTo(0, 0);
+}
+
+function closeGuideView() {
+  document.getElementById('tut-main').style.display = '';
+  const ytBanner = document.getElementById('tut-yt-banner');
+  if (ytBanner) ytBanner.style.display = '';
+  document.getElementById('tut-guide-view').classList.remove('active');
+  managersGuideOpen = false;
+  window.scrollTo(0, 0);
+}
+
+function openManagersGuide() { openGuideView(); }
+function closeManagersGuide() { closeGuideView(); }
+
+function switchGuideTab(tab) {
+  // Work in both drawer and standalone context
+  const scope = document.getElementById('legacy-guide-inner') || document;
+  scope.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + tab + "'"));
+  });
+  scope.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  // Find by tab id — may be in drawer
+  const el = scope.querySelector('#guide-tab-' + tab) || document.getElementById('guide-tab-' + tab);
+  if (el) el.classList.add('active');
+}
+
+function buildGuide() {
+  const tut = CMS.tutorials || {};
+  GUIDE_TABS.forEach(tab => {
+    const data = tut[tab] || { images: [], pdf: null };
+    // Build image gallery
+    const gallery = document.getElementById('gallery-' + tab);
+    if (gallery) {
+      gallery.innerHTML = '';
+      if (data.images && data.images.length > 0) {
+        data.images.forEach((src, i) => {
+          const img = document.createElement('img');
+          img.src = src;
+          img.className = 'guide-gallery-img';
+          img.alt = 'Step ' + (i+1);
+          img.onclick = () => openLightbox(src);
+          gallery.appendChild(img);
+        });
+      } else {
+        // Show placeholder
+        const ph = document.createElement('div');
+        ph.className = 'guide-img-placeholder';
+        ph.onclick = () => showPage('admin');
+        ph.title = 'Upload images via CMS → Tutorials';
+        ph.innerHTML = '<span style="font-size:28px">🖼️</span><span>No images yet — upload via CMS</span>';
+        gallery.appendChild(ph);
+      }
+    }
+    // Show/hide PDF slot
+    const pdfSlot = document.getElementById('pdf-' + tab);
+    const pdfPH = document.getElementById('pdf-' + tab + '-placeholder');
+    const pdfFrame = document.getElementById('pdf-' + tab + '-frame');
+    const pdfLink = document.getElementById('pdf-' + tab + '-link');
+    if (data.pdf) {
+      if (pdfSlot) pdfSlot.style.display = 'block';
+      if (pdfPH) pdfPH.style.display = 'none';
+      if (pdfFrame) pdfFrame.src = data.pdf;
+      if (pdfLink) {
+        pdfLink.href = data.pdf;
+        // Add fullscreen button next to open link
+        const fsBtn = pdfLink.parentElement.querySelector('.pdf-fullscreen-btn');
+        if (!fsBtn) {
+          const btn = document.createElement('button');
+          btn.className = 'pdf-fullscreen-btn';
+          btn.innerHTML = '⛶ Full Screen';
+          btn.onclick = () => {
+            const frame = pdfFrame;
+            if (frame.requestFullscreen) frame.requestFullscreen();
+            else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+            else window.open(data.pdf, '_blank');
+          };
+          pdfLink.parentElement.insertBefore(btn, pdfLink);
+        }
+      }
+    } else {
+      if (pdfSlot) pdfSlot.style.display = 'none';
+      if (pdfPH) pdfPH.style.display = 'block';
+    }
+  });
+}
+
+function openLightbox(src) {
+  const lb = document.getElementById('guide-lightbox');
+  const img = document.getElementById('guide-lightbox-img');
+  if (!lb || !img) return;
+  img.src = src;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('guide-lightbox');
+  if (lb) lb.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Scroll-triggered animations for benefit cards and arch section
+function initGuideAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.benefit-card, #arch-section').forEach(el => observer.observe(el));
 }
 
 // ═══════════════════ EXPORT / IMPORT ═══════════════════
@@ -2094,6 +2934,38 @@ function handleHash() {
   if (pages.includes(hash)) showPage(hash);
 }
 
+// ═══════════════════ SCROLL ANIMATIONS ═══════════════════
+function initScrollAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  // Changelog timeline entries — stagger by index
+  document.querySelectorAll('.tl-entry').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 60}ms`;
+    observer.observe(el);
+  });
+
+  // Section titles and labels
+  document.querySelectorAll('.section-title, .section-label').forEach(el => {
+    observer.observe(el);
+  });
+}
+
+// Run on every page show (re-observe new elements)
+const _origShowPage = showPage;
+// Patch showPage to trigger animations after page switch
+function showPageWithAnim(id) {
+  _origShowPage(id);
+  // Small delay lets the page render before observing
+  setTimeout(initScrollAnimations, 60);
+}
+
 // ═══════════════════ INIT ═══════════════════
 document.addEventListener('DOMContentLoaded', () => {
   injectFooters();
@@ -2101,12 +2973,14 @@ document.addEventListener('DOMContentLoaded', () => {
   buildFAQ('en');
   buildChangelogs();
   buildZones();
-  if (CMS.logo) applyCustomLogo();
-  if (CMS.logoLegacy) applyCustomLegacyLogo();
+  applyCustomLogo();
+  applyCustomLegacyLogo();
   if (CMS.logoFooter) applyCustomFooterLogo();
   buildFooterPartners();
   handleHash();
+  setTimeout(initScrollAnimations, 100);
   window.addEventListener('hashchange', handleHash);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeManagersGuide(); closeLightbox(); } });
   // Secret admin access via URL hash
   const nb = document.querySelector('.nb-brand');
   let clicks = 0, timer;
