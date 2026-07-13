@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HIVnext — Health Information Vault</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20viewBox%3D%220%200%20675.55%20439.98%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22fv1%22%20x1%3D%22597.64%22%20y1%3D%220%22%20x2%3D%22597.64%22%20y2%3D%22439.98%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23c2f0c2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23a7e8a7%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fv2%22%20x1%3D%22467.71%22%20y1%3D%2291.66%22%20x2%3D%22467.71%22%20y2%3D%22439.98%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2395e088%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2376d166%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fv3%22%20x1%3D%22337.78%22%20y1%3D%22183.32%22%20x2%3D%22337.78%22%20y2%3D%22439.98%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%238de0f2%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2363c9e3%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fv4%22%20x1%3D%22207.84%22%20y1%3D%22274.99%22%20x2%3D%22207.84%22%20y2%3D%22439.98%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232d89e5%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230059b3%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22fv5%22%20x1%3D%2277.91%22%20y1%3D%22366.65%22%20x2%3D%2277.91%22%20y2%3D%22439.98%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23004d99%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23036%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20fill%3D%22url%28%23fv1%29%22%20x%3D%22519.73%22%20width%3D%22155.83%22%20height%3D%22439.98%22%20rx%3D%2210%22%20ry%3D%2210%22%2F%3E%3Crect%20fill%3D%22url%28%23fv2%29%22%20x%3D%22389.79%22%20y%3D%2291.66%22%20width%3D%22155.83%22%20height%3D%22348.32%22%20rx%3D%2210%22%20ry%3D%2210%22%2F%3E%3Crect%20fill%3D%22url%28%23fv3%29%22%20x%3D%22259.86%22%20y%3D%22183.32%22%20width%3D%22155.83%22%20height%3D%22256.65%22%20rx%3D%2210%22%20ry%3D%2210%22%2F%3E%3Crect%20fill%3D%22url%28%23fv4%29%22%20x%3D%22129.93%22%20y%3D%22274.99%22%20width%3D%22155.83%22%20height%3D%22164.99%22%20rx%3D%2210%22%20ry%3D%2210%22%2F%3E%3Crect%20fill%3D%22url%28%23fv5%29%22%20y%3D%22366.65%22%20width%3D%22155.83%22%20height%3D%2273.33%22%20rx%3D%2210%22%20ry%3D%2210%22%2F%3E%3C%2Fsvg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -178,7 +179,14 @@ a{text-decoration:none;color:inherit}
 .ngo-dash-btn:hover{background:var(--royal)}
 @media(max-width:1000px){}
 @media(max-width:700px){}
-@media(max-width:460px){.ngo-actions{flex-direction:column}.ngo-db-btn,.ngo-dash-btn{width:100%;justify-content:center}}
+@media(max-width:500px){
+  .zone-ngo-grid{grid-template-columns:1fr}
+  .ngo-card{flex-direction:row;align-items:center;padding:14px 16px;gap:14px}
+  .ngo-card-header{flex:1;min-width:0}
+  .ngo-name{white-space:normal;font-size:14px}
+  .ngo-actions{flex-direction:column;gap:6px;flex-shrink:0;min-width:104px}
+  .ngo-db-btn,.ngo-dash-btn{width:100%;font-size:12px;padding:8px 10px;white-space:nowrap;justify-content:center}
+}
 #legacy-hero{background:linear-gradient(135deg,#e8eaed,#f0f2f5,#dfe3e8);color:#1a1b1e;padding:100px 24px 60px;text-align:center;width:100%;overflow-x:hidden}
 .legacy-warning{display:flex;align-items:flex-start;gap:12px;background:#fff8e6;border:2px solid #e6a817;border-radius:12px;padding:16px 20px;margin:28px auto;max-width:680px;font-size:14px;color:#5a3a00;line-height:1.6}
 
@@ -192,6 +200,7 @@ a{text-decoration:none;color:inherit}
 
 /* Benefit cards */
 .benefit-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px}
+@media(max-width:700px){.benefit-cards{grid-template-columns:1fr;gap:12px}}
 .benefit-card{background:#fff;border:1.5px solid #e0e4ea;border-radius:14px;padding:22px;transition:transform .25s,box-shadow .25s,border-color .25s;opacity:0;transform:translateY(24px)}
 .benefit-card.visible{opacity:1;transform:translateY(0)}
 .benefit-card:hover{transform:translateY(-4px);box-shadow:0 8px 28px rgba(0,51,102,.09);border-color:var(--sky)}
@@ -287,10 +296,11 @@ a{text-decoration:none;color:inherit}
 /* Managers Guide Modal */
 /* ── GUIDE INLINE VIEW ── */
 #tut-main{transition:opacity .25s}
-#tut-guide-view{display:none;animation:pageIn .32s cubic-bezier(0.22,1,0.36,1) both;padding:0 24px}
+#tut-guide-view{display:none;animation:pageIn .32s cubic-bezier(0.22,1,0.36,1) both;padding:0 24px;overflow-x:hidden}
 #tut-guide-view.active{display:block}
-#legacy-guide-inner{max-width:1100px;margin:0 auto}
-.guide-back-btn{display:inline-flex;align-items:center;gap:8px;background:var(--off);border:1.5px solid #dde9ff;color:var(--royal);padding:10px 20px;border-radius:24px;font-family:"Nunito",sans-serif;font-weight:700;font-size:14px;cursor:pointer;margin:24px 24px 0;transition:all .2s}
+#legacy-guide-inner{max-width:1100px;margin:0 auto;overflow-x:hidden}
+@media(max-width:700px){#tut-guide-view{padding:0 16px}}
+.guide-back-btn{display:inline-flex;align-items:center;gap:8px;background:var(--off);border:1.5px solid #dde9ff;color:var(--royal);padding:10px 20px;border-radius:24px;font-family:"Nunito",sans-serif;font-weight:700;font-size:14px;cursor:pointer;margin:20px 24px 16px;transition:all .2s;position:relative;z-index:1}
 .guide-back-btn:hover{background:#fff;border-color:var(--blue);color:var(--blue)}
 .wip-badge{display:inline-block;margin-top:12px;background:#f3eaff;color:#6e36c9;border:1px solid #d4b8f5;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px}
 .progress-list{max-width:680px;margin:0 auto 60px;padding:0 24px;display:flex;flex-direction:column;gap:14px}
@@ -364,10 +374,10 @@ a{text-decoration:none;color:inherit}
 .form-group textarea{min-height:80px;resize:vertical}
 .admin-add-btn{background:var(--green);color:var(--royal);border:none;padding:9px 20px;border-radius:20px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background .2s}
 .admin-add-btn:hover{background:var(--greenl)}
-.admin-save-btn{background:var(--blue);color:#fff;border:none;padding:10px 26px;border-radius:20px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s;margin-top:12px}
+.admin-save-btn{background:var(--blue);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background .2s;margin-top:12px}
 .admin-save-btn:hover{background:var(--royal)}
-.admin-export-btn{background:#111;color:#fff;border:none;padding:9px 20px;border-radius:20px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-left:10px}
-.admin-import-btn{background:#fff;color:#111;border:1.5px solid #111;padding:9px 20px;border-radius:20px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-left:10px}
+.admin-export-btn{background:var(--blue);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer}
+.admin-import-btn{background:#fff;color:#111;border:1.5px solid #c0c0c0;padding:10px 20px;border-radius:10px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer}
 .entry-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f0f2f6}
 .entry-row:last-child{border-bottom:none}
 .entry-info{flex:1;font-size:13.5px}
@@ -460,6 +470,7 @@ a{text-decoration:none;color:inherit}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
+
 
 /* ── UTILITY ── */
 .t-bm{display:none}
@@ -955,13 +966,41 @@ a{text-decoration:none;color:inherit}
   </section>
 
   <div style="padding:30px 24px 0;max-width:1100px;margin:0 auto;text-align:center;width:100%;box-sizing:border-box">
+    <p class="section-label">Program Dashboard</p>
+    <h2 class="section-title">All-NGO Performance Dashboard</h2>
+    <p style="color:#666;font-size:14px;margin-top:-8px;margin-bottom:20px">A consolidated view of program performance across all implementing partners. Access is restricted to authorised users.</p>
+    <div id="dashboard-gate" style="max-width:420px;margin:0 auto 32px">
+      <div id="dashboard-locked" style="background:#fff;border:1.5px solid #dde9ff;border-radius:16px;padding:28px;text-align:center">
+        <div style="font-size:32px;margin-bottom:12px">🔒</div>
+        <p style="font-family:'Poppins',sans-serif;font-weight:700;color:var(--royal);margin-bottom:6px;font-size:15px">Protected Dashboard</p>
+        <p style="font-size:13px;color:#666;margin-bottom:16px">Enter the access password shared by your admin to view the program-wide dashboard.</p>
+        <div style="display:flex;gap:8px">
+          <input type="password" id="dashboard-pw-input" placeholder="Enter password" style="flex:1;border:1.5px solid #dde9ff;border-radius:10px;padding:10px 14px;font-family:'Nunito',sans-serif;font-size:14px;outline:none" onkeydown="if(event.key==='Enter')unlockDashboard()">
+          <button onclick="unlockDashboard()" style="background:var(--blue);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--royal)'" onmouseout="this.style.background='var(--blue)'">Unlock</button>
+        </div>
+        <p id="dashboard-pw-err" style="color:#c0392b;font-size:12px;margin-top:8px;display:none">Incorrect password. Please try again.</p>
+      </div>
+      <div id="dashboard-embed" style="display:none;border-radius:16px;overflow:hidden;border:1.5px solid #dde9ff;margin-top:0">
+        <div style="background:#f8faff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid #dde9ff">
+          <span style="font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:var(--royal)">📊 All-NGO Program Dashboard</span>
+          <div style="display:flex;gap:8px">
+            <a href="https://datastudio.google.com/reporting/60531b84-1575-4c13-98df-94e9530f781a/page/p_0swkvw39qd" target="_blank" style="font-size:12px;color:var(--blue);font-weight:700;text-decoration:none">Open in Data Studio ↗</a>
+            <button onclick="lockDashboard()" style="background:none;border:none;color:#888;font-size:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700">🔒 Lock</button>
+          </div>
+        </div>
+        <iframe src="https://datastudio.google.com/embed/reporting/60531b84-1575-4c13-98df-94e9530f781a/page/p_0swkvw39qd" style="width:100%;height:600px;border:none" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div style="height:1.5px;background:linear-gradient(to right,transparent,#e0e4ea,transparent);margin-bottom:28px"></div>
     <p class="section-label">Implementing Partners</p>
     <h2 class="section-title">Access by NGO</h2>
-    <p style="color:#666;font-size:14px;margin-top:-8px;margin-bottom:8px">Each NGO has a <strong>Database</strong> (PM/PC access) and a <strong>Dashboard</strong> (PM/PC, CHWs, CHNs &amp; AOs).</p>
+    <p style="color:#666;font-size:14px;margin-top:-8px;margin-bottom:16px">Each NGO has a <strong>Database</strong> (PM/PC access) and a <strong>Dashboard</strong> (PM/PC, CHWs, CHNs &amp; AOs).</p>
+
   </div>
   <div id="ngo-container"></div>
   <div id="legacy-footer"></div>
 </div>
+
 
 <!-- ═══════════════════ PAGE 4: TUTORIALS ═══════════════════ -->
 <div class="page" id="page-tutorials">
@@ -976,8 +1015,8 @@ a{text-decoration:none;color:inherit}
     <div class="tut-card tut-card-clickable" id="managers-guide-card" onclick="openGuideView()">
       <div class="tut-card-trigger">
         <div>
-          <div style="font-size:28px;margin-bottom:12px">🩺</div>
-          <h3>Managers Guide</h3>
+          <div style="font-size:28px;margin-bottom:12px">🗄️</div>
+          <h3>Legacy Database</h3>
           <p>HIVnext Legacy workflow — Link to Care updates, data architecture, and dashboard training.</p>
           <span class="live-badge">✅ Available Now</span>
         </div>
@@ -986,10 +1025,10 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
     </div>
-    <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">🧭</div><h3>Navigators Guide</h3><p>CBC module, client follow-up, and care navigation workflows.</p><span class="wip-badge">🚧 Work in Progress</span></div>
-    <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">⚙️</div><h3>Admin Guide</h3><p>User management, RBAC configuration, and site-level settings.</p><span class="wip-badge">🚧 Work in Progress</span></div>
-    <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">📈</div><h3>Analytics Guide</h3><p>Reading dashboards, interpreting indicators, and exporting TRP data.</p><span class="wip-badge">🚧 Work in Progress</span></div>
-    <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">🔄</div><h3>Migration from Legacy</h3><p>How to transition from Google Sheets to HIVnext for your NGO.</p><span class="wip-badge">🚧 Work in Progress</span></div>
+    <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">📊</div><h3>Data Studio Dashboard</h3><p>A guide to reading and interpreting the redesigned Data Studio dashboards — indicator tracking, program comparisons, and performance insights.</p><span class="wip-badge">🚧 Work in Progress</span></div>
+    <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">🧹</div><h3>Legacy Data Cleaning</h3><p>Step-by-step guidance on identifying and correcting data inconsistencies in the Legacy system — duplicate entries, missing fields, and format standardisation across NGO databases.</p><span class="wip-badge">🚧 Work in Progress</span></div>
+    <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">🪪</div><h3>MyVAS &amp; Digital ID</h3><p>A guide to using MyVAS and the Digital ID system for client registration and identity verification within the HIVnext ecosystem.</p><span class="wip-badge">🚧 Work in Progress</span></div>
+    <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">🏥</div><h3>The New DHSKP</h3><p>A complete walkthrough of the main DHSKP module inside the upcoming HIVnext cloud system — data entry, client management, and reporting workflows.</p><span class="wip-badge">🚧 Work in Progress</span></div>
     <div class="tut-card"><div style="font-size:28px;margin-bottom:12px">🛠️</div><h3>Troubleshooting</h3><p>Common issues, error codes, and how to contact support.</p><span class="wip-badge">🚧 Work in Progress</span></div>
   </div>
   <div style="padding:0 24px 20px;text-align:center">
@@ -1030,7 +1069,7 @@ a{text-decoration:none;color:inherit}
         <span style="font-family:'Poppins',sans-serif;font-weight:800;font-size:1.1rem;color:#fff">HIVnext on YouTube</span>
         <span style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.65);font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;font-family:'Poppins',sans-serif;letter-spacing:.5px;white-space:nowrap">COMING SOON</span>
       </div>
-      <p style="font-size:14px;color:rgba(255,255,255,.72);line-height:1.65;margin:0 auto 22px;max-width:480px">Step-by-step video tutorials are in production. Subscribe now so you don't miss them — guides for CHWs, Navigators, Admins, and Program Managers.</p>
+      <p style="font-size:14px;color:rgba(255,255,255,.72);line-height:1.65;margin:0 auto 22px;max-width:480px">Step-by-step video tutorials are in production. Subscribe now so you don't miss them — guides for the Admins, PM/PC, CHWs, CHNs, Digital Team, Peer Educators and MOH.</p>
       <a href="https://www.youtube.com/@HIVnext" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;background:#FF0000;color:#fff;padding:12px 28px;border-radius:28px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;text-decoration:none;transition:background .2s;box-shadow:0 4px 16px rgba(255,0,0,.35)" onmouseover="this.style.background='#cc0000'" onmouseout="this.style.background='#FF0000'">
         <svg viewBox="0 0 24 24" style="width:16px;height:16px;flex-shrink:0" fill="#fff"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
         Subscribe to HIVnext
@@ -1067,12 +1106,12 @@ a{text-decoration:none;color:inherit}
       <div class="benefit-card" style="transition-delay:0ms">
         <div class="benefit-icon" style="background:rgba(118,209,102,.12)">🗄️</div>
         <h4>Consolidated Databases</h4>
-        <p>All related programme sites merged into a single NGO entity database — no more juggling multiple spreadsheets across different sites.</p>
+        <p>All related program sites merged into a single NGO entity database — no more juggling multiple spreadsheets across different sites.</p>
       </div>
       <div class="benefit-card" style="transition-delay:80ms">
         <div class="benefit-icon" style="background:rgba(99,201,227,.12)">📊</div>
         <h4>Historical Data Included</h4>
-        <p>2024 and 2025 data is embedded in dailyData, enabling dashboards to display real-time comparisons against current programme targets.</p>
+        <p>2024 and 2025 data is embedded in dailyData, enabling dashboards to display real-time comparisons against current program targets.</p>
       </div>
       <div class="benefit-card" style="transition-delay:160ms">
         <div class="benefit-icon" style="background:rgba(45,137,229,.12)">⚡</div>
@@ -1087,7 +1126,7 @@ a{text-decoration:none;color:inherit}
       <div class="benefit-card" style="transition-delay:320ms">
         <div class="benefit-icon" style="background:rgba(244,166,35,.12)">🎨</div>
         <h4>Redesigned Dashboard</h4>
-        <p>Completely overhauled Looker Studio interface — streamlined, intuitive, and optimised for quick Link to Care evaluations at a glance.</p>
+        <p>Completely overhauled Data Studio interface — streamlined, intuitive, and optimised for quick Link to Care evaluations at a glance.</p>
       </div>
       <div class="benefit-card" style="transition-delay:400ms">
         <div class="benefit-icon" style="background:rgba(0,89,179,.1)">♾️</div>
@@ -1108,7 +1147,7 @@ a{text-decoration:none;color:inherit}
         <div class="arch-arrow">→</div>
         <div class="arch-node">📦 Static Snapshot DB</div>
         <div class="arch-arrow">→</div>
-        <div class="arch-node highlight">📊 Looker Studio Dashboard</div>
+        <div class="arch-node highlight">📊 Data Studio Dashboard</div>
         <div class="arch-arrow">→</div>
         <div class="arch-node">👤 PM / PC View</div>
       </div>
@@ -1269,7 +1308,7 @@ a{text-decoration:none;color:inherit}
         <div class="tab-notice" style="background:#fff3ef;border-color:#ffb89a;color:#7a3010">
           ⚠️ <span><strong>Important:</strong> The 2024 and 2025 tabs contain historical data for clients who still need to be linked to care. Update statuses <strong>directly</strong> in the columns marked in <span class="coral">Coral Pink</span> — these are the only editable fields in the historical tabs.</span>
         </div>
-        <div class="tab-step"><div class="tab-step-num">1</div><div class="tab-step-body"><strong>Navigate to the 2024 or 2025 tab</strong><p>These tabs hold historical records pre-loaded from previous programme cycles. Each row represents a client who was reactive but whose Link to Care status was not completed at the time.</p></div></div>
+        <div class="tab-step"><div class="tab-step-num">1</div><div class="tab-step-body"><strong>Navigate to the 2024 or 2025 tab</strong><p>These tabs hold historical records pre-loaded from previous program cycles. Each row represents a client who was reactive but whose Link to Care status was not completed at the time.</p></div></div>
         <div class="tab-step"><div class="tab-step-num">2</div><div class="tab-step-body"><strong>Identify the <span class="coral">Coral Pink</span> columns</strong><p>Look for columns highlighted in <span class="coral">Coral Pink (#ff7f50)</span> — these are the only fields you should edit. All other columns are locked historical records and must not be modified.</p></div></div>
         <div class="tab-step"><div class="tab-step-num">3</div><div class="tab-step-body"><strong>Update the Link to Care status directly</strong><p>Unlike the current-year tabs, historical data does not use a dropdown. Type or select the status directly in the <span class="coral">Coral Pink</span> column for each client row you are updating.</p></div></div>
         <div class="tab-step"><div class="tab-step-num">4</div><div class="tab-step-body"><strong>Historical data syncs at next shift</strong><p>Updated historical records are included in the next ETL pipeline run. The dashboard's year-on-year comparison view will reflect your changes at the next Morning or Afternoon shift.</p></div></div>
@@ -1364,7 +1403,7 @@ a{text-decoration:none;color:inherit}
   <path d="M2923.02,460l-30.96,49.32v34.68h-4.44v-34.8l-30.84-49.2h4.92l28.18,45.18,28.22-45.18h4.92Z"/>
 </svg>
     </button>
-    <p class="login-notice">Need access? Contact <a href="mailto:bino@myaids.org.my">bino@myaids.org.my</a> to request credentials.</p>
+    <p class="login-notice">Need access? Contact <a href="mailto:hivnext@myaids.org.my">hivnext@myaids.org.my</a> to request credentials.</p>
   </div>
 </div>
 
@@ -1391,7 +1430,7 @@ a{text-decoration:none;color:inherit}
     <p style="opacity:.8;max-width:500px;margin:0 auto;font-size:15px">For program enquiries, system access, or to report issues.</p>
   </section>
   <div class="contact-grid" id="contact-cards">
-    <div class="contact-card"><div class="cc-icon">✉️</div><h3>General Enquiries</h3><p>Reach us for questions about the program or platform.</p><a href="mailto:bino@myaids.org.my">bino@myaids.org.my</a></div>
+    <div class="contact-card"><div class="cc-icon">✉️</div><h3>General Enquiries</h3><p>Reach us for questions about the program or platform.</p><a href="mailto:hivnext@myaids.org.my">hivnext@myaids.org.my</a></div>
     <div class="contact-card"><div class="cc-icon">🌐</div><h3>Organisation Website</h3><p>Visit the Malaysian AIDS Foundation main website.</p><a href="https://myaids.org.my" target="_blank">myaids.org.my</a></div>
     <div class="contact-card">
       <div class="cc-icon">
@@ -1406,7 +1445,7 @@ a{text-decoration:none;color:inherit}
       <p>Access the HIVnext Legacy portal — databases and dashboards for all implementing NGOs.</p>
       <a href="#page-legacy" onclick="event.preventDefault();showPageWithAnim('legacy')" style="cursor:pointer">Open Legacy Portal</a>
     </div>
-    <div class="contact-card"><div class="cc-icon">🐛</div><h3>Report a Bug</h3><p>Spotted something wrong? Let us know.</p><a href="mailto:bino@myaids.org.my?subject=HIVnext%20Bug%20Report">bino@myaids.org.my</a></div>
+    <div class="contact-card"><div class="cc-icon">🐛</div><h3>Report a Bug</h3><p>Spotted something wrong? Let us know via WhatsApp and we'll look into it.</p><a href="https://wa.me/60175499070" target="_blank" rel="noopener noreferrer">Message us on WhatsApp ↗</a></div>
   </div>
   <div id="contact-footer"></div>
 </div>
@@ -1435,9 +1474,9 @@ a{text-decoration:none;color:inherit}
           <p style="opacity:.7;font-size:14px">Edit site content, links, and data</p>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="admin-save-btn" onclick="exportCMS()">⬇ Export JSON</button>
+          <button class="admin-export-btn" onclick="exportCMS()">⬇ Export JSON</button>
           <label class="admin-import-btn" style="cursor:pointer">⬆ Import JSON<input type="file" accept=".json" style="display:none" onchange="importCMS(event)"></label>
-          <button class="admin-save-btn" style="background:#c0392b" onclick="adminLogout()">Log Out</button>
+          <button class="admin-export-btn" style="background:#c0392b" onclick="adminLogout()">Log Out</button>
         </div>
       </div>
     </div>
@@ -1599,10 +1638,10 @@ a{text-decoration:none;color:inherit}
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
-        <a href="mailto:bino@myaids.org.my">bino@myaids.org.my</a>
+        <a href="mailto:hivnext@myaids.org.my">hivnext@myaids.org.my</a>
         <a href="https://myaids.org.my" target="_blank">myaids.org.my</a>
         <a onclick="showPageWithAnim('contact')">Contact Page</a>
-        <a href="mailto:bino@myaids.org.my?subject=HIVnext%20Bug%20Report">Report a Bug</a>
+        <a href="https://wa.me/60175499070" target="_blank" rel="noopener noreferrer">Report a Bug</a>
       </div>
     </div>
     <!-- Partner / Sister Site Logos -->
@@ -1662,7 +1701,7 @@ const DEFAULT_DATA = {
     {
       "key": "contact_email",
       "label": "Primary Contact Email",
-      "url": "bino@myaids.org.my"
+      "url": "hivnext@myaids.org.my"
     }
   ],
   "changelogs": [
@@ -1734,12 +1773,12 @@ const DEFAULT_DATA = {
     {
       "date": "2026-06-06",
       "title": "Database replication completed for all NGOs",
-      "desc": "Individual Google Sheets databases successfully replicated and configured for all 21 implementing partner NGOs, with access permissions set for respective Program Managers and Programme Coordinators."
+      "desc": "Individual Google Sheets databases successfully replicated and configured for all 21 implementing partner NGOs, with access permissions set for respective Program Managers and Program Coordinators."
     },
     {
       "date": "2026-06-15",
       "title": "Historical data migration: 2024 and 2025 transferred",
-      "desc": "NGO databases from the 2024 and 2025 programme cycles fully migrated into the re-engineered Legacy system, preserving historical records for continuity and reference."
+      "desc": "NGO databases from the 2024 and 2025 program cycles fully migrated into the re-engineered Legacy system, preserving historical records for continuity and reference."
     },
     {
       "date": "2026-06-17",
@@ -1754,7 +1793,7 @@ const DEFAULT_DATA = {
     {
       "date": "2026-06-21",
       "title": "Dashboard replication and sharing completed for all NGOs",
-      "desc": "Redesigned dashboards successfully replicated and shared with all 21 implementing partner NGOs. Access granted to Program Managers, Programme Coordinators, CHWs, CHNs, and Admin Officers."
+      "desc": "Redesigned dashboards successfully replicated and shared with all 21 implementing partner NGOs. Access granted to Program Managers, Program Coordinators, CHWs, CHNs, and Admin Officers."
     },
     {
       "date": "2026-06-23",
@@ -1914,9 +1953,9 @@ const DEFAULT_DATA = {
     },
     {
       "qEn": "How do I access HIVnext?",
-      "aEn": "The main HIVnext platform is currently in beta. For access, contact bino@myaids.org.my. Legacy data is available through the HIVnext Legacy portal.",
+      "aEn": "The main HIVnext platform is currently in beta. For access, contact hivnext@myaids.org.my. Legacy data is available through the HIVnext Legacy portal.",
       "qBm": "Bagaimana saya mengakses HIVnext?",
-      "aBm": "Platform HIVnext utama kini dalam beta. Untuk akses, hubungi bino@myaids.org.my. Data warisan tersedia melalui portal Warisan HIVnext."
+      "aBm": "Platform HIVnext utama kini dalam beta. Untuk akses, hubungi hivnext@myaids.org.my. Data warisan tersedia melalui portal Warisan HIVnext."
     },
     {
       "qEn": "What is the difference between HIVnext and Legacy?",
@@ -2011,7 +2050,7 @@ function showPage(id) {
   window.scrollTo(0, 0);
   applyLang(currentLang);
   if (id === 'changelogs') buildChangelogs();
-  if (id === 'legacy') buildZones();
+  if (id === 'legacy') { buildZones(); checkDashboardSession(); }
   if (id === 'home') buildFAQ(currentLang);
   if (id === 'tutorials') { buildGuide(); initGuideAnimations(); }
   if (id === 'login') { applyCustomLogo(); applyCustomLegacyLogo(); syncLoginLogos(); }
@@ -2300,7 +2339,7 @@ function saveChangelogs() {
 // NGOs admin editor
 function renderZonesEditor() {
   const container = document.getElementById('zones-editor');
-  container.innerHTML = '<div class="admin-card"><h3>NGO List — Database & Dashboard Links</h3><p style="font-size:13px;color:#666;margin-bottom:16px">Edit NGO names, database (Google Sheets) and dashboard (Looker Studio) URLs below.</p><div id="ngo-edit-list"></div><button class="admin-add-btn" style="margin-top:12px" onclick="addNGO()">+ Add NGO</button></div>';
+  container.innerHTML = '<div class="admin-card"><h3>NGO List — Database & Dashboard Links</h3><p style="font-size:13px;color:#666;margin-bottom:16px">Edit NGO names, database (Google Sheets) and dashboard (Data Studio) URLs below.</p><div id="ngo-edit-list"></div><button class="admin-add-btn" style="margin-top:12px" onclick="addNGO()">+ Add NGO</button></div>';
   renderNGOList();
 }
 
@@ -2317,7 +2356,7 @@ function renderNGOList() {
         <div class="form-group"><label>NGO Name</label><input type="text" value="${ngo.name}" onchange="CMS.ngos[${i}].name=this.value"></div>
       </div>
       <div class="form-group" style="margin-bottom:6px"><label>Database URL (Google Sheets)</label><input type="text" value="${ngo.db}" onchange="CMS.ngos[${i}].db=this.value"></div>
-      <div class="form-group" style="margin-bottom:6px"><label>Dashboard URL (Looker Studio)</label><input type="text" value="${ngo.dash}" onchange="CMS.ngos[${i}].dash=this.value"></div>
+      <div class="form-group" style="margin-bottom:6px"><label>Dashboard URL (Data Studio)</label><input type="text" value="${ngo.dash}" onchange="CMS.ngos[${i}].dash=this.value"></div>
       <button class="entry-del" onclick="deleteNGO(${i})">Remove</button>`;
     list.appendChild(row);
   });
@@ -2895,6 +2934,41 @@ function initGuideAnimations() {
     });
   }, { threshold: 0.1 });
   document.querySelectorAll('.benefit-card, #arch-section').forEach(el => observer.observe(el));
+}
+
+// ═══════════════════ DASHBOARD PASSWORD ═══════════════════
+const DASHBOARD_PW = 'hivnext@2030';
+
+function unlockDashboard() {
+  const input = document.getElementById('dashboard-pw-input');
+  const err = document.getElementById('dashboard-pw-err');
+  if (!input) return;
+  if (input.value === DASHBOARD_PW) {
+    document.getElementById('dashboard-locked').style.display = 'none';
+    document.getElementById('dashboard-embed').style.display = 'block';
+    err.style.display = 'none';
+    // Remember for session
+    sessionStorage.setItem('dash_unlocked', '1');
+  } else {
+    err.style.display = 'block';
+    input.value = '';
+    input.focus();
+  }
+}
+
+function lockDashboard() {
+  document.getElementById('dashboard-locked').style.display = 'block';
+  document.getElementById('dashboard-embed').style.display = 'none';
+  sessionStorage.removeItem('dash_unlocked');
+}
+
+function checkDashboardSession() {
+  if (sessionStorage.getItem('dash_unlocked') === '1') {
+    const locked = document.getElementById('dashboard-locked');
+    const embed  = document.getElementById('dashboard-embed');
+    if (locked) locked.style.display = 'none';
+    if (embed)  embed.style.display  = 'block';
+  }
 }
 
 // ═══════════════════ EXPORT / IMPORT ═══════════════════
