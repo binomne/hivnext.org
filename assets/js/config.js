@@ -16,7 +16,7 @@ const SITE = {
   youtube: "https://youtube.com/@HIVnext",
   // Legacy > Data Correction Request. Paste the URL from Google Forms:
   // Send -> "<>" (Embed) -> copy the src="..." value.
-  correctionFormEmbed: "https://forms.gle/wGQ2BJzuuaeJHn6H6",
+  correctionFormEmbed: "https://docs.google.com/forms/d/e/1FAIpQLSfjrQ3c2ZHeapTUYLeEQ2hlgZjHpwpGSAKh6t9VmE2zE9m36w/viewform?embedded=true",
   correctionFormOpen:  "https://forms.gle/wGQ2BJzuuaeJHn6H6"
 };
 
