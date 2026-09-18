@@ -415,3 +415,32 @@ dialog{background:#fff;color:var(--royal)}
 /* carousel: show the full page, no cropping */
 .carousel__track img{aspect-ratio:16/9;object-fit:contain;image-rendering:auto}
 .hero-actions{display:flex!important;flex-wrap:wrap;justify-content:center!important;gap:10px;max-width:none!important;margin:28px auto 0!important}
+
+/* ---------- mobile overflow fixes ---------- */
+html,body{overflow-x:hidden;overflow-x:clip;max-width:100%}  /* last line of defence: nothing can widen the page (hidden = fallback for older engines) */
+.chips{position:relative}
+.chips input{position:absolute;width:1px;height:1px;left:0;top:0;margin:0;opacity:0;pointer-events:none} /* hidden radios were 100% wide */
+dialog{max-width:min(520px,calc(100vw - 32px));box-sizing:border-box}
+.dlg{position:relative}
+.gate__row{flex-wrap:wrap}
+.gate__row input{min-width:180px}
+@media (max-width:700px){
+  .grid[style*="repeat(4"]{grid-template-columns:1fr 1fr!important}   /* About stats */
+  .kp-pills{grid-template-columns:1fr 1fr}
+  .roadmap{margin-left:0}
+  .cols-table{display:block;overflow-x:auto}
+  .step ol,.step ul{padding-left:18px}
+  .fold > summary{gap:14px}
+  .section{padding:64px 0}
+  .contact-boxes{gap:12px}
+  .bug__card{padding:22px}
+  .comp-grid svg{max-width:420px;margin:0 auto}
+}
+@media (max-width:480px){
+  .grid[style*="repeat(4"]{grid-template-columns:1fr 1fr!important}
+  .intro-cards{margin-top:-24px}
+  h1{font-size:2rem}
+  .page-hero,.about-hero{padding:64px 0 52px}
+}
+@media (max-width:700px){.ngo{flex:1 1 calc(50% - 7px);min-width:0}}
+@media (max-width:440px){.ngo{flex:1 1 100%}.ngo__actions a{padding:11px 6px}}

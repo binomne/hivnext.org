@@ -6,7 +6,7 @@
    Panels never change size — only compositor-friendly properties animate.
    ===================================================================== */
 
-.launch{position:relative;min-height:100svh;background:var(--deep);color:#F7FFFE;display:flex;flex-direction:column;overflow:hidden}
+.launch{position:relative;min-height:100svh;background:var(--deep);color:#F7FFFE;display:flex;flex-direction:column;overflow:hidden;overflow-x:clip;width:100%;max-width:100vw;contain:paint}
 .launch::before{content:"";position:absolute;inset:0;pointer-events:none;
   background-image:linear-gradient(rgba(99,201,227,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(99,201,227,.05) 1px,transparent 1px);
   background-size:48px 48px;mask-image:radial-gradient(70% 60% at 50% 55%,#000 30%,transparent 100%);-webkit-mask-image:radial-gradient(70% 60% at 50% 55%,#000 30%,transparent 100%)}
@@ -21,7 +21,7 @@
 .launch__intro p{color:rgba(247,255,254,.55);margin:0 auto;font-size:1rem;font-family:var(--font-display)}
 
 /* ---- Stage & panels ---- */
-.stage{flex:1;display:flex;align-items:stretch;margin:0;overflow:hidden;padding:0;position:relative;min-height:380px}
+.stage{flex:1;display:flex;align-items:stretch;margin:0;overflow:hidden;overflow-x:clip;padding:0;position:relative;min-height:380px;width:100%;contain:paint}
 /* full-bleed: with the skew about the centre each outer edge swings by ±tan(9°)/2 ≈ .08 × height, so the row overhangs by that much and is clipped at the viewport edge */
 .panels{--skew:-9deg;--over:calc(var(--stage-h,600px) * 0.082);display:flex;gap:6px;flex:1;align-self:stretch;margin:0 calc(var(--over) * -1 - 3px)}
 .panel:first-child .tile:nth-child(1) .tile__in{padding-left:calc(var(--over) * .5 + 16px)}
