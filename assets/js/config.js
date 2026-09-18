@@ -14,9 +14,11 @@ const SITE = {
   org: "Malaysian AIDS Foundation / Malaysian AIDS Council",
   orgUrl: "https://myaids.org.my",
   youtube: "https://youtube.com/@HIVnext",
-  // Legacy > Data Correction Request. Paste the URL from Google Forms:
-  // Send -> "<>" (Embed) -> copy the src="..." value.
-  correctionFormEmbed: "https://docs.google.com/forms/d/e/1FAIpQLSfjrQ3c2ZHeapTUYLeEQ2hlgZjHpwpGSAKh6t9VmE2zE9m36w/viewform?embedded=true",
+  // Legacy > Data Correction Request.
+  // correctionFormEmbed: leave "" to show a card with an "Open the form" button (required while the
+  //   form has a File Upload question — Google will not embed those). To embed instead, remove the
+  //   upload question and paste the Send -> <> address ending in ?embedded=true.
+  correctionFormEmbed: "",
   correctionFormOpen:  "https://forms.gle/wGQ2BJzuuaeJHn6H6"
 };
 

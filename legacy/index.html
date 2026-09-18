@@ -186,9 +186,15 @@
       <h2>Data correction request</h2>
       <p>Spotted a wrong IC number, a duplicated client or a result in the wrong month? Send the correction here. Requests go straight to the M&amp;E team's response sheet and are actioned in the order received.</p>
     </div>
-    <div class="embed">
+    <div class="embed" id="correction-embed">
       <div class="embed__bar"><p>If the form doesn't load, sign in to Google in this browser or open it in a new tab.</p><a class="btn btn--ghost btn--sm" data-site="correctionFormOpen" href="#" target="_blank" rel="noopener">Open form in a new tab</a></div>
       <iframe data-site="correctionFormEmbed" title="Data correction request form" loading="lazy" referrerpolicy="no-referrer-when-downgrade">Loading…</iframe>
+    </div>
+    <div class="gate" id="correction-card" hidden>
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--blue);margin:0 auto 10px"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13h6M9 17h6"/></svg>
+      <h3 style="margin:0 0 6px">Submit a correction</h3>
+      <p style="margin:0 auto;color:var(--ink-2)">The form opens in a new tab and lets you attach a screenshot of the sheet. You'll be asked to sign in to Google so the attachment can be saved. It takes about two minutes.</p>
+      <p style="margin:20px 0 0"><a class="btn btn--primary" data-site="correctionFormOpen" href="#" target="_blank" rel="noopener">Open the data correction form</a></p>
     </div>
   </div>
 </section>

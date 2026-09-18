@@ -17,6 +17,11 @@
 
   /* ---- fill href/text from config wherever data-link / data-site is used ---- */
   $$("[data-link]").forEach(a => { const k = a.dataset.link; if (LINKS[k]) a.href = LINKS[k]; });
+  /* Data correction: iframe when an embed URL is configured, otherwise a card with a button
+     (Google Forms with a File Upload question cannot be embedded). */
+  const ce = $("#correction-embed"), cc = $("#correction-card");
+  if (ce && cc) { const hasEmbed = /^https?:/.test(SITE.correctionFormEmbed || ""); ce.hidden = !hasEmbed; cc.hidden = hasEmbed; if (!hasEmbed) $("iframe", ce).remove(); }
+
   $$("[data-site]").forEach(el => {
     const k = el.dataset.site; if (!SITE[k]) return;
     if (el.tagName === "A") { el.href = k === "email" ? "mailto:" + SITE[k] : SITE[k]; if (!el.textContent.trim()) el.textContent = SITE[k]; }
