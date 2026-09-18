@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyVAS — check in, user guide & admin guide | HIVnext</title>
+<meta name="description" content="MyVAS, the Malaysia Virtualhealth Assistant System: check in to enter daily data, plus step-by-step user and admin guides in English.">
+<meta name="theme-color" content="#020B1C">
+<link rel="icon" href="/assets/logos/hivnext-emblem.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/logos/wordmark-dark.svg" alt="HIVnext" width="123" height="26"><span class="brand__tag">MyVAS guides</span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/about/" >About</a></li>
+      <li><a href="/legacy/" >Legacy</a></li>
+      <li><a href="/myvas/" aria-current="page">MyVAS</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="myvas-launch">
+  <div class="wrap myvas-launch__intro">
+    <span class="kicker">HIV Community Health Module</span>
+    <h1>Malaysia Virtualhealth Assistant System</h1>
+  </div>
+  <div class="mstage">
+    <div class="trio" id="trio">
+      <a class="route route--admin" href="#admin-guide">
+        <span class="route__bg"></span>
+        <span class="route__in">
+          <span class="route__who">Program Managers, Coordinators &amp; admins</span>
+          <span class="route__title">Admin guide</span>
+          <span class="route__desc">Manage users in your facility, add or remove staff, request new facilities and other updates.</span>
+          <span class="route__cta">Read the admin guide</span>
+        </span>
+      </a>
+      <a class="route route--login" href="https://myvas.moh.gov.my/checkin/" target="_blank" rel="noopener" data-link="myvasLogin">
+        <span class="route__bg"></span>
+        <span class="route__in">
+          <img class="route__logo" src="/assets/logos/myvas-light.svg" alt="MyVAS">
+          <span class="route__who">Community Health Workers</span>
+          <span class="route__title">Check in to MyVAS</span>
+          <span class="route__desc">myvas.moh.gov.my/checkin — enter today's outreach data.</span>
+          <span class="route__cta route__cta--strong">Open MyVAS <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></span>
+        </span>
+      </a>
+      <a class="route route--user" href="#user-guide">
+        <span class="route__bg"></span>
+        <span class="route__in">
+          <span class="route__who">All users</span>
+          <span class="route__title">User guide</span>
+          <span class="route__desc">First login, password and phone verification, your profile, MyDigital ID and switching facility.</span>
+          <span class="route__cta">Read the user guide</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ USER GUIDE ============ -->
+<section class="section" id="user-guide">
+  <div class="wrap">
+    <details class="fold" data-anim>
+      <summary><div><h2>User guide: MyVAS — HIV Community Health Module</h2><p>For every MyVAS user under an MAF/MAC facility. Follow steps 1–4 the first time you receive an invitation; steps 5–6 whenever you need them.</p></div><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+      <div class="fold__body">
+    <div class="guide">
+      <ol class="guide__toc">
+        <li><a href="#u-email">1 · Check your email from MySejahtera</a></li>
+        <li><a href="#u-login">2 · First-time login</a></li>
+        <li><a href="#u-password">3 · Set a new password &amp; verify your phone</a></li>
+        <li><a href="#u-profile">4 · Complete your profile</a></li>
+        <li><a href="#u-digitalid">5 · MyDigital ID</a></li>
+        <li><a href="#u-facility">6 · Switch facility</a></li>
+      </ol>
+      <div>
+        <article class="step" id="u-email">
+          <h3><span class="step__n">1</span>Check your email from MySejahtera</h3>
+          <p>Your Facility Admin invites you as a <span class="ui">Volunteer</span> under your NGO facility. MySejahtera then sends an email titled <em>MyVAS Invitation for [your name]</em> from <code>donotreply@mysejahtera.org</code>.</p>
+          <ol>
+            <li>Open the email. It contains your <strong>username</strong> (your email) and a <strong>temporary password</strong>.</li>
+            <li>Use the temporary password for your first login only.</li>
+            <li>Do not forward or share the email with anyone.</li>
+          </ol>
+          <div class="note note--warn"><p><strong>No email?</strong> Check your <strong>Spam</strong> folder first — the invitation often lands there. If it's still missing, ask your PM/PC to check that the right email was entered.</p></div>
+        </article>
+
+        <article class="step" id="u-login">
+          <h3><span class="step__n">2</span>First-time login</h3>
+          <ol>
+            <li>Go to <a href="https://myvas.moh.gov.my/checkin/" target="_blank" rel="noopener">myvas.moh.gov.my/checkin</a>.</li>
+            <li>Under <em>Or</em>, enter the <strong>email address that was registered</strong> for you.</li>
+            <li>Tick the <span class="ui">I'm not a robot</span> reCAPTCHA box.</li>
+            <li>Click <span class="ui">Login</span>, then enter the temporary password from the invitation email.</li>
+          </ol>
+        </article>
+
+        <article class="step" id="u-password">
+          <h3><span class="step__n">3</span>Set a new password &amp; verify your phone</h3>
+          <p>You will be asked to create a new password straight away. It must have at least 8 characters, 1 uppercase letter, 1 number and 1 special character.</p>
+          <ol>
+            <li>Type your new password twice and click <span class="ui">Save my new password</span>. Write it down somewhere safe.</li>
+            <li>Enter your <strong>mobile number</strong> and click <span class="ui">Submit</span> to receive an OTP.</li>
+            <li>Enter the OTP. You'll see <em>Your mobile number has been verified successfully</em>. Continue to your profile (step 4).</li>
+          </ol>
+          <div class="note"><p>MyVAS asks you to change your password every few months. A pattern that's easy to keep track of: <code>YourName@NGO-1</code>, then <code>YourName@NGO-2</code> next time — only the number at the end changes. Note it down each time you change it.</p></div>
+        </article>
+
+        <article class="step" id="u-profile">
+          <h3><span class="step__n">4</span>Complete your profile</h3>
+          <ol>
+            <li>On the Home page, click the <span class="ui">Profile settings</span> icon at the top right, then <span class="ui">My Profile</span>.</li>
+            <li>Upload a <strong>passport-style photo</strong>.</li>
+            <li>Fill in the details <strong>exactly as they appear on your IC</strong>:</li>
+          </ol>
+          <table class="cols-table">
+            <thead><tr><th>Field</th><th>What to enter</th></tr></thead>
+            <tbody>
+              <tr><td>Full Name / IC No.</td><td>As per your identity card (or passport)</td></tr>
+              <tr><td>Gender / Date of Birth</td><td>Sex at birth and your date of birth</td></tr>
+              <tr><td>Sector</td><td><code>Private</code></td></tr>
+              <tr><td>Professional ID Type / Number</td><td><code>N/A</code> / <code>NA</code></td></tr>
+              <tr><td>Hajj Pilgrim registration</td><td>Leave blank</td></tr>
+              <tr><td>Specialisation / Sub-specialisation</td><td><code>N/A</code></td></tr>
+              <tr><td>Non-governmental Organisations (NGOs)</td><td>Choose your NGO, then enter your position and number, e.g. <code>CHW1</code>, <code>PKK9</code>, <code>CHN3</code>, <code>PE2</code></td></tr>
+            </tbody>
+          </table>
+          <p style="margin:0">Click <span class="ui">Save Changes</span>.</p>
+        </article>
+
+        <article class="step" id="u-digitalid">
+          <h3><span class="step__n">5</span>Access MyVAS with MyDigital ID</h3>
+          <p>MyDigital ID is becoming the single sign-on method for MyVAS (announced effective 1 August 2026). Make sure you have registered a MyDigital ID certificate, and check that the IC number in your MyVAS profile is correct — if it isn't, contact the MyVAS Helpdesk at <a href="mailto:myvashelpdesk@mysejahtera.org">myvashelpdesk@mysejahtera.org</a>.</p>
+
+          <h4 style="margin-top:24px">Register for MyDigital ID</h4>
+          <p>Guide: <a href="https://www.digital-id.my/" target="_blank" rel="noopener">digital-id.my</a>. The app is on the Apple App Store, Google Play Store and Huawei AppGallery.</p>
+          <ol>
+            <li>Open the app, choose your language and tap <span class="ui">Daftar Online</span> (Register online).</li>
+            <li>Tap <span class="ui">Allow access</span>. If prompted, go to <em>Settings › Permissions</em> and allow the camera and notifications — choose <em>Allow only while using the app</em>.</li>
+            <li>Read the privacy notice, tick <em>Ya, saya bersetuju</em> and continue.</li>
+            <li>Enter your <strong>personal email</strong>, then the OTP sent to it.</li>
+            <li>Enter your full name and IC number.</li>
+            <li>Complete e-KYC: photograph the front and back of your IC (no glare, the real card — not a photo on a screen or a laminated copy), then take a selfie facing straight ahead, eyes open, no glasses glare, not holding the card.</li>
+          </ol>
+
+          <h4 style="margin-top:24px">Log in on a computer</h4>
+          <ol>
+            <li>Go to <a href="https://myvas.moh.gov.my/checkin/" target="_blank" rel="noopener">myvas.moh.gov.my/checkin</a> and click <span class="ui">Login With MyDigital ID</span>.</li>
+            <li>A QR code appears (valid for about 2 minutes). Scan it with the MyDigital ID app.</li>
+            <li>Approve the request in the app.</li>
+          </ol>
+
+          <h4 style="margin-top:24px">Log in on a phone that has the MyDigital ID app</h4>
+          <ol>
+            <li>Open MyVAS and tap <span class="ui">Log masuk ke MyVAS</span>.</li>
+            <li>Tap <span class="ui">Login With MyDigital ID</span>.</li>
+            <li>In the MyDigital ID app, tap <span class="ui">YA</span> to start verification.</li>
+            <li>Tap <span class="ui">Yes</span> to send your Digital ID to sso.digital-id.my.</li>
+            <li>Confirm with biometrics or your MyDigital ID password.</li>
+          </ol>
+        </article>
+
+        <article class="step" id="u-facility">
+          <h3><span class="step__n">6</span>Switch facility</h3>
+          <p>Applies if your NGO has, or you work at, <strong>two or more sites</strong>.</p>
+          <ol>
+            <li>On the Home page, click the <span class="ui">Profile settings</span> icon at the top right.</li>
+            <li>Click <span class="ui">View more facilities</span> (<em>Lihat Lebih Banyak Fasiliti</em>).</li>
+            <li>Choose the facility you are working at today. Your daily entries are recorded under the selected facility.</li>
+          </ol>
+        </article>
+      </div>
+    </div>
+    <div class="carousel" data-pages="4-13" data-title="Guide pages from the Panduan Pengguna (user section)"></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ ADMIN GUIDE ============ -->
+<section class="section" id="admin-guide" style="padding-top:0">
+  <div class="wrap">
+    <details class="fold" data-anim>
+      <summary><div><h2>Admin guide: adding users, facilities &amp; other updates</h2><p>For Program Managers, Program Coordinators and the admins responsible for a facility (role: <strong>Health Facility Admin</strong>).</p></div><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+      <div class="fold__body">
+    <div class="guide">
+      <ol class="guide__toc">
+        <li><a href="#a-manage">1 · Open Manage Users</a></li>
+        <li><a href="#a-keep">2 · Keep the facility's users current</a></li>
+        <li><a href="#a-add">3 · Add a user</a></li>
+        <li><a href="#a-remove">4 · Remove a user</a></li>
+        <li><a href="#a-facility">5 · Add a facility</a></li>
+        <li><a href="#a-other">6 · Other updates</a></li>
+      </ol>
+      <div>
+        <article class="step" id="a-manage">
+          <h3><span class="step__n">1</span>Open Manage Users</h3>
+          <ol>
+            <li>On the Home page, click the <span class="ui">Profile settings</span> icon at the top right.</li>
+            <li>Choose <span class="ui">Manage Users</span>. You'll see every user in the facility with their designation, role and status.</li>
+          </ol>
+        </article>
+
+        <article class="step" id="a-keep">
+          <h3><span class="step__n">2</span>Keep the facility's users current</h3>
+          <p>Whenever staff join or leave, the PM/PC must make sure CHW accounts are managed in the facility they are assigned to.</p>
+          <ol>
+            <li>A PM/PC who changes position or leaves must first <strong>appoint a new Health Facility Admin</strong>.</li>
+            <li>New CHWs are registered by the PM/PC as <strong>Volunteer</strong>.</li>
+            <li>CHWs who leave <strong>must be removed</strong> from the facility (step 4).</li>
+          </ol>
+        </article>
+
+        <article class="step" id="a-add">
+          <h3><span class="step__n">3</span>Add a user</h3>
+          <p>In Manage Users, click <span class="ui">Add User</span>. A pop-up asks for the person's <strong>IC number</strong>. What happens next depends on whether they've used MyVAS before.</p>
+
+          <h4 style="margin-top:24px">A new user (no MyVAS record)</h4>
+          <ol>
+            <li>Search the IC. MyVAS shows <em>User does not exist</em>. Click <span class="ui">Invite New User</span>.</li>
+            <li>Enter their <strong>Name</strong>, <strong>IC number</strong> and <strong>email</strong>.</li>
+            <li>Designation: <span class="ui">Volunteer</span>. Role: <span class="ui">Volunteer</span>.</li>
+            <li>Tick the <strong>HIV Community Health</strong> program checkbox.</li>
+            <li>Click <span class="ui">Send Invite</span>. They receive the MySejahtera invitation email (user guide, step 1).</li>
+          </ol>
+
+          <h4 style="margin-top:24px">An existing user (already in MyVAS, same or another facility)</h4>
+          <ol>
+            <li>Search the IC. MyVAS shows <em>User exists</em> with their details. Click <span class="ui">Assign Role</span>.</li>
+            <li>Designation and Role: <span class="ui">Volunteer</span>, and tick the <strong>HIV Community Health</strong> checkbox.</li>
+            <li>Click <span class="ui">Confirm</span>.</li>
+          </ol>
+          <table class="cols-table">
+            <thead><tr><th>Who</th><th>Role to choose</th></tr></thead>
+            <tbody>
+              <tr><td>CHW working at one facility</td><td><code>Volunteer</code></td></tr>
+              <tr><td>CHW working at two or more facilities</td><td><code>Health Facility User with Volunteer</code></td></tr>
+              <tr><td>PM / PC</td><td><code>Health Facility Admin</code></td></tr>
+            </tbody>
+          </table>
+        </article>
+
+        <article class="step" id="a-remove">
+          <h3><span class="step__n">4</span>Remove a user</h3>
+          <p>Remove any staff member who is no longer active so they lose access to the facility.</p>
+          <ol>
+            <li>In Manage Users, click the <strong>name</strong> of the person to remove.</li>
+            <li>At the top right of their profile, click <span class="ui">Remove User</span>.</li>
+            <li>Check the details and click <span class="ui">Confirm</span>.</li>
+          </ol>
+        </article>
+
+        <article class="step" id="a-facility">
+          <h3><span class="step__n">5</span>Add a facility</h3>
+          <p>A new facility or site must be requested from MyVAS through M&amp;E at MAF/MAC.</p>
+          <ol>
+            <li>Complete the <strong>MyVAS Facility Administrator Application Form</strong> (<em>Borang Permohonan Pegawai Tadbir Fasiliti MyVAS</em>, form KKM/MYSJ/01-2022) issued by the Digital Health Division (BKD), Ministry of Health.</li>
+            <li>In section A, fill in the applicant's details. In section B, tick <em>Pentadbir Fasiliti</em> and the facility type — for NGOs this is under <em>Swasta / Badan Berkanun</em>, program <em>HIV Outreach</em> — then the facility's full name and address.</li>
+            <li>Send the completed form to your Regional Coordinator (RC), who will forward it to M&amp;E.</li>
+          </ol>
+        </article>
+
+        <article class="step" id="a-other">
+          <h3><span class="step__n">6</span>Other updates</h3>
+          <p>Use the same form (section C, <em>Kemaskini Akaun Sedia Ada</em>) when a staff member needs to:</p>
+          <ul>
+            <li>change the email address on their account,</li>
+            <li>be added as an administrator of another facility,</li>
+            <li>have a module added, or</li>
+            <li>change a facility's name.</li>
+          </ul>
+          <p style="margin:0">Email and facility-name changes need agreement from the RC and M&amp;E MAF/MAC first. Contact your Regional Coordinator for help.</p>
+        </article>
+      </div>
+    </div>
+    <div class="carousel" data-pages="15-21" data-title="Guide pages from the Panduan Pengguna (admin section)"></div>
+      </div>
+    </details>
+  </div>
+</section>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-brand"><img src="/assets/logos/wordmark-light.svg" alt="HIVnext"><span>Health Information Vault</span></div>
+    <ul class="footer-links"><li><a href="/">Home</a></li><li><a href="/about/">About</a></li><li><a href="/legacy/">Legacy</a></li><li><a href="/myvas/">MyVAS</a></li><li><a data-site="email" href="#">Contact</a></li></ul>
+    <p class="copyright"></p>
+  </div>
+</footer>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>

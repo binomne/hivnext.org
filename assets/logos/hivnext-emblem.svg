@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 675.55 439.98">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient-4);
+      }
+
+      .cls-3 {
+        fill: url(#linear-gradient-3);
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient-5);
+      }
+
+      .cls-5 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="597.64" y1="0" x2="597.64" y2="439.98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c2f0c2"/>
+      <stop offset="1" stop-color="#a7e8a7"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="467.71" y1="91.66" x2="467.71" y2="439.98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#95e088"/>
+      <stop offset="1" stop-color="#76d166"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="337.78" y1="183.32" x2="337.78" y2="439.98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8de0f2"/>
+      <stop offset="1" stop-color="#63c9e3"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-4" x1="207.84" y1="274.99" x2="207.84" y2="439.98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2d89e5"/>
+      <stop offset="1" stop-color="#0059b3"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-5" x1="77.91" y1="366.65" x2="77.91" y2="439.98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#004d99"/>
+      <stop offset="1" stop-color="#036"/>
+    </linearGradient>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <rect class="cls-5" x="519.73" width="155.83" height="439.98" rx="10" ry="10"/>
+      <rect class="cls-1" x="389.79" y="91.66" width="155.83" height="348.32" rx="10" ry="10"/>
+      <rect class="cls-3" x="259.86" y="183.32" width="155.83" height="256.65" rx="10" ry="10"/>
+      <rect class="cls-2" x="129.93" y="274.99" width="155.83" height="164.99" rx="10" ry="10"/>
+      <rect class="cls-4" y="366.65" width="155.83" height="73.33" rx="10" ry="10"/>
+    </g>
+  </g>
+</svg>

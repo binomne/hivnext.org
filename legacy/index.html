@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HIVnext Legacy — databases, dashboards & Link to Care guide</title>
+<meta name="description" content="Archive of 2024–2026 DHSKP and TestNow data: every NGO database and dashboard, the All-NGO dashboard, the Link to Care guide, and the data correction request form.">
+<meta name="theme-color" content="#020B1C">
+<link rel="icon" href="/assets/logos/hivnext-emblem.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+
+</head>
+<body>
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/logos/wordmark-dark.svg" alt="HIVnext" width="123" height="26"><span class="brand__tag">Archive system</span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/about/" >About</a></li>
+      <li><a href="/legacy/" aria-current="page">Legacy</a></li>
+      <li><a href="/myvas/" >MyVAS</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-hero page-hero--legacy">
+  <div class="wrap">
+    <span class="kicker">Archive system · 2024 – 2026</span>
+    <h1>HIVnext Legacy</h1>
+    <p class="lede">Historical DHSKP and TestNow data, consolidated and accessible through this archive. Legacy is the bridge between three years of Google Workspace records and the new cloud database.</p>
+    <p style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn btn--light" href="#access">Databases &amp; dashboards</a>
+      <a class="btn btn--ghost" style="color:#fff;border-color:rgba(255,255,255,.6)" href="#guide">Link to Care guide</a>
+      <a class="btn btn--ghost" style="color:#fff;border-color:rgba(255,255,255,.6)" href="#correction">Data correction request</a>
+    </p>
+  </div>
+</section>
+
+<!-- ============ Access by NGO ============ -->
+<section class="section" id="access">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Access by NGO</h2>
+      <p>Each implementing partner has a <strong>Database</strong> (Google Sheets — Program Managers, Program Coordinators and authorised admins) and a <strong>Dashboard</strong> (Data Studio — every registered user under that NGO). Links open in a new tab; sign in with the Google account that was granted access.</p>
+    </div>
+    <div id="ngo-regions"></div>
+    <div class="note" style="max-width:720px;margin:28px auto 0"><p><strong>Can't open a sheet or dashboard?</strong> You are probably signed in to a different Google account. See step 1 of the guide below, or <a href="/#contact">report it</a> with your NGO and email address.</p></div>
+  </div>
+</section>
+
+<!-- ============ All-NGO dashboard (password) ============ -->
+<section class="section section--tight" id="dashboard" style="background:#fff;border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Program dashboard</span>
+      <h2>All-NGO Performance Dashboard</h2>
+      <p>A consolidated view of program performance across all implementing partners. Access is restricted to authorised users.</p>
+    </div>
+    <div class="gate" id="dash-gate">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--blue);margin:0 auto 10px"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <h3 style="margin:0 0 6px">Protected dashboard</h3>
+      <p style="margin:0 auto;color:var(--ink-2)">Enter the access password shared by your admin to view the program-wide dashboard.</p>
+      <div class="gate__row"><input type="password" id="dash-pw" placeholder="Access password" autocomplete="off"><button class="btn btn--primary" type="button" id="dash-go">Unlock</button></div>
+      <p class="gate__err" id="dash-err"></p>
+    </div>
+    <div class="dash-embed" id="dash-embed" hidden>
+      <div class="embed__bar" style="border:0;padding:0 0 12px;justify-content:center"><a class="btn btn--ghost btn--sm" href="#" target="_blank" rel="noopener">Open in Data Studio</a></div>
+      <iframe title="All-NGO Performance Dashboard" loading="lazy" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Guide ============ -->
+<section class="section" id="guide">
+  <div class="wrap">
+    <details class="fold" data-anim>
+      <summary><div><h2>Admin &amp; user guide: updating Link to Care data</h2><p>For M&amp;E at Malaysian AIDS, Program Managers / Coordinators and authorised admins. Each tab in the database serves a specific purpose — follow the steps in order the first time, then use the side menu to jump straight to the tab you're working in.</p></div><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+      <div class="fold__body">
+    <div class="guide">
+      <ol class="guide__toc">
+        <li><a href="#g-account">1 · Check your Google profile</a></li>
+        <li><a href="#g-portal">2 · Open the Legacy portal</a></li>
+        <li><a href="#g-structure">3 · How the database is organised</a></li>
+        <li><a href="#g-actiontask">4 · Tab: actionTask</a></li>
+        <li><a href="#g-linktocare">5 · Tabs: HIV, SYP &amp; HEPC</a></li>
+        <li><a href="#g-myhcc">6 · MyHCC verification</a></li>
+        <li><a href="#g-historical">7 · Tabs: 2024 &amp; 2025</a></li>
+      </ol>
+
+      <div>
+        <article class="step" id="g-account">
+          <h3><span class="step__n">1</span>Check your Google profile</h3>
+          <ol>
+            <li>Go to <a href="https://google.com" target="_blank" rel="noopener">google.com</a> and click your <span class="ui">profile picture</span> in the top-right corner.</li>
+            <li>Make sure the profile shown is the account that was given access to hivnext.org. Usually this is the same email you use in MyVAS.</li>
+            <li>If it isn't, switch to the correct account before opening any database or dashboard.</li>
+          </ol>
+          <div class="note"><p>Some facilities manage their data with two emails. The Legacy system can only be shared with <strong>Google</strong> accounts, so a facility whose MyVAS email is not a Google account will have a separate Google email for Legacy.</p></div>
+        </article>
+
+        <article class="step" id="g-portal">
+          <h3><span class="step__n">2</span>Open the Legacy portal</h3>
+          <ol>
+            <li>From <a href="/">hivnext.org</a>, choose the <span class="ui">Legacy</span> panel (or the Legacy link in the header on any page).</li>
+            <li>In <a href="#access">Access by NGO</a>, find your NGO under its region.</li>
+            <li>Click <span class="ui">Database</span> for the complete data of your NGO — this is restricted to PM/PC and admins who have been granted access.</li>
+            <li>Click <span class="ui">Dashboard</span> for the NGO's latest achievements. Only users registered under that NGO can open its dashboard.</li>
+          </ol>
+          <p>Legacy brings together data from 2024 through 2026. Other pages of the site are updated from time to time; check the <a href="/#changelogs">changelogs</a> for what's new.</p>
+        </article>
+
+        <article class="step" id="g-structure">
+          <h3><span class="step__n">3</span>How the database is organised</h3>
+          <p>To make the system more stable and faster — and to reduce fatigue when working with daily data — the whole structure was rebuilt. Data from 2024 and 2025, the user list and the treatment referral records now live in <strong>one Google Sheet</strong> per NGO.</p>
+          <p>Five tabs need attention from PM/PC and admins:</p>
+          <table class="cols-table">
+            <thead><tr><th>Tab</th><th>What it is for</th></tr></thead>
+            <tbody>
+              <tr><td><code>actionTask</code></td><td>Your master pending list — every reactive HIV, SYP and HEP C case still awaiting Link to Care confirmation.</td></tr>
+              <tr><td><code>HIV</code>, <code>SYP</code>, <code>HEPC</code></td><td>Where you record the referral outcome for each disease category.</td></tr>
+              <tr><td><code>2024</code>, <code>2025</code></td><td>Historical records migrated from the previous system, with red cells that still need to be completed.</td></tr>
+            </tbody>
+          </table>
+          <p style="margin:0">The other tabs (<code>ipUser</code>, <code>dailyData</code>, <code>2026</code>) are managed by M&amp;E and fill automatically.</p>
+        </article>
+
+        <article class="step" id="g-actiontask">
+          <h3><span class="step__n">4</span>Tab: actionTask</h3>
+          <p>The <code>actionTask</code> tab is the list of clients whose referral status needs updating. For 2026 clients it shows everyone who has not yet been referred to treatment.</p>
+          <ol>
+            <li><strong>Open the actionTask tab</strong> in your NGO's database. You will see three column groups in different shades of green, as in the previous system: <span class="ui">Pending HIV Referral</span>, <span class="ui">Pending SYP Referral</span> and <span class="ui">Pending HEPC Referral</span>.</li>
+            <li><strong>Review each pending case.</strong> Each row is a client with a reactive result who has not been confirmed as linked to care. Check the IC number, test date and disease category.</li>
+            <li><strong>Act on each case</strong> by moving to the relevant tab — HIV, SYP or HEPC — to complete the Link to Care entry (step 5).</li>
+          </ol>
+          <div class="note note--ok"><p>If a referral was already recorded in the previous system, you can <strong>copy the client's IC</strong> from this list and paste it into the HIV, SYP or HEPC tab instead of typing it.</p></div>
+        </article>
+
+        <article class="step" id="g-linktocare">
+          <h3><span class="step__n">5</span>Tabs: HIV, SYP &amp; HEPC</h3>
+          <p>In the previous system every site had a separate <em>Data-Rujukan-Rawatan</em> file with four tabs (HIV, SYP/Syphilis, HEPC and PrEP). To make Link to Care updates easier, that file has been replaced by the <code>HIV</code>, <code>SYP</code> and <code>HEPC</code> tabs, which sit <strong>directly inside the same database</strong>. The workflow is identical in all three tabs.</p>
+          <ol>
+            <li>Open the tab for the disease category you are updating.</li>
+            <li>In <strong>column A</strong>, open the drop-down. It lists the IC numbers of clients who have not yet been referred, taken from actionTask. Pick the client, or paste the IC you copied.</li>
+            <li>Columns <strong>B to E</strong> fill in automatically once column A is set.</li>
+            <li>Complete columns <strong>F to J</strong>: whether the client was referred (<span class="ui">Yes</span> / <span class="ui">No</span>), the referral date, the facility and the other referral details, and <strong>Notes</strong> in column J.</li>
+          </ol>
+          <div class="note"><p><strong>You only edit columns A, F, G, H, I and J</strong> in these three tabs. Everything else is calculated.</p></div>
+          <p style="margin:0">As soon as a client is marked <span class="ui">Yes</span>, they are removed from the actionTask list. If a case cannot yet be resolved — for example the client is unreachable — write the reason in Notes so the audit trail stays clean.</p>
+        </article>
+
+        <article class="step" id="g-myhcc">
+          <h3><span class="step__n">6</span>MyHCC verification</h3>
+          <p>Columns <strong>K and L</strong> show verification from the MyHCC system when a client has been successfully referred. Column K is also useful for checking whether a client already had a record at a Klinik Kesihatan before.</p>
+          <ul>
+            <li>MyHCC verification is refreshed <strong>periodically — about once a month</strong>, not live.</li>
+            <li>For now it is available for <strong>HIV and HEPC</strong> only.</li>
+          </ul>
+          <div class="note note--warn"><p>Because of this, it is important to keep <strong>Notes (column J)</strong> up to date when a client is a defaulter and the NGO is helping them restart treatment — especially for HIV cases. The note is what distinguishes a restart from a new referral.</p></div>
+        </article>
+
+        <article class="step" id="g-historical">
+          <h3><span class="step__n">7</span>Tabs: 2024 &amp; 2025</h3>
+          <p>These tabs hold data migrated from the previous system. PM/PC also need to update treatment referral data here for clients who have still not been reached.</p>
+          <ol>
+            <li>Open the <code>2024</code> or <code>2025</code> tab.</li>
+            <li>Look for cells <strong>marked red</strong> that are still empty. Only these need to be filled.</li>
+            <li>The columns to complete are <strong>AN – AP</strong>, <strong>AS – AV</strong> and <strong>AW – AY</strong>.</li>
+          </ol>
+          <p style="margin:0">Leave every other cell as it is — the rest of the row is the historical record.</p>
+        </article>
+      </div>
+    </div>
+    <div class="carousel" data-pages="23-30" data-title="Guide pages from the Panduan Pengguna (Legacy section)"></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ Data correction ============ -->
+<section class="section" id="correction">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Data correction request</h2>
+      <p>Spotted a wrong IC number, a duplicated client or a result in the wrong month? Send the correction here. Requests go straight to the M&amp;E team's response sheet and are actioned in the order received.</p>
+    </div>
+    <div class="embed">
+      <div class="embed__bar"><p>If the form doesn't load, sign in to Google in this browser or open it in a new tab.</p><a class="btn btn--ghost btn--sm" data-site="correctionFormOpen" href="#" target="_blank" rel="noopener">Open form in a new tab</a></div>
+      <iframe data-site="correctionFormEmbed" title="Data correction request form" loading="lazy" referrerpolicy="no-referrer-when-downgrade">Loading…</iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Tutorials ============ -->
+<section class="section section--tight" style="background:#fff;border-top:1px solid var(--line)">
+  <div class="wrap section-head" style="margin:0 auto">
+    <span class="eyebrow">Tutorials</span>
+    <h2>Video tutorials</h2>
+    <p>Hands-on walkthroughs of the Legacy database and dashboards are being recorded and will be published on the HIVnext YouTube channel. Subscribe to be notified when the first one lands.</p>
+    <a class="btn btn--primary" data-site="youtube" href="#" target="_blank" rel="noopener">Go to the HIVnext channel</a>
+  </div>
+</section>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-brand"><img src="/assets/logos/wordmark-light.svg" alt="HIVnext"><span>Health Information Vault</span></div>
+    <ul class="footer-links"><li><a href="/">Home</a></li><li><a href="/about/">About</a></li><li><a href="/legacy/">Legacy</a></li><li><a href="/myvas/">MyVAS</a></li><li><a data-site="email" href="#">Contact</a></li></ul>
+    <p class="copyright"></p>
+  </div>
+</footer>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/site.js"></script>
+</body>
+</html>
