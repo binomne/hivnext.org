@@ -281,6 +281,14 @@ body.reader #uploadTools { display: none; } body:not(.reader) #readerTools { dis
 @media (prefers-reduced-motion: reduce) { .busy .spin { animation: none; border-top-color: #76D166; border-right-color: #76D166; } }
 
 .tab[hidden] { display: none; }
+
+/* a slow or failed answer is not a sign-in problem: say so, keep the session, offer a retry */
+.busy.err { background: #7F1414; }
+.busy.err button { flex: none; border: 1px solid rgba(255, 255, 255, .6); background: transparent; color: #fff; font: inherit; font-weight: 700; padding: 4px 12px; border-radius: 999px; cursor: pointer; }
+.busy.err button:hover { background: rgba(255, 255, 255, .15); }
+#saNote { margin-top: 16px; }
+.gate #gateRetry { margin-top: 12px; }
+.note #saRetry { margin-left: 8px; }
 </style>
 </head>
 <body>
@@ -308,9 +316,11 @@ body.reader #uploadTools { display: none; } body:not(.reader) #readerTools { dis
       <p>Use the Google account linked to your government email. You will only see the state, region or national view assigned to you. This page holds no data of its own.</p>
       <div id="gsiBtn"></div>
       <p class="gate-msg" id="gateMsg" hidden></p>
+      <button class="btn" id="gateRetry" type="button" hidden>Try again</button>
     </div>
   </div>
 
+  <div id="retryBar" class="busy err" role="alert" hidden><span id="retryMsg"></span><button id="retryBtn" type="button">Try again</button></div>
   <div id="busy" class="busy" role="status" aria-live="polite" hidden><span class="spin" aria-hidden="true"></span><span id="busyText">Loading…</span></div>
   <div id="mainContent">
     <header class="hero">
@@ -1811,7 +1821,7 @@ var HIVST_DEMO = (function () {
   var S = { page: "analysis", state: "", view: "", from: "", to: "", cmpMode: "prev", cmpFrom: "", cmpTo: "", min: 5 };
   var DATA = null, DATA_B = null, BOUNDS = { min: "", max: "" };
   var RAW = null, rawHas = {}, ctxInfo = { states: [], fileName: "" };
-  var reader = { idToken: null, allowed: [], canStandalone: false };
+  var reader = { idToken: null, allowed: [], canStandalone: false, loadingAt: 0 };
   var SA = null, memoSA = {};
   var reqId = 0, memo = {}, memoCount = 0;
   var cmpSort = { key: "orders", dir: -1 };
@@ -2368,10 +2378,12 @@ var HIVST_DEMO = (function () {
   var SA_TEXT = {
     forbidden: "Standalone submissions are only available with national access.",
     empty: "Standalone results and assessments have not been set up for this dashboard yet.",
+    server: "The standalone figures did not load just now. Your other tabs are not affected, and you are still signed in.",
     none: "There are no standalone results or assessments in these dates. Use the date filter (top right) and pick “All data” or a wider range."
   };
-  function saMessage(text) {
+  function saMessage(text, retry) {
     var el = $("saMsg"); el.textContent = text; el.hidden = !text;
+    if (text && retry) { var b = document.createElement("button"); b.id = "saRetry"; b.type = "button"; b.className = "btn ghost"; b.textContent = "Try again"; b.onclick = function () { refresh(); }; el.appendChild(b); }
     show("secSaResults", false); show("secSaRisk", false);
     killChart("cSaOutcome"); killChart("cSaResults"); killChart("cSaGender");
     $("footerNotes").innerHTML = "";
@@ -2465,7 +2477,8 @@ var HIVST_DEMO = (function () {
       setBusy(false);
       if (!res || !res.ok) {
         var code = res && res.error;
-        if (code === "auth" || code === "server" || !code) { readerFailed(code || "server"); return; }
+        if (code === "auth") { readerFailed("auth"); return; }
+        if (code === "server" || !code) { show("gate", false); show("mainContent", true); hideNote(); saMessage(SA_TEXT.server, true); return; }
         if (code === "forbidden") { reader.canStandalone = false; show("tabStandalone", false); }
         show("gate", false); show("mainContent", true); hideNote();
         saMessage(code === "forbidden" ? SA_TEXT.forbidden : SA_TEXT.empty);
@@ -2473,7 +2486,7 @@ var HIVST_DEMO = (function () {
       }
       SA = res.data; show("gate", false); show("mainContent", true); hideNote();
       renderStandalone(SA);
-    }).catch(function () { if (my === reqId) { setBusy(false); showGate(ERR_TEXT.server, "err"); } });
+    }).catch(function () { if (my === reqId) { setBusy(false); show("gate", false); show("mainContent", true); hideNote(); saMessage(SA_TEXT.server, true); } });
   }
 
   // ============================================================== PAGE CONTROL
@@ -2534,12 +2547,12 @@ var HIVST_DEMO = (function () {
   }
   function refresh() {
     var my = ++reqId;
-    if (MODE === "reader") setBusy(true);
+    if (MODE === "reader") { setBusy(true); show("retryBar", false); reader.loadingAt = Date.now(); if (!DATA) showGate("Signed in. Loading the dashboard… the first load can take up to 30 seconds.", "info", "loading"); }
     if (S.page === "standalone" && MODE === "reader") return refreshStandalone(my);
     var pA = { from: S.from, to: S.to };
     var chain = query(pA).then(function (res) {
       if (my !== reqId) return null;
-      if (!res.ok) { readerFailed(res.error); return null; }
+      if (!res.ok) { if (res.error === "server" && MODE === "reader") softFail(); else readerFailed(res.error); return null; }
       if (MODE === "reader") applyReaderMeta(res);
       DATA = res.data;
       if (S.page !== "compare") { DATA_B = null; return res; }
@@ -2549,11 +2562,11 @@ var HIVST_DEMO = (function () {
       return query({ from: rb.from, to: rb.to }).then(function (rB) { if (my !== reqId) return null; DATA_B = rB && rB.ok ? rB.data : null; return res; });
     });
     return chain.then(function (res) {
-      if (my === reqId) setBusy(false);
+      if (my === reqId) { setBusy(false); if (res !== null) reader.loadingAt = 0; }
       if (my !== reqId || res === null) return;
       if (MODE === "reader") { show("gate", false); show("mainContent", true); hideNote(); }
       renderAll();
-    }).catch(function () { if (my === reqId) setBusy(false); if (my === reqId && MODE === "reader") showGate(ERR_TEXT.server, "err"); });
+    }).catch(function () { if (my === reqId && MODE === "reader") softFail(); else if (my === reqId) setBusy(false); });
   }
 
   // ---------------------------------------------------------- date popover
@@ -2663,13 +2676,23 @@ var HIVST_DEMO = (function () {
     auth: "Your sign-in could not be verified (it may have expired). Please sign in again.",
     forbidden: "This Google account is not authorised to see this view. If you should have access, ask the M&amp;E team to check that your government email and its state or region are on the list.",
     empty: "No data is available for this view yet.",
-    server: "The dashboard service did not respond. Please try again in a minute."
+    server: "The dashboard service did not respond. You are still signed in, so please try again."
   };
-  function showGate(msg, kind) {
-    show("gate", true); show("mainContent", false); show("utility", false); hideNote();
+  function showGate(msg, kind, mode) {   // mode: "loading" (signed in, waiting) or "retry" (still signed in, try again); otherwise the Google button shows
+    show("gate", true); show("mainContent", false); show("utility", false); hideNote(); show("retryBar", false);
     var el = $("gateMsg"); el.className = "gate-msg " + (kind || ""); el.innerHTML = msg || ""; el.hidden = !msg;
+    $("gsiBtn").hidden = mode === "loading" || mode === "retry";
+    $("gateRetry").hidden = mode !== "retry";
+  }
+  // A slow or failed answer is NOT a sign-in problem. Keep the session; say what happened and offer "Try again".
+  var SOFT_TEXT = "That did not load just now. You are still signed in.";
+  function softFail() {
+    setBusy(false); reader.loadingAt = 0;
+    if (DATA) { $("retryMsg").textContent = SOFT_TEXT; show("retryBar", true); }
+    else showGate(ERR_TEXT.server, "err", "retry");
   }
   function readerFailed(code) {
+    reader.loadingAt = 0;
     reader.idToken = null; memo = {}; memoCount = 0;
     showGate(ERR_TEXT[code] || ERR_TEXT.server, code === "empty" ? "info" : "err");
     if (code === "auth" && window.google && google.accounts) google.accounts.id.prompt();
@@ -2710,7 +2733,9 @@ var HIVST_DEMO = (function () {
     var s = document.createElement("script");
     s.src = "https://accounts.google.com/gsi/client"; s.async = true; s.defer = true;
     s.onload = function () {
-      google.accounts.id.initialize({ client_id: CONFIG.googleClientId, callback: function (resp) { reader.idToken = resp.credential; refresh(); }, auto_select: true });
+      google.accounts.id.initialize({ client_id: CONFIG.googleClientId, callback: function (resp) { if (!DATA && reader.loadingAt && Date.now() - reader.loadingAt < 90000) return; reader.idToken = resp.credential; refresh(); }, auto_select: true });
+      $("gateRetry").addEventListener("click", function () { refresh(); });
+      $("retryBtn").addEventListener("click", function () { refresh(); });
       google.accounts.id.renderButton($("gsiBtn"), { theme: "outline", size: "large", text: "signin_with", shape: "rectangular" });
       google.accounts.id.prompt();
     };
