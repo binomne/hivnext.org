@@ -264,12 +264,23 @@ body.reader #uploadTools { display: none; } body:not(.reader) #readerTools { dis
   .hero { flex-direction: column; align-items: flex-start; padding: 20px 18px; }
   .logo-legacy { height: 48px; } .logo-testnow { height: 28px; }
   .controls { flex-direction: column; align-items: stretch; }
-  .tabs { overflow-x: auto; } .tab { padding: 9px 12px; white-space: nowrap; }
+  .tabs { overflow-x: auto; max-width: 100%; scrollbar-width: thin; } .tab { padding: 9px 12px; white-space: nowrap; flex: none; }
+  .filters { flex-wrap: wrap; max-width: 100%; } .fpill { max-width: 100%; } .fpill select { max-width: 60vw; } .date-wrap { max-width: 100%; }
   .kp-tiles { grid-template-columns: 1fr; }
 }
 @media print { .toolbar, .controls, .note, .date-pop { display: none !important; } .block, .card, .kpi-card { break-inside: avoid; } }
 
 @media (max-width: 640px) { .tb-src { white-space: normal; max-width: none; overflow: visible; text-overflow: clip; } }
+
+/* loading notice: shown while the Reader is working, so a slow answer never looks like an empty page */
+.busy { position: fixed; bottom: 18px; left: 0; right: 0; margin: 0 auto; width: fit-content; z-index: 60; display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 24px);
+  background: var(--navy, #003366); color: #fff; padding: 10px 18px; border-radius: 20px; line-height: 1.35; box-shadow: 0 6px 20px rgba(0, 30, 70, .28); font-family: var(--font-display); font-weight: 600; font-size: 13px; }
+.busy[hidden] { display: none; }
+.busy .spin { flex: none; width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .35); border-top-color: #76D166; animation: busyspin .8s linear infinite; }
+@keyframes busyspin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .busy .spin { animation: none; border-top-color: #76D166; border-right-color: #76D166; } }
+
+.tab[hidden] { display: none; }
 </style>
 </head>
 <body>
@@ -300,13 +311,14 @@ body.reader #uploadTools { display: none; } body:not(.reader) #readerTools { dis
     </div>
   </div>
 
+  <div id="busy" class="busy" role="status" aria-live="polite" hidden><span class="spin" aria-hidden="true"></span><span id="busyText">Loading…</span></div>
   <div id="mainContent">
     <header class="hero">
       <div class="hero-left">
         <div class="logos"><img class="logo-legacy" alt="Legacy" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNjc1LjU1IDUwMi45NiI+CiAgPGRlZnM+CiAgICA8c3R5bGU+CiAgICAgIC5jbHMtMSB7CiAgICAgICAgZmlsbDogdXJsKCNsaW5lYXItZ3JhZGllbnQtMik7CiAgICAgIH0KCiAgICAgIC5jbHMtMiB7CiAgICAgICAgZmlsbDogI2ZmZjsKICAgICAgfQoKICAgICAgLmNscy0zIHsKICAgICAgICBmaWxsOiB1cmwoI2xpbmVhci1ncmFkaWVudC00KTsKICAgICAgfQoKICAgICAgLmNscy00IHsKICAgICAgICBmaWxsOiB1cmwoI2xpbmVhci1ncmFkaWVudC0zKTsKICAgICAgfQoKICAgICAgLmNscy01IHsKICAgICAgICBmaWxsOiB1cmwoI2xpbmVhci1ncmFkaWVudC01KTsKICAgICAgfQoKICAgICAgLmNscy02IHsKICAgICAgICBmaWxsOiB1cmwoI2xpbmVhci1ncmFkaWVudCk7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudCIgeDE9IjU5Ny42NCIgeTE9IjAiIHgyPSI1OTcuNjQiIHkyPSI0MzkuOTgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZWFlYWVhIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2ZmZiIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50LTIiIHgxPSI0NjcuNzEiIHkxPSI5MS42NiIgeDI9IjQ2Ny43MSIgeTI9IjQzOS45OCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiZmMwYzQiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZTFlM2U2Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQtMyIgeDE9IjMzNy43OCIgeTE9IjE4My4zMiIgeDI9IjMzNy43OCIgeTI9IjQzOS45OCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNlMWUzZTYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDdkOWRkIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQtNCIgeDE9IjIwNy44NCIgeTE9IjI3NC45OSIgeDI9IjIwNy44NCIgeTI9IjQzOS45OCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiOGJhYmYiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjYTVhN2FkIi8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQtNSIgeDE9Ijc3LjkxIiB5MT0iMzY2LjY1IiB4Mj0iNzcuOTEiIHkyPSI0MzkuOTgiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjYTNhNmFiIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzdmODI4OCIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPGcgaWQ9IkxheWVyXzEtMiIgZGF0YS1uYW1lPSJMYXllciAxIj4KICAgIDxnPgogICAgICA8ZyBpZD0iSW52ZXJ0ZWQiPgogICAgICAgIDxnPgogICAgICAgICAgPHJlY3QgY2xhc3M9ImNscy02IiB4PSI1MTkuNzMiIHdpZHRoPSIxNTUuODMiIGhlaWdodD0iNDM5Ljk4IiByeD0iMTAiIHJ5PSIxMCIvPgogICAgICAgICAgPHJlY3QgY2xhc3M9ImNscy0xIiB4PSIzODkuNzkiIHk9IjkxLjY2IiB3aWR0aD0iMTU1LjgzIiBoZWlnaHQ9IjM0OC4zMiIgcng9IjEwIiByeT0iMTAiLz4KICAgICAgICAgIDxyZWN0IGNsYXNzPSJjbHMtNCIgeD0iMjU5Ljg2IiB5PSIxODMuMzIiIHdpZHRoPSIxNTUuODMiIGhlaWdodD0iMjU2LjY1IiByeD0iMTAiIHJ5PSIxMCIvPgogICAgICAgICAgPHJlY3QgY2xhc3M9ImNscy0zIiB4PSIxMjkuOTMiIHk9IjI3NC45OSIgd2lkdGg9IjE1NS44MyIgaGVpZ2h0PSIxNjQuOTkiIHJ4PSIxMCIgcnk9IjEwIi8+CiAgICAgICAgICA8cmVjdCBjbGFzcz0iY2xzLTUiIHk9IjM2Ni42NSIgd2lkdGg9IjE1NS44MyIgaGVpZ2h0PSI3My4zMyIgcng9IjEwIiByeT0iMTAiLz4KICAgICAgICA8L2c+CiAgICAgIDwvZz4KICAgICAgPGc+CiAgICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMi40Niw0OTkuOTdoMjIuNnYyLjI2SDB2LTQ2LjUyaDIuNDZ2NDQuMjZaIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMTIyLjM1LDQ5OS45N2gyMy45MnYyLjI2aC0yNi4zOHYtNDYuNTJoMjYuMDV2Mi4yNmgtMjMuNTl2MTkuNjdoMjEuOTN2Mi4yNmgtMjEuOTN2MjAuMDdaIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjg2LjE3LDQ4MC45N3YxLjI2YzAsNS44LTIuMDQsMTAuNzEtNi4xMSwxNC43Mi00LjA4LDQuMDEtOS40NCw2LjAxLTE2LjA4LDYuMDEtNy4wOSwwLTEyLjk1LTIuMzEtMTcuNTgtNi45NC00LjYzLTQuNjMtNi45NC0xMC4zMS02Ljk0LTE3LjA1czIuMjktMTIuMzYsNi44OC0xNy4wMWM0LjU5LTQuNjUsMTAuMzMtNi45OCwxNy4yNS02Ljk4LDQuMjEsMCw4LjA5LDEuMDEsMTEuNjMsMy4wMiwzLjU0LDIuMDIsNi4yNyw0LjczLDguMTcsOC4xNGwtMi4xMywxLjJjLTEuNjgtMy4wNi00LjExLTUuNDktNy4yOC03LjMxLTMuMTctMS44Mi02LjY0LTIuNzItMTAuNC0yLjcyLTYuMjUsMC0xMS40MiwyLjA5LTE1LjUyLDYuMjgtNC4xLDQuMTktNi4xNSw5LjMyLTYuMTUsMTUuMzlzMi4wNywxMS4yLDYuMjEsMTUuMzljNC4xNCw0LjE5LDkuNDMsNi4yOCwxNS44NSw2LjI4LDUuNzYsMCwxMC40My0xLjY2LDE0LjAyLTQuOTgsMy41OS0zLjMyLDUuNTItNy40Nyw1Ljc4LTEyLjQzaC0yMC44N3YtMi4yNmgyMy4yNloiLz4KICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik00MTIuODQsNTAyLjIzbC00Ljc5LTEyLjI5aC0yNC40bC00Ljc3LDEyLjI5aC0yLjU5bDE4LjIxLTQ2LjUyaDIuNjZsMTguMjgsNDYuNTJoLTIuNTlaTTM4NC41Myw0ODcuNjhoMjIuNjRsLTExLjM0LTI5LjExLTExLjMsMjkuMTFaIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNNTI5LjYxLDUwMi45NmMtNi45MSwwLTEyLjY2LTIuMzMtMTcuMjUtNi45OC00LjU5LTQuNjUtNi44OC0xMC4zMi02Ljg4LTE3LjAxczIuMjktMTIuMzYsNi44OC0xNy4wMWM0LjU5LTQuNjUsMTAuMzMtNi45OCwxNy4yNS02Ljk4LDQuMTIsMCw3Ljk1LDEsMTEuNSwyLjk5LDMuNTQsMS45OSw2LjI5LDQuNjUsOC4yNCw3Ljk4bC0yLjEzLDEuMjZjLTEuNzMtMy4wMS00LjE3LTUuNDItNy4zMS03LjIxLTMuMTUtMS43OS02LjU4LTIuNjktMTAuMy0yLjY5LTYuMjUsMC0xMS40MiwyLjA5LTE1LjUyLDYuMjgtNC4xLDQuMTktNi4xNSw5LjMyLTYuMTUsMTUuMzlzMi4wNSwxMS4yLDYuMTUsMTUuMzljNC4xLDQuMTksOS4yNyw2LjI4LDE1LjUyLDYuMjgsMy44MSwwLDcuMzEtLjkyLDEwLjUtMi43NiwzLjE5LTEuODQsNS42LTQuMzEsNy4yNC03LjQxbDIuMTksMS4yYy0xLjkxLDMuNDEtNC42NCw2LjE1LTguMjEsOC4yMS0zLjU3LDIuMDYtNy40OCwzLjA5LTExLjczLDMuMDlaIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNNjc1LjU1LDQ1NS43MWwtMTcuMTUsMjcuMzF2MTkuMjFoLTIuNDZ2LTE5LjI4bC0xNy4wOC0yNy4yNWgyLjcybDE1LjYxLDI1LjAyLDE1LjYzLTI1LjAyaDIuNzNaIi8+CiAgICAgIDwvZz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPg=="><span class="logo-sep"></span><img class="logo-testnow" alt="TestNow" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MjIuMTggMTQ1LjExIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjRkZGRkZGOwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6ICM3NkQxNjY7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8yLTIiIGRhdGEtbmFtZT0iTGF5ZXIgMiI+CiAgICA8ZyBpZD0iVGVzdE5vdyI+CiAgICAgIDxnPgogICAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1LjU5LDg3LjU2aC0xNy40NXYzMy43N2MwLDIuOTEuNjYsNSwxLjk3LDYuMjYsMS4zMSwxLjI3LDMuMjYsMS45Nyw1Ljg0LDIuMTEsMi41OC4xNCw1Ljc5LjEyLDkuNjQtLjA3djEzLjY1Yy0xMS42MywxLjQxLTE5Ljk4LjQtMjUuMDUtMy4wM3MtNy42LTkuNzMtNy42LTE4Ljkzdi0zMy43N0gwdi0xNC42M2gxMi45NXYtMTUuMmwxNS4yLTQuNXYxOS43aDE3LjQ1djE0LjYzWiIvPgogICAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTY4LjUzLDExNC41OGMxLjEzLDUuMzUsMy43LDkuNDUsNy43NCwxMi4zMSw0LjAzLDIuODYsOC45Niw0LjI5LDE0Ljc4LDQuMjksOC4wNywwLDE0LjEyLTIuOTEsMTguMTUtOC43MmwxMi41Miw3LjMyYy02Ljk0LDEwLjIzLTE3LjIyLDE1LjM0LTMwLjgyLDE1LjM0LTExLjQ1LDAtMjAuNjktMy40OS0yNy43Mi0xMC40OC03LjA0LTYuOTktMTAuNTUtMTUuODMtMTAuNTUtMjYuNTNzMy40Ny0xOS4zLDEwLjQxLTI2LjM5YzYuOTQtNy4wOCwxNS44NS0xMC42MiwyNi43NC0xMC42MiwxMC4zMiwwLDE4Ljc5LDMuNjEsMjUuNCwxMC44NCw2LjYxLDcuMjMsOS45MiwxNiw5LjkyLDI2LjMxLDAsMS42LS4xOSwzLjcxLS41Niw2LjMzaC01Ni4wMVpNNjguMzksMTAyLjE5aDQxLjM3Yy0xLjAzLTUuNzItMy40LTEwLjA0LTcuMTEtMTIuOTUtMy43MS0yLjkxLTguMDQtNC4zNi0xMy4wMi00LjM2LTUuNjMsMC0xMC4zMiwxLjU1LTE0LjA3LDQuNjQtMy43NSwzLjEtNi4xNSw3LjMyLTcuMTgsMTIuNjdaIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTQ5LjMsOTIuMjVjMCwyLjMyLDEuMyw0LjE1LDMuOSw1LjQ5LDIuNiwxLjM0LDUuNzIsMi41Nyw5LjM2LDMuNywzLjY0LDEuMTIsNy4zNywyLjI3LDExLjE5LDMuNDVzNy4wMSwzLjM1LDkuNTcsNi41M2MyLjU2LDMuMTgsMy44NCw3LjE5LDMuODQsMTIuMDMsMCw2Ljc1LTIuNiwxMi4wNi03LjgxLDE1LjktNS4yMSwzLjg1LTExLjc1LDUuNzctMTkuNjMsNS43Ny02Ljk0LDAtMTIuOS0xLjQ2LTE3Ljg3LTQuMzYtNC45Ny0yLjkxLTguNTgtNi45NC0xMC44NC0xMi4xbDEzLjA5LTcuNmMyLjQ0LDYuNzUsNy42NSwxMC4xMywxNS42MiwxMC4xM3MxMS45Ni0yLjYzLDExLjk2LTcuODhjMC0yLjI1LTEuMjktNC4wOC0zLjg3LTUuNDktMi41OC0xLjQxLTUuNjktMi42Ny05LjMzLTMuNzktMy42NC0xLjEyLTcuMzctMi4yNy0xMS4xOS0zLjQ1LTMuODItMS4xNy03LjAyLTMuMjktOS42LTYuMzQtMi41OC0zLjA1LTMuODctNi45Mi0zLjg3LTExLjYxLDAtNi40NywyLjQ2LTExLjY4LDcuMzktMTUuNjJzMTEuMDUtNS45MSwxOC4zNi01LjkxYzUuODIsMCwxMSwxLjI5LDE1LjU1LDMuODcsNC41NSwyLjU4LDguMDQsNi4xNywxMC40OCwxMC43N2wtMTIuODEsNy4xOGMtMi40NC01LjM1LTYuODUtOC4wMi0xMy4yMy04LjAyLTIuOTEsMC01LjM1LjYzLTcuMzIsMS44OC0xLjk3LDEuMjUtMi45NiwzLjA4LTIuOTYsNS40OVoiLz4KICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMzYuOTcsODcuNTZoLTE3LjQ1djMzLjc3YzAsMi45MS42Niw1LDEuOTcsNi4yNiwxLjMxLDEuMjcsMy4yNiwxLjk3LDUuODQsMi4xMSwyLjU4LjE0LDUuNzkuMTIsOS42NC0uMDd2MTMuNjVjLTExLjYzLDEuNDEtMTkuOTguNC0yNS4wNS0zLjAzcy03LjYtOS43My03LjYtMTguOTN2LTMzLjc3aC0xMi45NXYtMTQuNjNoMTIuOTV2LTE1LjJsMTUuMi00LjV2MTkuN2gxNy40NXYxNC42M1oiLz4KICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yODQuNDIsNzEuMjRjOC41NCwwLDE1LjI3LDIuNiwyMC4xOSw3LjgxLDQuOTMsNS4yMSw3LjM5LDEyLjIyLDcuMzksMjEuMDR2NDMuMmgtOS4yOXYtNDMuMmMwLTYuMjgtMS42Ny0xMS4xNi01LTE0LjYzLTMuMzMtMy40Ny04LjA1LTUuMjEtMTQuMTQtNS4yMS02Ljc1LDAtMTIuMjQsMi4xNC0xNi40Niw2LjQtNC4yMiw0LjI3LTYuMzMsMTAuODYtNi4zMywxOS43N3YzNi44N2gtOS4yOXYtNzAuMzZoOS4yOXYxMC45OGM1LjI1LTguNDQsMTMuMTMtMTIuNjYsMjMuNjQtMTIuNjZaIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMzg5LjA1LDEzNC4zNWMtNy4xOCw3LjA4LTE1LjkzLDEwLjYyLTI2LjI0LDEwLjYycy0xOS4wNy0zLjU0LTI2LjI0LTEwLjYyYy03LjE4LTcuMDgtMTAuNzctMTUuODMtMTAuNzctMjYuMjRzMy41OS0xOS4xNiwxMC43Ny0yNi4yNGM3LjE4LTcuMDgsMTUuOTItMTAuNjIsMjYuMjQtMTAuNjJzMTkuMDcsMy41NCwyNi4yNCwxMC42MmM3LjE4LDcuMDgsMTAuNzYsMTUuODMsMTAuNzYsMjYuMjRzLTMuNTksMTkuMTYtMTAuNzYsMjYuMjRaTTM0My4xLDEyNy44N2M1LjM1LDUuNCwxMS45MSw4LjA5LDE5LjcsOC4wOXMxNC4zNS0yLjcsMTkuNy04LjA5YzUuMzUtNS4zOSw4LjAyLTExLjk4LDguMDItMTkuNzdzLTIuNjctMTQuMzgtOC4wMi0xOS43N2MtNS4zNS01LjM5LTExLjkyLTguMDktMTkuNy04LjA5cy0xNC4zNSwyLjctMTkuNyw4LjA5Yy01LjM1LDUuNC04LjAyLDExLjk5LTguMDIsMTkuNzdzMi42NywxNC4zOCw4LjAyLDE5Ljc3WiIvPgogICAgICA8L2c+CiAgICAgIDxwYXRoIGlkPSJDaGVja21hcmsiIGNsYXNzPSJjbHMtMiIgZD0iTTQ3My4wOCwxMDQuMTFjLS42Mi0xLjA1LTEuMjQtMi4wOS0xLjg4LTMuMTEtMS4zLTIuMTItMi42OS00LjMzLTQuMTgtNi42NC0uNDMtLjY4LS44OC0xLjM1LTEuMzMtMi4wNC03LjA0LDEwLjYtMTMuNzYsMjEuNDMtMjAuMTcsMzIuNTEtMy4yLTguMTktNi43OC0xNi41Mi0xMC43NS0yNS0zLjk4LTguNDctOC42NS0xNi41Ny0xNC4wMS0yNC4yOS0uODEtMS4xNS0xLjUyLTIuMDUtMi4xNi0yLjctLjY0LS42NS0xLjUxLTEuMDktMi42My0xLjI4LTEuMDQtLjE4LTIuMzMtLjI5LTMuODctLjMzLTEuNTQtLjAyLTMuMDMuMTEtNC40NC40LTEuNDEuMjgtMi42Ny43NC0zLjc1LDEuMzgtMS4wNy42My0xLjcxLDEuNDYtMS44OSwyLjUxLS4xOC45OC4xMywyLjIuOTUsMy42Ny44MSwxLjQ4LDEuODcsMy4xNiwzLjE5LDUuMDYsMy4xNyw0LjczLDYuMDIsOS4xNiw4LjU2LDEzLjI5LDIuNTIsNC4xMiw0LjkyLDguMzEsNy4xNywxMi42MSwyLjI0LDQuMjgsNC40LDguODUsNi40OCwxMy43MiwyLjA4LDQuODYsNC4yNiwxMC40NCw2LjU4LDE2Ljc1LjQ1LDEuMTYsMS4yOSwyLjAyLDIuNTYsMi41NiwxLjI3LjU2LDIuNy45OCw0LjMsMS4yNywxLjEyLjIxLDIuMjQuMzUsMy4zOC40NSwxLjEyLjA4LDIuMTcuMTIsMy4xMS4wNy45NC0uMDUsMS43NS0uMTcsMi40NC0uMzcuNjgtLjE5LDEuMTItLjQ5LDEuMzQtLjg5LDcuMTEtMTMuMTUsMTQuNTMtMjUuNjIsMjIuMjctMzcuNDItLjQxLS43MS0uODItMS40NC0xLjI0LTIuMTVaTTU1OS4yOSwxLjc1Yy0uNjItLjU4LTEuNTEtLjk4LTIuNjktMS4xOS0zLjY5LS42NS03LjExLS43NC0xMC4yNi0uMjMtMy4xNS41Mi01LjU5LDEuNjMtNy4zNCwzLjMyLTE4LjAzLDE3LjE3LTM0Ljg2LDM2LjAzLTUwLjQ4LDU2LjU5LTEuNjMsMi4xNC0zLjI1LDQuMy00Ljg0LDYuNDYuNjMuNDEsMS4yMS44NywxLjczLDEuMzkuMDUuMDQuMDguMDguMTIuMTIuODkuOTEsMS44MiwyLjA2LDIuODUsMy41NSwxLjI0LDEuNzcsMi40NCwzLjU4LDMuNjIsNS40Mi40Mi42Ni44NCwxLjM0LDEuMjcsMi4wMiwyLjg1LTMuODUsNS43My03LjYxLDguNjUtMTEuMzIsOC44NS0xMS4yNCwxNy45MS0yMS44MSwyNy4yLTMxLjcsOS4yOS05LjkxLDE4LjcyLTE5LjI3LDI4LjI5LTI4LjEyLjk0LS44NCwxLjU3LTEuNTMsMS44OC0yLjA5LjMxLS41Ni41NC0xLjI2LjctMi4wOS4xNC0uODMtLjA4LTEuNTQtLjctMi4xMVpNNDczLjA4LDEwNC4xMWMtNy45MiwxMi4wMi0xNS42LDI0LjktMjIuODQsMzguMjktLjA0LjAxLS4wOC4wMi0uMTQuMDUtLjUyLjE0LTEuMTYuMjQtMS45Mi4yOC0uODQuMDUtMS43OS4wMi0yLjgyLS4wNi0xLjA2LS4xLTIuMTItLjI0LTMuMTYtLjQyLTEuNDItLjI1LTIuNy0uNjMtMy44MS0xLjExLS45Mi0uNC0xLjIxLS45MS0xLjM2LTEuMjktMi4zMi02LjMxLTQuNTQtMTEuOTgtNi42MS0xNi44Ni0yLjEtNC45Mi00LjMxLTkuNTktNi41Ny0xMy44OS0yLjI2LTQuMzEtNC42OS04LjU5LTcuMjQtMTIuNzMtMi41My00LjEzLTUuNDMtOC42My04LjU5LTEzLjM2bC0uMDItLjA0Yy0xLjI3LTEuODItMi4yOS0zLjQ1LTMuMDctNC44NS0uNzgtMS40Mi0uNzUtMi4wNS0uNzItMi4yMi4wNC0uMTcuMTEtLjU2Ljg0LS45OS44Ny0uNTEsMS44OS0uODgsMy4wNy0xLjExLDEuMTYtLjIzLDIuMzgtLjM1LDMuNjMtLjM1aC4zNGMxLjQyLjAyLDIuNjEuMTIsMy41Mi4yOS42NC4xMSwxLjEyLjMzLDEuNDQuNjUuNTMuNTQsMS4xOCwxLjM2LDEuOTIsMi40MSw1LjI2LDcuNTgsOS45MiwxNS42NSwxMy44MiwyMy45NywzLjkzLDguMzgsNy41MywxNi43NSwxMC43LDI0Ljg3bDEuNjgsNC4yOCwyLjMxLTMuOThjNi4yLTEwLjcsMTIuNzMtMjEuMjUsMTkuNTctMzEuNTgtLjQzLS42OC0uODgtMS4zNS0xLjMzLTIuMDQtNy4wNCwxMC42LTEzLjc2LDIxLjQzLTIwLjE3LDMyLjUxLTMuMi04LjE5LTYuNzgtMTYuNTItMTAuNzUtMjUtMy45OC04LjQ3LTguNjUtMTYuNTctMTQuMDEtMjQuMjktLjgxLTEuMTUtMS41Mi0yLjA1LTIuMTYtMi43LS42NC0uNjUtMS41MS0xLjA5LTIuNjMtMS4yOC0xLjA0LS4xOC0yLjMzLS4yOS0zLjg3LS4zMy0xLjU0LS4wMi0zLjAzLjExLTQuNDQuNC0xLjQxLjI4LTIuNjcuNzQtMy43NSwxLjM4LTEuMDcuNjMtMS43MSwxLjQ2LTEuODksMi41MS0uMTguOTguMTMsMi4yLjk1LDMuNjcuODEsMS40OCwxLjg3LDMuMTYsMy4xOSw1LjA2LDMuMTcsNC43Myw2LjAyLDkuMTYsOC41NiwxMy4yOSwyLjUyLDQuMTIsNC45Miw4LjMxLDcuMTcsMTIuNjEsMi4yNCw0LjI4LDQuNCw4Ljg1LDYuNDgsMTMuNzIsMi4wOCw0Ljg2LDQuMjYsMTAuNDQsNi41OCwxNi43NS40NSwxLjE2LDEuMjksMi4wMiwyLjU2LDIuNTYsMS4yNy41NiwyLjcuOTgsNC4zLDEuMjcsMS4xMi4yMSwyLjI0LjM1LDMuMzguNDUsMS4xMi4wOCwyLjE3LjEyLDMuMTEuMDcuOTQtLjA1LDEuNzUtLjE3LDIuNDQtLjM3LjY4LS4xOSwxLjEyLS40OSwxLjM0LS44OSw3LjExLTEzLjE1LDE0LjUzLTI1LjYyLDIyLjI3LTM3LjQyLS40MS0uNzEtLjgyLTEuNDQtMS4yNC0yLjE1Wk01NTkuMjksMS43NWMtLjYyLS41OC0xLjUxLS45OC0yLjY5LTEuMTktMy42OS0uNjUtNy4xMS0uNzQtMTAuMjYtLjIzLTMuMTUuNTItNS41OSwxLjYzLTcuMzQsMy4zMi0xOC4wMywxNy4xNy0zNC44NiwzNi4wMy01MC40OCw1Ni41OS0xLjYzLDIuMTQtMy4yNSw0LjMtNC44NCw2LjQ2LjYzLjQxLDEuMjEuODcsMS43MywxLjM5LDEuNjEtMi4xOCwzLjIzLTQuMzYsNC44OC02LjUyLDE1LjQ3LTIwLjM1LDMyLjM4LTM5LjI5LDUwLjI2LTU2LjMyLDEuNDEtMS4zOCwzLjQ4LTIuMjgsNi4xNC0yLjcyLDIuODgtLjQ3LDYuMDgtLjQsOS41MS4yMi43Mi4xMywxLjI4LjM1LDEuNTcuNjIuMDIuMDIuMDQuMDQuMDUuMDUsMCwuMDEsMCwuMDQtLjAxLjA3LS4xMy43Mi0uMzEsMS4xNS0uNDMsMS4zOC0uMDcuMTItLjM5LjU5LTEuNDcsMS41Ni05LjU3LDguODUtMTkuMTMsMTguMzQtMjguNCwyOC4yMy05LjI4LDkuOS0xOC40OCwyMC42MS0yNy4zMiwzMS44Ni0yLjc1LDMuNDgtNS40OCw3LjA0LTguMTgsMTAuNjcuNDIuNjYuODQsMS4zNCwxLjI3LDIuMDIsMi44NS0zLjg1LDUuNzMtNy42MSw4LjY1LTExLjMyLDguODUtMTEuMjQsMTcuOTEtMjEuODEsMjcuMi0zMS43LDkuMjktOS45MSwxOC43Mi0xOS4yNywyOC4yOS0yOC4xMi45NC0uODQsMS41Ny0xLjUzLDEuODgtMi4wOS4zMS0uNTYuNTQtMS4yNi43LTIuMDkuMTQtLjgzLS4wOC0xLjU0LS43LTIuMTFaTTYyMS40NSwxLjc1Yy0uNjItLjU4LTEuNTItLjk4LTIuNy0xLjE5LTMuNjktLjY1LTcuMTEtLjc0LTEwLjI1LS4yMy0zLjE1LjUyLTUuNiwxLjYzLTcuMzQsMy4zMi0xOC4wNCwxNy4xNy0zNC44NiwzNi4wMy01MC40OSw1Ni41OS0xNS42MiwyMC41NC0yOS45NCw0Mi4wOC00Mi45Nyw2NC42LTMuMi04LjE5LTYuNzgtMTYuNTItMTAuNzYtMjUtMi4wNC00LjM2LTQuMjctOC42Mi02LjY5LTEyLjc4LS40MS0uNy0uODEtMS40LTEuMjMtMi4wOS0uNDEtLjY5LS44My0xLjM2LTEuMjYtMi4wNS0xLjU0LTIuNS0zLjE2LTQuOTUtNC44NC03LjM3LS41NC0uNzctMS4wNC0xLjQ0LTEuNTEtMS45OS0uMjMtLjI3LS40My0uNDktLjY1LS43MS0uMjktLjMtLjYzLS41Ni0xLjAzLS43Ni0uNDYtLjI0LS45OS0uNDEtMS41OS0uNTItLjIyLS4wNC0uNDUtLjA3LS42OC0uMTEtLjkyLS4xMi0xLjk4LS4xOS0zLjItLjIyLTEuNTQtLjAyLTMuMDMuMTEtNC40NC40LTEuNDEuMjgtMi42Ny43NC0zLjc1LDEuMzgtMS4wOS42My0xLjcxLDEuNDYtMS45MSwyLjUxLS4xNy45OC4xNCwyLjIuOTUsMy42Ny44MiwxLjQ4LDEuODgsMy4xNiwzLjIsNS4wNi4wMi4wNC4wNS4wOC4wOC4xMy40NS42Ni44OCwxLjMzLDEuMzIsMS45OC40NS42OC44OSwxLjM1LDEuMzMsMi4wMiwyLjEsMy4yLDQuMDQsNi4yNSw1LjgyLDkuMTYuMTEuMTYuMjEuMzMuMy40OS40My42OS44NCwxLjM5LDEuMjcsMi4wOS40MS43LjgzLDEuNCwxLjI0LDIuMTEsMS41MSwyLjYxLDIuOTYsNS4yNCw0LjM2LDcuOTIsMi4yNiw0LjI4LDQuNCw4Ljg1LDYuNDgsMTMuNzIsMi4wOCw0Ljg2LDQuMjcsMTAuNDQsNi41OSwxNi43NS40MywxLjE2LDEuMjksMi4wMiwyLjU2LDIuNTYsMS4yNi41NiwyLjY5Ljk4LDQuMywxLjI3LDEuMTEuMjEsMi4yNC4zNSwzLjM3LjQ1LDEuMTMuMDgsMi4xNy4xMiwzLjExLjA3Ljk0LS4wNSwxLjc2LS4xNywyLjQ0LS4zNy42OS0uMTksMS4xMy0uNDksMS4zNS0uODksNy42NC0xNC4xNCwxNS42NS0yNy41LDI0LjAzLTQwLjA5LDguMzYtMTIuNTksMTYuOTctMjQuNSwyNS44MS0zNS43Myw4Ljg1LTExLjI0LDE3LjkyLTIxLjgxLDI3LjIxLTMxLjcsOS4yOS05LjkxLDE4LjcyLTE5LjI3LDI4LjI5LTI4LjEyLjkzLS44NCwxLjU3LTEuNTMsMS44OC0yLjA5LjMxLS41Ni41NC0xLjI2LjY5LTIuMDkuMTYtLjgzLS4wNy0xLjU0LS42OS0yLjExWk02MTkuOTYsMy40OGMtLjEzLjcyLS4zMSwxLjE1LS40NSwxLjM4LS4wNy4xMi0uMzcuNTktMS40NiwxLjU2LTkuNTcsOC44NS0xOS4xMywxOC4zNC0yOC40LDI4LjIzLTkuMjksOS45LTE4LjQ5LDIwLjYxLTI3LjMzLDMxLjg2LTguODUsMTEuMjQtMTcuNTcsMjMuMy0yNS45MywzNS44Ny04LjMxLDEyLjUxLTE2LjQsMjUuOTgtMjMuOTksNDAuMDQtLjA0LjAxLS4wOC4wMi0uMTQuMDUtLjUyLjE0LTEuMTYuMjQtMS45My4yOC0uODMuMDUtMS43Ny4wMi0yLjgxLS4wNi0xLjA2LS4xLTIuMTQtLjI0LTMuMTYtLjQyLTEuNDQtLjI1LTIuNzItLjYzLTMuODEtMS4xMS0uOTMtLjQtMS4yMi0uOTEtMS4zNi0xLjI5LTIuMzItNi4zMS00LjU1LTExLjk4LTYuNjMtMTYuODYtMi4wOS00LjkyLTQuMy05LjU5LTYuNTUtMTMuODktMS41OC0yLjk5LTMuMjMtNS45OS00Ljk1LTguOTItLjQyLS43LS44My0xLjQtMS4yNS0yLjEtLjM0LS41OC0uNjktMS4xNS0xLjA0LTEuNzEtLjA3LS4xMi0uMTQtLjI0LS4yMi0uMzYtMS44Ny0zLjA0LTMuOTMtNi4yNi02LjE0LTkuNjMtLjQzLS42NS0uODgtMS4zMy0xLjMzLTItLjMtLjQ2LS42LS45MS0uOTItMS4zNmwtLjAyLS4wNGMtLjEzLS4xOS0uMjUtLjM5LS4zNy0uNTctMS4xLTEuNTgtMS45OS0zLjAyLTIuNjktNC4yOC0uNzgtMS40Mi0uNzUtMi4wNS0uNzEtMi4yMi4wMi0uMTcuMS0uNTYuODQtLjk5Ljg3LS41MSwxLjg5LS44OCwzLjA3LTEuMTEsMS4xNi0uMjMsMi4zNy0uMzUsMy42Mi0uMzVoLjM1Yy42My4wMSwxLjIxLjA0LDEuNzQuMDcuNjguMDUsMS4yNy4xMiwxLjc3LjIyLjI1LjA0LjQ3LjEuNjguMTcuMzEuMTIuNTcuMjguNzYuNDguMjguMjguNTcuNjIuODksMS4wMy4zMy40LjY2Ljg3LDEuMDMsMS4zOSwxLjgzLDIuNjMsMy41OCw1LjMyLDUuMjYsOC4wNi40Mi42OC44MywxLjM2LDEuMjQsMi4wNS40MS43LjgyLDEuNCwxLjIyLDIuMTEsMi4yLDMuODQsNC4yNCw3Ljc2LDYuMTEsMTEuNzQsMy45Miw4LjM4LDcuNTMsMTYuNzUsMTAuNywyNC44N2wxLjY4LDQuMjgsMi4zMS0zLjk4YzEyLjkxLTIyLjM0LDI3LjMzLTQ0LDQyLjgyLTY0LjM4LDE1LjQ4LTIwLjM1LDMyLjM5LTM5LjI5LDUwLjI4LTU2LjMyLDEuNC0xLjM4LDMuNDYtMi4yOCw2LjE0LTIuNzIsMi44OC0uNDcsNi4wOC0uNCw5LjUxLjIyLjcyLjEzLDEuMjguMzUsMS41Ny42Mi4wMi4wMi4wNC4wNC4wNC4wNXYuMDdaTTYxOS45NiwzLjQxdi4wN2MtLjEzLjcyLS4zMSwxLjE1LS40NSwxLjM4LS4wNy4xMi0uMzcuNTktMS40NiwxLjU2LTkuNTcsOC44NS0xOS4xMywxOC4zNC0yOC40LDI4LjIzLTkuMjksOS45LTE4LjQ5LDIwLjYxLTI3LjMzLDMxLjg2LTguODUsMTEuMjQtMTcuNTcsMjMuMy0yNS45MywzNS44Ny04LjMxLDEyLjUxLTE2LjQsMjUuOTgtMjMuOTksNDAuMDQtLjA0LjAxLS4wOC4wMi0uMTQuMDUtLjUyLjE0LTEuMTYuMjQtMS45My4yOC0uODMuMDUtMS43Ny4wMi0yLjgxLS4wNi0xLjA2LS4xLTIuMTQtLjI0LTMuMTYtLjQyLTEuNDQtLjI1LTIuNzItLjYzLTMuODEtMS4xMS0uOTMtLjQtMS4yMi0uOTEtMS4zNi0xLjI5LTIuMzItNi4zMS00LjU1LTExLjk4LTYuNjMtMTYuODYtMi4wOS00LjkyLTQuMy05LjU5LTYuNTUtMTMuODktMS41OC0yLjk5LTMuMjMtNS45OS00Ljk1LTguOTItLjQyLS43LS44My0xLjQtMS4yNS0yLjEtLjM0LS41OC0uNjktMS4xNS0xLjA0LTEuNzEtLjA3LS4xMi0uMTQtLjI0LS4yMi0uMzYtMS44Ny0zLjA0LTMuOTMtNi4yNi02LjE0LTkuNjMtLjQzLS42NS0uODgtMS4zMy0xLjMzLTItLjMtLjQ2LS42LS45MS0uOTItMS4zNmwtLjAyLS4wNGMtLjEzLS4xOS0uMjUtLjM5LS4zNy0uNTctMS4xLTEuNTgtMS45OS0zLjAyLTIuNjktNC4yOC0uNzgtMS40Mi0uNzUtMi4wNS0uNzEtMi4yMi4wMi0uMTcuMS0uNTYuODQtLjk5Ljg3LS41MSwxLjg5LS44OCwzLjA3LTEuMTEsMS4xNi0uMjMsMi4zNy0uMzUsMy42Mi0uMzVoLjM1Yy42My4wMSwxLjIxLjA0LDEuNzQuMDcuNjguMDUsMS4yNy4xMiwxLjc3LjIyLjI1LjA0LjQ3LjEuNjguMTcuMzEuMTIuNTcuMjguNzYuNDguMjguMjguNTcuNjIuODksMS4wMy4zMy40LjY2Ljg3LDEuMDMsMS4zOSwxLjgzLDIuNjMsMy41OCw1LjMyLDUuMjYsOC4wNi40Mi42OC44MywxLjM2LDEuMjQsMi4wNS40MS43LjgyLDEuNCwxLjIyLDIuMTEsMi4yLDMuODQsNC4yNCw3Ljc2LDYuMTEsMTEuNzQsMy45Miw4LjM4LDcuNTMsMTYuNzUsMTAuNywyNC44N2wxLjY4LDQuMjgsMi4zMS0zLjk4YzEyLjkxLTIyLjM0LDI3LjMzLTQ0LDQyLjgyLTY0LjM4LDE1LjQ4LTIwLjM1LDMyLjM5LTM5LjI5LDUwLjI4LTU2LjMyLDEuNC0xLjM4LDMuNDYtMi4yOCw2LjE0LTIuNzIsMi44OC0uNDcsNi4wOC0uNCw5LjUxLjIyLjcyLjEzLDEuMjguMzUsMS41Ny42Mi4wMi4wMi4wNC4wNC4wNC4wNVoiLz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPg=="></div>
         <div class="eyebrow"><span class="dot"></span>HIVST Programme · Order Tracking</div>
         <h1 id="heroTitle">HIV Self-Test Kit Distribution</h1>
-        <p class="sub">Every kit order on file for the chosen state and dates, read month by month. Covers delivery mode, kit type, district demand, results submitted and the risk-assessment answers given with the order.</p>
+        <p class="sub" id="heroSub">Every kit order on file for the chosen state and dates, read month by month. Covers delivery mode, kit type, district demand, results submitted and the risk-assessment answers given with the order.</p>
       </div>
       <div class="hero-right">
         <div class="badge"><div class="b-label">Period</div><div class="b-value" id="bPeriod"></div></div>
@@ -320,6 +332,7 @@ body.reader #uploadTools { display: none; } body:not(.reader) #readerTools { dis
         <button class="tab" role="tab" data-page="analysis" aria-selected="true">Analysis</button>
         <button class="tab" role="tab" data-page="compare" aria-selected="false">Comparison</button>
         <button class="tab" role="tab" data-page="risk" aria-selected="false">Results &amp; Risk</button>
+        <button class="tab" role="tab" data-page="standalone" aria-selected="false" id="tabStandalone" hidden>Standalone submissions</button>
       </nav>
       <div class="filters" id="filters">
         <label class="fpill" id="stateWrap" hidden><span class="pl">State</span><select id="stateSelect" aria-label="State"></select></label>
@@ -434,7 +447,7 @@ body.reader #uploadTools { display: none; } body:not(.reader) #readerTools { dis
       <div class="kpi-row c6" id="kpiRisk2"></div>
 
       <section class="block" id="secResults">
-        <div class="section-head"><div><h2>Results Submitted</h2><p>Self-test results sent back for the orders in view, counted from the same order records</p></div><span class="section-num" id="journeyTag"></span></div>
+        <div class="section-head"><div><h2>Results Submitted with Orders</h2><p>Self-test results sent back by clients when they reorder, counted from the order records in view. Results sent in outside the ordering process are not included.</p></div><span class="section-num" id="journeyTag"></span></div>
         <div class="grid-12">
           <div class="card"><h3>Result mix</h3><p class="chart-caption" id="capOutcome"></p><div class="chart-box" style="height:280px"><canvas id="cOutcome"></canvas></div></div>
           <div class="card"><h3>Results submitted, by month <span class="legend-inline" id="lgResults"></span></h3><p class="chart-caption" id="capResults">Counts by order month; a missing bar means fewer than 5</p><div class="chart-box" style="height:280px"><canvas id="cResults"></canvas></div></div>
@@ -469,6 +482,36 @@ body.reader #uploadTools { display: none; } body:not(.reader) #readerTools { dis
           <div class="card"><h3>Assigned gender</h3><p class="chart-caption" id="capAssigned"></p><div id="assignedList"></div></div>
           <div class="card"><h3>HIV status</h3><p class="chart-caption" id="capStatus"></p><div id="statusList"></div></div>
           <div class="card"><h3>Risk exposure</h3><p class="chart-caption" id="capRisk"></p><div id="riskList"></div></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" id="page-standalone" hidden>
+      <div class="note info" id="saNote"><b>National figures, not linked to orders.</b> These are results and risk assessments that people sent in on their own, outside the ordering process. They carry no order ID, state or district, so they cannot be split by area and the View selector does not apply here. The same person may also appear in the order-based figures, so never add the two together.</div>
+      <div class="note err" id="saMsg" hidden></div>
+
+      <section class="block" id="secSaResults">
+        <div class="section-head"><div><h2>Results Submitted on Their Own</h2><p>Self-test results sent in outside the ordering process, counted by the date the test was taken</p></div><span class="section-num" id="saResTag"></span></div>
+        <div class="kpi-row c5" id="saResKpis"></div>
+        <div class="grid-12" style="margin-top:14px">
+          <div class="card"><h3>Result mix</h3><p class="chart-caption" id="saCapOutcome"></p><div class="chart-box" style="height:280px"><canvas id="cSaOutcome"></canvas></div></div>
+          <div class="card"><h3>Results submitted, by month <span class="legend-inline" id="saLgResults"></span></h3><p class="chart-caption" id="saCapResults"></p><div class="chart-box" style="height:280px"><canvas id="cSaResults"></canvas></div></div>
+        </div>
+      </section>
+
+      <section class="block" id="secSaRisk">
+        <div class="section-head"><div><h2>Risk Assessments Submitted on Their Own</h2><p>Assessments completed on the public page without ordering, counted by the date they were collected</p></div><span class="section-num" id="saRaTag"></span></div>
+        <div class="kpi-row c5" id="saRaKpis"></div>
+        <div class="card" style="margin-top:14px"><h3>Gender, by month <span class="legend-inline" id="saLgGender"></span></h3><p class="chart-caption" id="saCapGenderM"></p><div class="chart-box" style="height:300px"><canvas id="cSaGender"></canvas></div></div>
+        <div class="grid-2" style="margin-top:14px">
+          <div class="card"><h3>Gender</h3><p class="chart-caption" id="saCap_gender"></p><div id="saList_gender"></div></div>
+          <div class="card"><h3>Age demographic</h3><p class="chart-caption" id="saCap_age"></p><div id="saList_age"></div></div>
+          <div class="card"><h3>Recency of HIV testing</h3><p class="chart-caption" id="saCap_last"></p><div id="saList_last"></div></div>
+          <div class="card"><h3>HIV status</h3><p class="chart-caption" id="saCap_status"></p><div id="saList_status"></div></div>
+          <div class="card"><h3>Risk exposure</h3><p class="chart-caption" id="saCap_risk"></p><div id="saList_risk"></div></div>
+          <div class="card"><h3>Key population</h3><p class="chart-caption" id="saCap_kp"></p><div id="saList_kp"></div></div>
+          <div class="card"><h3>PrEP status</h3><p class="chart-caption" id="saCap_prep"></p><div id="saList_prep"></div></div>
+          <div class="card"><h3>PrEP efficacy</h3><p class="chart-caption" id="saCap_eff"></p><div id="saList_eff"></div></div>
         </div>
       </section>
     </section>
@@ -1397,13 +1440,178 @@ var HIVST_CORE = (function () {
     };
   }
 
+  // ============================================================ STANDALONE SUBMISSIONS
+  // Results and risk assessments that were sent in OUTSIDE the ordering process live in their own tables. They carry no
+  // order ID, state or district, so they can only ever be shown nationally, and they are never mixed with order figures.
+  function cellText(v) { return v === null || v === undefined || isDate(v) ? "" : String(v).trim(); }
+  function colMap(headers, spec) {
+    var idx = {}, out = {};
+    headers.forEach(function (h, i) { var k = normHeader(h); if (idx[k] === undefined) idx[k] = i; });
+    Object.keys(spec).forEach(function (key) {
+      for (var i = 0; i < spec[key].length; i++) { if (idx[spec[key][i]] !== undefined) { out[key] = idx[spec[key][i]]; break; } }
+    });
+    return out;
+  }
+  function dk(dt) { return dt.y * 10000 + dt.m * 100 + dt.d; }
+  function isoKey(s) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || "")); return m ? +m[1] * 10000 + +m[2] * 100 + +m[3] : 0; }
+  function monthEndKey(y, m) { return y * 10000 + m * 100 + new Date(Date.UTC(y, m, 0)).getUTCDate(); }
+  /** the canonical text the feed stores for a result, so no free text ever leaves the main database */
+  function normOutcome(s) { var c = classResult(cellText(s)); return c === "nonReactive" ? "non-reactive" : c === "reactive" ? "reactive" : c === "notValid" ? "not-valid" : c === "?" ? "other" : ""; }
+
+  function buildStandaloneResults(table) {
+    var out = { records: [], rows: 0, undated: 0, unknown: 0, fatal: null };
+    var t = (table || []).slice();
+    while (t.length && rowBlank(t[0])) t.shift();
+    if (!t.length) { out.fatal = "The result table is empty."; return out; }
+    var c = colMap(t[0].map(String), { date: ["datetesttaken"], outcome: ["reachoutcome", "strresult"], reach: ["reachout", "reachedout"] });
+    if (c.date === undefined && c.outcome === undefined) { out.fatal = "The result table needs a DATE_TEST_TAKEN or REACH_OUTCOME column."; return out; }
+    for (var r = 1; r < t.length; r++) {
+      var row = t[r];
+      if (rowBlank(row)) continue;
+      var d = c.date === undefined ? null : parseDate(row[c.date]);
+      var oc = c.outcome === undefined ? "" : classResult(cellText(row[c.outcome]));
+      if (oc === "?") { oc = "other"; out.unknown++; }
+      out.records.push({ d: d, outcome: oc, reach: c.reach === undefined ? "" : classYesNo(cellText(row[c.reach])) });
+      out.rows++;
+      if (!d) out.undated++;
+    }
+    return out;
+  }
+
+  function buildStandaloneRa(table) {
+    var out = { records: [], rows: 0, undated: 0, unknown: 0, fatal: null };
+    var t = (table || []).slice();
+    while (t.length && rowBlank(t[0])) t.shift();
+    if (!t.length) { out.fatal = "The risk-assessment table is empty."; return out; }
+    var c = colMap(t[0].map(String), { date: ["datetimecollected"], age: ["age"], gender: ["identifiedgender", "gender"], last: ["lasthivtest"], status: ["hivstatus"],
+      kp: ["kpgroup"], prep: ["prepstatus"], eff: ["prepefficacy"], risk: ["riskexposure"] });
+    if (c.date === undefined) { out.fatal = "The risk-assessment table needs a DATE_TIME_COLLECTED column."; return out; }
+    function lab(fn, row, ix) {
+      if (ix === undefined) return "";
+      var v = fn(cellText(row[ix]));
+      if (v === "?") { out.unknown++; return ""; }
+      return v;
+    }
+    for (var r = 1; r < t.length; r++) {
+      var row = t[r];
+      if (rowBlank(row)) continue;
+      var d = parseDate(row[c.date]);
+      var age = c.age === undefined ? null : toAge(row[c.age]);
+      out.records.push({ d: d, age: age, ageBand: ageBandOf(age), gender: lab(classGender, row, c.gender), lastTest: lab(classLastTest, row, c.last),
+        hivStatus: lab(classStatus, row, c.status), kp: lab(classKp, row, c.kp), prep: lab(classPrep, row, c.prep), eff: lab(classEfficacy, row, c.eff), risk: lab(classRisk, row, c.risk) });
+      out.rows++;
+      if (!d) out.undated++;
+    }
+    return out;
+  }
+
+  /** res / ra = the "records" lists from the two builders above. opts: from, to (ISO), suppressBelow, asOf (ISO time of the last refresh) */
+  function computeStandalone(res, ra, opts) {
+    opts = opts || {};
+    res = res || { records: [], rows: 0, undated: 0 }; ra = ra || { records: [], rows: 0, undated: 0 };
+    var min = opts.suppressBelow === undefined ? DEFAULT_MIN : opts.suppressBelow;
+    var hasFrom = !!opts.from, hasTo = !!opts.to;
+    var fromK = hasFrom ? isoKey(opts.from) : 0, toK = hasTo ? isoKey(opts.to) : 99999999;
+    var asOfK = opts.asOf ? isoKey(opts.asOf) : 0;
+    function inRange(r) { if (!r.d) return false; var k = dk(r.d); return k >= fromK && k <= toK; }
+
+    function buckets(recs, allRecs) {
+      var minK = 0, maxK = 0, maxAll = 0;
+      recs.forEach(function (r) { if (!r.d) return; var k = dk(r.d); if (!minK || k < minK) minK = k; if (k > maxK) maxK = k; });
+      allRecs.forEach(function (r) { if (r.d) { var k2 = dk(r.d); if (k2 > maxAll) maxAll = k2; } });
+      var list = [];
+      if (!minK) return list;
+      var sK = Math.max(fromK, minK), eK = Math.min(toK, maxK);
+      if (sK > eK) return list;
+      var y = Math.floor(sK / 10000), m = Math.floor(sK / 100) % 100, yE = Math.floor(eK / 10000), mE = Math.floor(eK / 100) % 100;
+      while (y < yE || (y === yE && m <= mE)) { list.push({ y: y, m: m }); m++; if (m > 12) { m = 1; y++; } }
+      // a month is unfinished when the data (or the end date you chose, if earlier) stops before the month does
+      var dataCut = Math.max(asOfK, maxAll), cut = hasTo ? Math.min(toK, dataCut) : dataCut;
+      return list.map(function (b, i) {
+        var partial = (i === list.length - 1 && monthEndKey(b.y, b.m) > cut) || (i === 0 && hasFrom && fromK > b.y * 10000 + b.m * 100 + 1);
+        return { y: b.y, m: b.m, iso: b.y + "-" + pad2(b.m), partial: partial, month: MONTHS[b.m - 1] + "-" + String(b.y).slice(2) + (partial ? "*" : "") };
+      });
+    }
+    function slot(list, r) { var yy = r.d.y, mm = r.d.m; for (var i = 0; i < list.length; i++) if (list[i].y === yy && list[i].m === mm) return i; return -1; }
+    function block(t) { return t.n > 0 ? { n: t.n, items: suppressList(t.items, min) } : null; }
+    function dateRange(recs) {
+      var lo = 0, hi = 0;
+      recs.forEach(function (r) { if (!r.d) return; var k = dk(r.d); if (!lo || k < lo) lo = k; if (k > hi) hi = k; });
+      function iso(k) { return k ? Math.floor(k / 10000) + "-" + pad2(Math.floor(k / 100) % 100) + "-" + pad2(k % 100) : ""; }
+      return { min: iso(lo), max: iso(hi) };
+    }
+
+    // ---- results sent in on their own (Result Submit): counted by the date the test was taken
+    var inRes = res.records.filter(inRange), resultsBlock = null;
+    if (inRes.length) {
+      var recog = inRes.filter(function (r) { return r.outcome === "nonReactive" || r.outcome === "reactive" || r.outcome === "notValid"; });
+      var cN = recog.filter(function (r) { return r.outcome === "nonReactive"; }).length, cR = recog.filter(function (r) { return r.outcome === "reactive"; }).length, cI = recog.filter(function (r) { return r.outcome === "notValid"; }).length;
+      var outcomes = suppressList([{ label: "Non-reactive", value: cN }, { label: "Reactive", value: cR }, { label: "Not valid", value: cI }], min);
+      var reactiveHidden = outcomes[1].suppressed;
+      var yes = inRes.filter(function (r) { return r.reach === "yes"; }).length, answered = inRes.filter(function (r) { return r.reach; }).length;
+      var rb = buckets(inRes, res.records), rc = rb.map(function () { return [0, 0, 0]; }), rn = rb.map(function () { return 0; });
+      inRes.forEach(function (r) {
+        var i = slot(rb, r); if (i < 0) return;
+        if (r.outcome === "nonReactive") { rc[i][0]++; rn[i]++; } else if (r.outcome === "reactive") { rc[i][1]++; rn[i]++; } else if (r.outcome === "notValid") { rc[i][2]++; rn[i]++; }
+      });
+      resultsBlock = {
+        submitted: recog.length, outcomes: outcomes, reactive_hidden: reactiveHidden, reactive_rate: reactiveHidden ? null : pctOf(cR, recog.length),
+        unrecognised: inRes.length - recog.length,
+        need_assistance: { yes: yes > 0 && yes < min ? null : yes, suppressed: yes > 0 && yes < min, answered: answered, rate: answered && !(yes > 0 && yes < min) ? pctOf(yes, answered) : null },
+        monthly: rb.map(function (b, i) {
+          return { month: b.month, iso: b.iso, partial: b.partial, submitted: rn[i],
+            items: suppressList([{ label: "Non-reactive", value: rc[i][0] }, { label: "Reactive", value: rc[i][1] }, { label: "Not valid", value: rc[i][2] }], min) };
+        })
+      };
+    }
+
+    // ---- risk assessments sent in on their own: counted by the date they were collected
+    var inRa = ra.records.filter(inRange), raBlock = null;
+    if (inRa.length) {
+      var gb = buckets(inRa, ra.records), gcount = gb.map(function () { return [0, 0, 0, 0]; });
+      inRa.forEach(function (r) {
+        var gi = GENDER_MONTHLY.indexOf(r.gender); if (gi === -1) return;
+        var i = slot(gb, r); if (i >= 0) gcount[i][gi]++;
+      });
+      var gT = tally(inRa, function (r) { return r.gender; }, GENDER_LABELS);
+      var ages = inRa.filter(function (r) { return r.age !== null; }).map(function (r) { return r.age; });
+      raBlock = {
+        submitted: inRa.length,
+        gender: block(gT),
+        gender_monthly: gT.n > 0 ? gb.map(function (b, i) {
+          return { month: b.month, iso: b.iso, partial: b.partial, n: gcount[i].reduce(function (a, x) { return a + x; }, 0),
+            items: suppressList(GENDER_MONTHLY.map(function (l, ix) { return { label: l, value: gcount[i][ix] }; }), min) };
+        }) : null,
+        age: block(tally(inRa, function (r) { return r.ageBand; }, bandOrder(inRa))),
+        median_age: ages.length >= min ? median(ages) : null,
+        last_test: block(tally(inRa, function (r) { return r.lastTest; }, LAST_TEST_LABELS)),
+        hiv_status: block(tally(inRa, function (r) { return r.hivStatus; }, STATUS_LABELS)),
+        risk: block(tally(inRa, function (r) { return r.risk; }, RISK_LABELS)),
+        kp: block(tally(inRa, function (r) { return r.kp; }, KP_LABELS)),
+        prep: block(tally(inRa, function (r) { return r.prep; }, PREP_LABELS)),
+        efficacy: block(tally(inRa, function (r) { return r.eff; }, EFF_LABELS))
+      };
+    }
+
+    var rr = dateRange(res.records), ar = dateRange(ra.records);
+    return {
+      empty: !resultsBlock && !raBlock,
+      meta: { suppressBelow: min, from: opts.from || "", to: opts.to || "", asOf: opts.asOf || "",
+        results: { rows: res.rows || 0, undated: res.undated || 0, dataMin: rr.min, dataMax: rr.max },
+        ra: { rows: ra.rows || 0, undated: ra.undated || 0, dataMin: ar.min, dataMax: ar.max } },
+      results: resultsBlock, ra: raBlock
+    };
+  }
+
   return {
     MONTHS: MONTHS, DAYS: DAYS, BLANK: BLANK, AGE_LABELS: AGE_LABELS, KP_LABELS: KP_LABELS, PREP_LABELS: PREP_LABELS, EFF_LABELS: EFF_LABELS,
     deriveDerived: deriveDerived, deriveKp: deriveKp, classKp: classKp, classPrep: classPrep, classEfficacy: classEfficacy,
     DEFAULT_REGIONS: DEFAULT_REGIONS, regionMap: regionMap,
     parseDate: parseDate, fmtIso: fmtIso, toAge: toAge, ageBandOf: ageBandOf, normKey: normKey,
     mapColumns: mapColumns, normHeader: normHeader,
-    buildRecords: buildRecords, computeData: computeData, suppressList: suppressList
+    buildRecords: buildRecords, computeData: computeData, suppressList: suppressList,
+    normOutcome: normOutcome, classYesNo: classYesNo, cellText: cellText,
+    buildStandaloneResults: buildStandaloneResults, buildStandaloneRa: buildStandaloneRa, computeStandalone: computeStandalone
   };
 })();
 
@@ -1603,7 +1811,8 @@ var HIVST_DEMO = (function () {
   var S = { page: "analysis", state: "", view: "", from: "", to: "", cmpMode: "prev", cmpFrom: "", cmpTo: "", min: 5 };
   var DATA = null, DATA_B = null, BOUNDS = { min: "", max: "" };
   var RAW = null, rawHas = {}, ctxInfo = { states: [], fileName: "" };
-  var reader = { idToken: null, allowed: [] };
+  var reader = { idToken: null, allowed: [], canStandalone: false };
+  var SA = null, memoSA = {};
   var reqId = 0, memo = {}, memoCount = 0;
   var cmpSort = { key: "orders", dir: -1 };
 
@@ -1759,12 +1968,12 @@ var HIVST_DEMO = (function () {
     var R = D.results, A = D.assessment, min = D.meta.suppressBelow, ro = D.reach_out, r1 = [], r2 = [];
     if (R) {
       var oc = R.outcomes, cell = function (o) { return o.suppressed ? hid(min, o) : fmtInt(o.value); }, share = function (o) { return o.suppressed ? "count hidden" : fmtPct((o.value / R.submitted) * 100) + " of submitted"; };
-      r1.push(kpi("Total Submit", fmtInt(R.submitted), fmtPct(R.submission_rate) + " of " + fmtInt(D.kpis.total_kits) + " orders"));
+      r1.push(kpi("Total Submit", fmtInt(R.submitted), fmtPct(R.submission_rate) + " of " + fmtInt(D.kpis.total_kits) + " orders · with orders only"));
       r1.push(kpi("Non-Reactive", cell(oc[0]), share(oc[0])));
       r1.push(kpi("Reactive", cell(oc[1]), oc[1].suppressed ? "count hidden" : (R.reactive_rate !== null ? fmtPct(R.reactive_rate) + " of submitted" : "")));
       r1.push(kpi("Not-Valid", cell(oc[2]), share(oc[2])));
     }
-    if (ro) r1.push(kpi("Need Assistance", ro.suppressed ? hid(min) : fmtInt(ro.yes), ro.suppressed ? "count hidden" : fmtPct(ro.rate) + " of " + fmtInt(ro.answered) + " who answered"));
+    if (ro) r1.push(kpi("Need Assistance", ro.suppressed ? hid(min) : fmtInt(ro.yes), ro.suppressed ? "count hidden" : fmtPct(ro.rate) + " of " + fmtInt(ro.answered) + " who answered · with orders only"));
     if (A) {
       r2.push(kpi("Total Respondents", fmtInt(A.completed), fmtPct(A.completion_rate) + " of orders"));
       if (A.first_time_pct !== null) r2.push(kpi("First-time Testers", fmtPct(A.first_time_pct), "Never had an HIV test"));
@@ -2134,12 +2343,13 @@ var HIVST_DEMO = (function () {
     $("footerNotes").innerHTML =
       "<div><b>Scope:</b> " + fmtInt(k.total_kits) + " order records" + (meta.scopeText ? ", " + esc(meta.scopeText) : "") + ", " + esc(k.date_min) + " – " + esc(k.date_max) + ". " + esc(meta.statusText || "") + "</div>" +
       "<div><b>How orders are counted:</b> every order with an ORDER_ID counts once, including event hand-outs. State and district rankings count Delivery and Self pick-up only, as in the HIVnext dashboard. Results, assessments, gender, age and risk answers come from the same order records, so they are never mixed with the separate Risk Assessment or Result Submit tables.</div>" +
-      "<div><b>Risk assessment and results:</b> people reach the assessment in three ways: the public “Take the Risk Assessment” page, when they order a kit for the first time, or when they reorder after 3–6 months (which needs the result of the previous kit). This dashboard counts the assessments completed with an order and the results recorded against orders; assessments taken on the public page without ordering are a separate table and are not included.</div>" +
+      "<div><b>Risk assessment and results:</b> people reach the assessment in three ways: the public “Take the Risk Assessment” page, when they order a kit for the first time, or when they reorder after 3–6 months (which needs the result of the previous kit). This dashboard counts the assessments completed with an order and the results recorded against orders; assessments and results submitted outside the ordering process are kept in separate tables with no order ID, state or district, so they cannot be shown by area and are not included. Totals here will therefore be lower than any figure that counts those separate submissions.</div>" +
       "<div><b>Month in progress:</b> the latest month is shown while it is still running (marked with *), but it is left out of the averages, medians, lowest and peak month, momentum and yearly averages, because a part-month would make them look too low. It counts in every total. A start date picked inside a month does the same for that month. The first month of data (the launch month) is treated as a normal month.</div>" +
       "<div><b>Small numbers:</b> counts of 1 to " + (min - 1) + " in results, gender, age, risk and comparison figures show as “&lt;" + min + "” or are left out" + (min ? "; where exactly one small count is hidden, the next-smallest value is hidden with it and both read “hidden” (one of the two is under " + min + "), so a total cannot reveal it" : "") + ".</div>" +
       "<div><b>Source:</b> " + esc(meta.sourceText || "") + "</div>";
   }
   function updateHeader(D) {
+    if (HERO_SUB_ORDERS !== null) $("heroSub").textContent = HERO_SUB_ORDERS;
     if (D && D.meta && D.meta.dataMin) BOUNDS = { min: D.meta.dataMin, max: D.meta.dataMax };
     var f = S.from || BOUNDS.min, t = S.to || BOUNDS.max;
     $("dateLabel").textContent = BOUNDS.min ? (S.from || S.to ? fmtDate(f) + " – " + fmtDate(t) : "All data · " + fmtDate(f) + " – " + fmtDate(t)) : "All data";
@@ -2152,15 +2362,132 @@ var HIVST_DEMO = (function () {
     }
   }
 
+  // ============================================================== 4. STANDALONE SUBMISSIONS (national access only)
+  // Results and risk assessments sent in outside the ordering process. No order ID, state or district, so national only.
+  // The Reader decides who may have this (from the Access tab); hiding the tab here is only a convenience.
+  var SA_TEXT = {
+    forbidden: "Standalone submissions are only available with national access.",
+    empty: "Standalone results and assessments have not been set up for this dashboard yet.",
+    none: "There are no standalone results or assessments in these dates. Use the date filter (top right) and pick “All data” or a wider range."
+  };
+  function saMessage(text) {
+    var el = $("saMsg"); el.textContent = text; el.hidden = !text;
+    show("secSaResults", false); show("secSaRisk", false);
+    killChart("cSaOutcome"); killChart("cSaResults"); killChart("cSaGender");
+    $("footerNotes").innerHTML = "";
+  }
+  var HERO_SUB_ORDERS = null;   // the header text of the order tabs, restored when you leave the standalone tab
+  function saHero(D) {
+    if (HERO_SUB_ORDERS === null) HERO_SUB_ORDERS = $("heroSub").textContent;
+    $("heroSub").textContent = "Results and risk assessments that people sent in on their own, outside the ordering process. National totals, month by month, counted by the date of the test or the assessment.";
+    var lo = "", hi = "";
+    [D.meta.results, D.meta.ra].forEach(function (m) { if (m.dataMin && (!lo || m.dataMin < lo)) lo = m.dataMin; if (m.dataMax && m.dataMax > hi) hi = m.dataMax; });
+    var f = S.from && S.from > lo ? S.from : lo, t = S.to && S.to < hi ? S.to : hi;
+    $("heroTitle").textContent = "Standalone Submissions — National";
+    if (!S.from && !S.to && lo && hi) $("dateLabel").textContent = "All data · " + fmtDate(lo) + " – " + fmtDate(hi);   // the range of THIS data, not of the orders
+    $("bPeriod").textContent = f && t ? longMonth(f.slice(0, 7)) + " – " + longMonth(t.slice(0, 7)) : "—";
+    $("bState").textContent = "National";
+    $("bRecords").textContent = [D.results ? fmtInt(D.results.submitted) + " results" : "", D.ra ? fmtInt(D.ra.submitted) + " assessments" : ""].filter(Boolean).join(" · ") || "none";
+  }
+  function saMonthly(list, keys) { return list.map(function (m) { var o = { month: m.month, iso: m.iso }; keys.forEach(function (k, i) { o[k] = m.items[i].value; }); return o; }); }
+  function saSeries(monthly, defs) {   // defs: [label, key, colour pair]
+    var shown = defs.filter(function (d) { return monthly.some(function (m) { return m[d[1]] !== null && m[d[1]] > 0; }); });
+    return { shown: shown, gone: defs.filter(function (d) { return shown.indexOf(d) === -1; }) };
+  }
+  function saMonthlyChart(id, lgId, capId, list, keys, defs, what, min) {
+    var mm = saMonthly(list, keys), ss = saSeries(mm, defs);
+    $(lgId).innerHTML = ss.shown.map(function (d) { return swatch(d[2][1], d[0]); }).join("");
+    $(capId).textContent = what + "; a missing bar is a hidden small number (under " + min + ")"
+      + (list.some(function (m) { return m.partial; }) ? " · * month still in progress" : "")
+      + (ss.gone.length ? " · not shown, under " + min + " in every month: " + ss.gone.map(function (d) { return d[0]; }).join(", ") : "");
+    if (ss.shown.length) stackedMonthly(id, mm, ss.shown.map(function (d) { return { name: d[0], key: d[1], pair: d[2] }; })); else killChart(id);
+  }
+  function renderSaResults(D) {
+    var R = D.results, min = D.meta.suppressBelow, oc = R.outcomes, na = R.need_assistance;
+    var cell = function (o) { return o.suppressed ? hid(min, o) : fmtInt(o.value); };
+    var share = function (o) { return o.suppressed ? "count hidden" : fmtPct((o.value / R.submitted) * 100) + " of submitted"; };
+    $("saResTag").textContent = fmtInt(R.submitted) + " results";
+    $("saResKpis").innerHTML = kpi("Total Submit", fmtInt(R.submitted), R.unrecognised ? fmtInt(R.unrecognised) + " more without a recognised result" : "with a recognised result")
+      + kpi("Non-Reactive", cell(oc[0]), share(oc[0]))
+      + kpi("Reactive", cell(oc[1]), oc[1].suppressed ? "count hidden" : (R.reactive_rate !== null ? fmtPct(R.reactive_rate) + " of submitted" : ""))
+      + kpi("Not-Valid", cell(oc[2]), share(oc[2]))
+      + kpi("Need Assistance", na.suppressed ? hid(min) : fmtInt(na.yes), na.suppressed ? "count hidden" : (na.rate !== null ? fmtPct(na.rate) + " of " + fmtInt(na.answered) + " who answered" : ""));
+    var vis = oc.filter(function (o) { return !o.suppressed && o.value > 0; }), oHid = oc.filter(function (o) { return o.suppressed; }).length;
+    $("saCapOutcome").textContent = nNote(R.submitted, "submitted results") + (oHid ? " · " + oHid + " outcome" + (oHid > 1 ? "s" : "") + " under " + min + " hidden" : "");
+    if (vis.length) mkChart("cSaOutcome", { type: "doughnut", data: { labels: vis.map(function (o) { return o.label; }), datasets: [{ data: vis.map(function (o) { return o.value; }), backgroundColor: vis.map(function (o) { return OUTCOME_COLORS[oc.indexOf(o)][1]; }), borderColor: "#fff", borderWidth: 2 }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: "50%", plugins: { legend: { position: "right", labels: { usePointStyle: true, font: { size: 12 }, color: INK } },
+        tooltip: tipWith({ label: function (i) { return i.label + ": " + fmtInt(i.parsed) + " (" + fmtPct((i.parsed / R.submitted) * 100) + " of submitted)"; } }), sliceLabels: { on: true } } }, plugins: [sliceLabels] });
+    else killChart("cSaOutcome");
+    saMonthlyChart("cSaResults", "saLgResults", "saCapResults", R.monthly, ["non", "rea", "inv"],
+      [["Non-reactive", "non", OUTCOME_COLORS[0]], ["Reactive", "rea", OUTCOME_COLORS[1]], ["Not valid", "inv", OUTCOME_COLORS[2]]], "Counts by the date the test was taken", min);
+  }
+  function renderSaRisk(D) {
+    var A = D.ra, min = D.meta.suppressBelow;
+    $("saRaTag").textContent = fmtInt(A.submitted) + " assessments";
+    var tiles = [kpi("Assessments", fmtInt(A.submitted), "collected on their own")];
+    var never = A.last_test ? A.last_test.items[3] : null;
+    if (never) tiles.push(kpi("Never Tested", never.suppressed ? hid(min, never) : fmtInt(never.value), never.suppressed ? "count hidden" : fmtPct((never.value / A.last_test.n) * 100) + " of " + fmtInt(A.last_test.n) + " who answered"));
+    if (A.median_age !== null) tiles.push(kpi("Median Age", A.median_age, "Years"));
+    $("saRaKpis").innerHTML = tiles.join("");
+    var gBox = $("cSaGender").parentNode.parentNode;
+    show(gBox, !!A.gender_monthly);
+    if (A.gender_monthly) saMonthlyChart("cSaGender", "saLgGender", "saCapGenderM", A.gender_monthly, ["m", "f", "r", "t"],
+      [["Male", "m", PAL.just], ["Female", "f", PAL.sky], ["Rather not say", "r", PAL.mint], ["Transgender", "t", PAL.royal]], "Assessments by month collected, by gender", min);
+    else killChart("cSaGender");
+    [["gender", A.gender, "royal"], ["age", A.age, "sky"], ["last", A.last_test, ""], ["status", A.hiv_status, "sky"], ["risk", A.risk, "green"], ["kp", A.kp, "royal"], ["prep", A.prep, "sky"], ["eff", A.efficacy, "green"]].forEach(function (x) {
+      $("saCap_" + x[0]).textContent = x[1] ? nNote(x[1].n, "answered") : "";
+      $("saList_" + x[0]).innerHTML = listCard(x[1], x[2], min);
+    });
+  }
+  function renderStandalone(D) {
+    $("saMsg").hidden = true;
+    saHero(D);
+    if (D.empty) { saMessage(SA_TEXT.none); return; }
+    show("secSaResults", !!D.results); show("secSaRisk", !!D.ra);
+    if (D.results) renderSaResults(D); else { killChart("cSaOutcome"); killChart("cSaResults"); }
+    if (D.ra) renderSaRisk(D); else killChart("cSaGender");
+    var und = [];
+    if (D.meta.results.undated) und.push(fmtInt(D.meta.results.undated) + " results");
+    if (D.meta.ra.undated) und.push(fmtInt(D.meta.ra.undated) + " assessments");
+    $("footerNotes").innerHTML = "<div><b>Scope:</b> national totals from results and risk assessments sent in outside the ordering process. They have no order ID, state or district, so they cannot be shown by area. They are never mixed with the order-based tabs.</div>"
+      + "<div><b>How these are counted:</b> results are counted by the date the test was taken, and only recognised outcomes (non-reactive, reactive, not valid) count as submitted; Need Assistance counts every result where help was asked for. Assessments are counted by the date they were collected." + (und.length ? " " + und.join(" and ") + " have no date, so they cannot be placed in any period and are not counted." : "") + "</div>"
+      + "<div><b>Small numbers:</b> counts of 1–" + (D.meta.suppressBelow - 1) + " are hidden so that no individual can be identified.</div>";
+  }
+  function queryStandalone(p) {
+    var key = JSON.stringify([p.from, p.to]);
+    if (memoSA[key]) return Promise.resolve(memoSA[key]);
+    return fetch(CONFIG.apiUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ idToken: reader.idToken, action: "standalone", from: p.from, to: p.to }) })
+      .then(function (r) { return r.json(); }).then(function (res) { if (res && res.ok) memoSA[key] = res; return res; });
+  }
+  function refreshStandalone(my) {
+    return queryStandalone({ from: S.from, to: S.to }).then(function (res) {
+      if (my !== reqId) return;
+      setBusy(false);
+      if (!res || !res.ok) {
+        var code = res && res.error;
+        if (code === "auth" || code === "server" || !code) { readerFailed(code || "server"); return; }
+        if (code === "forbidden") { reader.canStandalone = false; show("tabStandalone", false); }
+        show("gate", false); show("mainContent", true); hideNote();
+        saMessage(code === "forbidden" ? SA_TEXT.forbidden : SA_TEXT.empty);
+        return;
+      }
+      SA = res.data; show("gate", false); show("mainContent", true); hideNote();
+      renderStandalone(SA);
+    }).catch(function () { if (my === reqId) { setBusy(false); showGate(ERR_TEXT.server, "err"); } });
+  }
+
   // ============================================================== PAGE CONTROL
-  var PAGES = ["analysis", "compare", "risk"];
+  var PAGES = ["analysis", "compare", "risk", "standalone"];
   function showPage(p) {
     S.page = p;
     Array.prototype.forEach.call($("tabs").querySelectorAll(".tab"), function (b) { b.setAttribute("aria-selected", b.getAttribute("data-page") === p ? "true" : "false"); });
+    Array.prototype.forEach.call($("tabs").querySelectorAll(".tab"), function (b) { if (b.getAttribute("data-page") === p && b.scrollIntoView) { try { b.scrollIntoView({ inline: "nearest", block: "nearest" }); } catch (e) { /* older browsers */ } } });
     PAGES.forEach(function (id) { show("page-" + id, id === p); });
+    if (MODE === "reader") show("viewWrap", p !== "standalone" && !!reader.allowed && reader.allowed.length > 1);   // standalone figures are national, not per view
   }
   function renderAll() {
     var D = DATA;
+    if (S.page === "standalone") { PAGES.forEach(function (id) { show("page-" + id, S.page === id); }); if (SA) renderStandalone(SA); return; }
     updateHeader(D);
     $("emptyMsg").hidden = true;
     var hideAll = function () { PAGES.forEach(function (id) { show("page-" + id, false); }); };
@@ -2191,8 +2518,24 @@ var HIVST_DEMO = (function () {
     return fetch(CONFIG.apiUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ idToken: reader.idToken, view: S.view, from: p.from, to: p.to }) })
       .then(function (r) { return r.json(); }).then(done);
   }
+  // loading notice: the Reader can take several seconds (more the first time for a new date range), and the page
+  // would otherwise look empty. The text escalates so a long wait is explained, never silent.
+  var busyTimer = null;
+  function setBusy(on) {
+    var el = $("busy"); if (!el) return;
+    clearTimeout(busyTimer);
+    if (!on) { el.hidden = true; return; }
+    $("busyText").textContent = "Loading…";
+    el.hidden = false;
+    busyTimer = setTimeout(function () {
+      $("busyText").textContent = "Still working… a new date range or tab can take up to 30 seconds the first time";
+      busyTimer = setTimeout(function () { $("busyText").textContent = "Taking longer than usual… please wait, or reload the page"; }, 25000);
+    }, 5000);
+  }
   function refresh() {
     var my = ++reqId;
+    if (MODE === "reader") setBusy(true);
+    if (S.page === "standalone" && MODE === "reader") return refreshStandalone(my);
     var pA = { from: S.from, to: S.to };
     var chain = query(pA).then(function (res) {
       if (my !== reqId) return null;
@@ -2206,10 +2549,11 @@ var HIVST_DEMO = (function () {
       return query({ from: rb.from, to: rb.to }).then(function (rB) { if (my !== reqId) return null; DATA_B = rB && rB.ok ? rB.data : null; return res; });
     });
     return chain.then(function (res) {
+      if (my === reqId) setBusy(false);
       if (my !== reqId || res === null) return;
       if (MODE === "reader") { show("gate", false); show("mainContent", true); hideNote(); }
       renderAll();
-    }).catch(function () { if (my === reqId && MODE === "reader") showGate(ERR_TEXT.server, "err"); });
+    }).catch(function () { if (my === reqId) setBusy(false); if (my === reqId && MODE === "reader") showGate(ERR_TEXT.server, "err"); });
   }
 
   // ---------------------------------------------------------- date popover
@@ -2317,7 +2661,7 @@ var HIVST_DEMO = (function () {
   // ---------------------------------------------------------- reader (sign-in) mode
   var ERR_TEXT = {
     auth: "Your sign-in could not be verified (it may have expired). Please sign in again.",
-    forbidden: "This Google account is not authorised for this dashboard. Ask the M&amp;E team to add your government email.",
+    forbidden: "This Google account is not authorised to see this view. If you should have access, ask the M&amp;E team to check that your government email and its state or region are on the list.",
     empty: "No data is available for this view yet.",
     server: "The dashboard service did not respond. Please try again in a minute."
   };
@@ -2340,6 +2684,7 @@ var HIVST_DEMO = (function () {
     });
     sel.innerHTML = html; sel.value = j.view;
     show("viewWrap", j.allowed.length > 1);
+    reader.canStandalone = !!j.canStandalone; show("tabStandalone", reader.canStandalone);   // set by the Reader from the Access tab: national only
     $("rdUser").textContent = emailFromToken(reader.idToken) || "signed in";
     $("rdUpdated").textContent = j.feedUpdatedAt ? "· data updated " + new Date(j.feedUpdatedAt).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }) : "";
     $("srcName").textContent = j.label || "";
@@ -2355,6 +2700,7 @@ var HIVST_DEMO = (function () {
     $("viewSelect").addEventListener("change", function (e) { S.view = e.target.value; refresh(); });
     $("btnSignOut").addEventListener("click", function () {
       reader.idToken = null; S.view = ""; DATA = null; DATA_B = null; memo = {}; memoCount = 0;
+      SA = null; memoSA = {}; reader.canStandalone = false; show("tabStandalone", false); if (S.page === "standalone") showPage("analysis");
       if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
       destroyCharts();
       showGate("You have been signed out.", "info");
