@@ -301,12 +301,17 @@ const CHANGELOG = [
   {
     "date": "2026-09-12",
     "title": "Data Engine Refinement",
-    "desc": "All Legacy databases now load far faster. The Query + IMPORTRANGE formulas that previously pulled data from the main table on every open have been replaced by Google Apps Script jobs that write the data directly into each NGO database. Sheets open on the data that is already there instead of recalculating it."
+    "desc": "Legacy sheets now open significantly faster. Instead of recalculating heavy formulas every time a sheet is opened, the system now updates data automatically in the background. Your data is ready the moment you open the file."
   },
   {
     "date": "2026-09-19",
     "title": "HIVnext Redesign (v2.0)",
-    "desc": "hivnext.org rebuilt from the ground up. New launch screen with direct routes to every platform, dedicated pages that survive a refresh (/about, /legacy, /myvas), MyVAS user and admin guides in English, a redesigned Legacy guide, a Data Correction Request form and a Report a Bug form. The browser-only CMS has been removed in favour of a single editable config file."
+    "desc": "hivnext.org has a fresh look and major performance upgrades. Highlights include: a cleaner homepage with direct links to every platform, dedicated URLs that won't break on page refresh (/about, /legacy, /myvas), updated user and admin guides, and direct forms to report bugs or request data corrections."
+  },
+  {
+    "date": "2026-10-06",
+    "title": "The All-new TestNow Dashboard",
+    "desc": "Introduced the brand-new TestNow Dashboard within the Legacy system. Authorized users can now view their state's dashboard to track real-time testing progress and key program metrics at a glance."
   }
 ];
 
