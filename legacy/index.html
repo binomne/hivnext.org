@@ -13,12 +13,45 @@
 </script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HIVnext Legacy — databases, dashboards & Link to Care guide</title>
-<meta name="description" content="Archive of 2024–2026 DHSKP and TestNow data: every NGO database and dashboard, the All-NGO dashboard, the Link to Care guide, and the data correction request form.">
+<meta name="description" content="Archive of 2024–2026 DHSKP and TestNow data: every NGO database and dashboard, the All-NGO dashboard, the TestNow dashboard and its privacy notice, the Link to Care guide, and the data correction request form.">
 <meta name="theme-color" content="#020B1C">
 <link rel="icon" href="/assets/logos/hivnext-emblem.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css">
+<style>
+/* Legacy hero = the MyVAS route cards (all structure and motion come from style.css); only the colours of the four cards are defined here */
+.route--ngo{--rbg:linear-gradient(165deg,#2C4E78 0%,#003366 100%)}
+.route--testnow{--rbg:linear-gradient(165deg,#1B8A55 0%,#0B5F45 55%,#06423A 100%)}   /* deep green: the logo's own light green stays readable even on hover */
+.route--guide{--rbg:linear-gradient(165deg,#63C9E3 0%,#0B7FB3 60%,#0059B3 100%)}
+.route--fix{--rbg:linear-gradient(165deg,#2D89E5 0%,#0059B3 60%,#003366 100%)}
+.route--testnow .route__in{justify-content:flex-end}
+.route--testnow:hover .route__logo,.route--testnow:focus-within .route__logo{transform:translate(-50%,-90%)}
+.route--testnow .route__logo{height:30px}
+/* four cards instead of three: slightly tighter padding and title size so every title fits */
+.trio--4 .route__in{padding-left:clamp(18px,2.4vw,40px);padding-right:clamp(18px,2.4vw,40px)}
+.trio--4 .route:first-child .route__in{padding-left:calc(var(--over) * 2.4 + 18px)}
+.trio--4 .route:last-child .route__in{padding-right:calc(var(--over) * 1.5 + 20px)}   /* the outer cards overhang the screen edge by design: keep their text inside the visible part */
+.trio--4 .route__title{font-size:clamp(1.15rem,1.6vw,1.6rem)}
+/* between phone and wide desktop four slanted columns are too cramped: use the same stacked look the stylesheet uses on phones, as a 2 x 2 grid */
+@media (min-width:861px) and (max-width:1120px){
+  .myvas-launch{min-height:0}
+  .myvas-launch__intro{padding:44px 0 20px}
+  .mstage{overflow:visible;padding:0 20px 28px;min-height:0}
+  .trio--4{--skew:0deg;--over:0px;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0}
+  .trio--4 .route{transform:none;min-height:190px;border-radius:12px}
+  .trio--4 .route::before{display:none}
+  .trio--4 .route__bg,.trio--4 .route__in{transform:none}
+  .trio--4 .route__bg{opacity:1}
+  .trio--4 .route__in{position:relative;padding:22px!important;min-height:190px;align-items:flex-start;text-align:left;justify-content:flex-end}
+  .trio--4 .route__logo{position:static;transform:none!important;height:30px;margin:0 0 10px}
+  .trio--4 .route__desc{max-height:none;opacity:.9}
+  .trio--4 .route:hover{flex-grow:0}
+}
+.launch-note{width:100%;max-width:none;margin:0;padding:14px 20px 18px;text-align:center;font-size:.85rem;color:rgba(247,255,254,.72);background:var(--deep)}
+.launch-note a{color:var(--sky);text-decoration:underline;text-underline-offset:3px}
+.launch-note a:hover{color:#fff}
+</style>
 
 </head>
 <body>
@@ -35,17 +68,54 @@
   </div>
 </header>
 
-<section class="page-hero page-hero--legacy">
-  <div class="wrap">
+<section class="myvas-launch">
+  <div class="wrap myvas-launch__intro">
     <span class="kicker">Archive system · 2024 – 2026</span>
     <h1>HIVnext Legacy</h1>
     <p class="lede">Historical DHSKP and TestNow data, consolidated and accessible through this archive. Legacy is the bridge between three years of Google Workspace records and the new cloud database.</p>
-    <p class="hero-actions" style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:none;margin:28px auto 0">
-      <a class="btn btn--light" href="#access">Databases &amp; dashboards</a>
-      <a class="btn btn--ghost" style="color:#fff;border-color:rgba(255,255,255,.6)" href="#guide">Link to Care guide</a>
-      <a class="btn btn--ghost" style="color:#fff;border-color:rgba(255,255,255,.6)" href="#correction">Data correction request</a>
-    </p>
   </div>
+  <div class="mstage">
+    <div class="trio trio--4" id="trio">
+      <a class="route route--ngo" href="#access">
+        <span class="route__bg"></span>
+        <span class="route__in">
+          <span class="route__who">NGO users &amp; Program Managers</span>
+          <span class="route__title">Databases &amp; dashboards</span>
+          <span class="route__desc">Open your NGO's database or dashboard, or the All-NGO performance dashboard.</span>
+          <span class="route__cta">Find your NGO</span>
+        </span>
+      </a>
+      <a class="route route--testnow" href="/legacy/testnow/">
+        <span class="route__bg"></span>
+        <span class="route__in">
+          <img class="route__logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MjIuMTggMTQ1LjExIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjRkZGRkZGOwogICAgICB9CgogICAgICAuY2xzLTIgewogICAgICAgIGZpbGw6ICM3NkQxNjY7CiAgICAgIH0KICAgIDwvc3R5bGU+CiAgPC9kZWZzPgogIDxnIGlkPSJMYXllcl8yLTIiIGRhdGEtbmFtZT0iTGF5ZXIgMiI+CiAgICA8ZyBpZD0iVGVzdE5vdyI+CiAgICAgIDxnPgogICAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ1LjU5LDg3LjU2aC0xNy40NXYzMy43N2MwLDIuOTEuNjYsNSwxLjk3LDYuMjYsMS4zMSwxLjI3LDMuMjYsMS45Nyw1Ljg0LDIuMTEsMi41OC4xNCw1Ljc5LjEyLDkuNjQtLjA3djEzLjY1Yy0xMS42MywxLjQxLTE5Ljk4LjQtMjUuMDUtMy4wM3MtNy42LTkuNzMtNy42LTE4Ljkzdi0zMy43N0gwdi0xNC42M2gxMi45NXYtMTUuMmwxNS4yLTQuNXYxOS43aDE3LjQ1djE0LjYzWiIvPgogICAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTY4LjUzLDExNC41OGMxLjEzLDUuMzUsMy43LDkuNDUsNy43NCwxMi4zMSw0LjAzLDIuODYsOC45Niw0LjI5LDE0Ljc4LDQuMjksOC4wNywwLDE0LjEyLTIuOTEsMTguMTUtOC43MmwxMi41Miw3LjMyYy02Ljk0LDEwLjIzLTE3LjIyLDE1LjM0LTMwLjgyLDE1LjM0LTExLjQ1LDAtMjAuNjktMy40OS0yNy43Mi0xMC40OC03LjA0LTYuOTktMTAuNTUtMTUuODMtMTAuNTUtMjYuNTNzMy40Ny0xOS4zLDEwLjQxLTI2LjM5YzYuOTQtNy4wOCwxNS44NS0xMC42MiwyNi43NC0xMC42MiwxMC4zMiwwLDE4Ljc5LDMuNjEsMjUuNCwxMC44NCw2LjYxLDcuMjMsOS45MiwxNiw5LjkyLDI2LjMxLDAsMS42LS4xOSwzLjcxLS41Niw2LjMzaC01Ni4wMVpNNjguMzksMTAyLjE5aDQxLjM3Yy0xLjAzLTUuNzItMy40LTEwLjA0LTcuMTEtMTIuOTUtMy43MS0yLjkxLTguMDQtNC4zNi0xMy4wMi00LjM2LTUuNjMsMC0xMC4zMiwxLjU1LTE0LjA3LDQuNjQtMy43NSwzLjEtNi4xNSw3LjMyLTcuMTgsMTIuNjdaIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTQ5LjMsOTIuMjVjMCwyLjMyLDEuMyw0LjE1LDMuOSw1LjQ5LDIuNiwxLjM0LDUuNzIsMi41Nyw5LjM2LDMuNywzLjY0LDEuMTIsNy4zNywyLjI3LDExLjE5LDMuNDVzNy4wMSwzLjM1LDkuNTcsNi41M2MyLjU2LDMuMTgsMy44NCw3LjE5LDMuODQsMTIuMDMsMCw2Ljc1LTIuNiwxMi4wNi03LjgxLDE1LjktNS4yMSwzLjg1LTExLjc1LDUuNzctMTkuNjMsNS43Ny02Ljk0LDAtMTIuOS0xLjQ2LTE3Ljg3LTQuMzYtNC45Ny0yLjkxLTguNTgtNi45NC0xMC44NC0xMi4xbDEzLjA5LTcuNmMyLjQ0LDYuNzUsNy42NSwxMC4xMywxNS42MiwxMC4xM3MxMS45Ni0yLjYzLDExLjk2LTcuODhjMC0yLjI1LTEuMjktNC4wOC0zLjg3LTUuNDktMi41OC0xLjQxLTUuNjktMi42Ny05LjMzLTMuNzktMy42NC0xLjEyLTcuMzctMi4yNy0xMS4xOS0zLjQ1LTMuODItMS4xNy03LjAyLTMuMjktOS42LTYuMzQtMi41OC0zLjA1LTMuODctNi45Mi0zLjg3LTExLjYxLDAtNi40NywyLjQ2LTExLjY4LDcuMzktMTUuNjJzMTEuMDUtNS45MSwxOC4zNi01LjkxYzUuODIsMCwxMSwxLjI5LDE1LjU1LDMuODcsNC41NSwyLjU4LDguMDQsNi4xNywxMC40OCwxMC43N2wtMTIuODEsNy4xOGMtMi40NC01LjM1LTYuODUtOC4wMi0xMy4yMy04LjAyLTIuOTEsMC01LjM1LjYzLTcuMzIsMS44OC0xLjk3LDEuMjUtMi45NiwzLjA4LTIuOTYsNS40OVoiLz4KICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yMzYuOTcsODcuNTZoLTE3LjQ1djMzLjc3YzAsMi45MS42Niw1LDEuOTcsNi4yNiwxLjMxLDEuMjcsMy4yNiwxLjk3LDUuODQsMi4xMSwyLjU4LjE0LDUuNzkuMTIsOS42NC0uMDd2MTMuNjVjLTExLjYzLDEuNDEtMTkuOTguNC0yNS4wNS0zLjAzcy03LjYtOS43My03LjYtMTguOTN2LTMzLjc3aC0xMi45NXYtMTQuNjNoMTIuOTV2LTE1LjJsMTUuMi00LjV2MTkuN2gxNy40NXYxNC42M1oiLz4KICAgICAgICA8cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0yODQuNDIsNzEuMjRjOC41NCwwLDE1LjI3LDIuNiwyMC4xOSw3LjgxLDQuOTMsNS4yMSw3LjM5LDEyLjIyLDcuMzksMjEuMDR2NDMuMmgtOS4yOXYtNDMuMmMwLTYuMjgtMS42Ny0xMS4xNi01LTE0LjYzLTMuMzMtMy40Ny04LjA1LTUuMjEtMTQuMTQtNS4yMS02Ljc1LDAtMTIuMjQsMi4xNC0xNi40Niw2LjQtNC4yMiw0LjI3LTYuMzMsMTAuODYtNi4zMywxOS43N3YzNi44N2gtOS4yOXYtNzAuMzZoOS4yOXYxMC45OGM1LjI1LTguNDQsMTMuMTMtMTIuNjYsMjMuNjQtMTIuNjZaIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMzg5LjA1LDEzNC4zNWMtNy4xOCw3LjA4LTE1LjkzLDEwLjYyLTI2LjI0LDEwLjYycy0xOS4wNy0zLjU0LTI2LjI0LTEwLjYyYy03LjE4LTcuMDgtMTAuNzctMTUuODMtMTAuNzctMjYuMjRzMy41OS0xOS4xNiwxMC43Ny0yNi4yNGM3LjE4LTcuMDgsMTUuOTItMTAuNjIsMjYuMjQtMTAuNjJzMTkuMDcsMy41NCwyNi4yNCwxMC42MmM3LjE4LDcuMDgsMTAuNzYsMTUuODMsMTAuNzYsMjYuMjRzLTMuNTksMTkuMTYtMTAuNzYsMjYuMjRaTTM0My4xLDEyNy44N2M1LjM1LDUuNCwxMS45MSw4LjA5LDE5LjcsOC4wOXMxNC4zNS0yLjcsMTkuNy04LjA5YzUuMzUtNS4zOSw4LjAyLTExLjk4LDguMDItMTkuNzdzLTIuNjctMTQuMzgtOC4wMi0xOS43N2MtNS4zNS01LjM5LTExLjkyLTguMDktMTkuNy04LjA5cy0xNC4zNSwyLjctMTkuNyw4LjA5Yy01LjM1LDUuNC04LjAyLDExLjk5LTguMDIsMTkuNzdzMi42NywxNC4zOCw4LjAyLDE5Ljc3WiIvPgogICAgICA8L2c+CiAgICAgIDxwYXRoIGlkPSJDaGVja21hcmsiIGNsYXNzPSJjbHMtMiIgZD0iTTQ3My4wOCwxMDQuMTFjLS42Mi0xLjA1LTEuMjQtMi4wOS0xLjg4LTMuMTEtMS4zLTIuMTItMi42OS00LjMzLTQuMTgtNi42NC0uNDMtLjY4LS44OC0xLjM1LTEuMzMtMi4wNC03LjA0LDEwLjYtMTMuNzYsMjEuNDMtMjAuMTcsMzIuNTEtMy4yLTguMTktNi43OC0xNi41Mi0xMC43NS0yNS0zLjk4LTguNDctOC42NS0xNi41Ny0xNC4wMS0yNC4yOS0uODEtMS4xNS0xLjUyLTIuMDUtMi4xNi0yLjctLjY0LS42NS0xLjUxLTEuMDktMi42My0xLjI4LTEuMDQtLjE4LTIuMzMtLjI5LTMuODctLjMzLTEuNTQtLjAyLTMuMDMuMTEtNC40NC40LTEuNDEuMjgtMi42Ny43NC0zLjc1LDEuMzgtMS4wNy42My0xLjcxLDEuNDYtMS44OSwyLjUxLS4xOC45OC4xMywyLjIuOTUsMy42Ny44MSwxLjQ4LDEuODcsMy4xNiwzLjE5LDUuMDYsMy4xNyw0LjczLDYuMDIsOS4xNiw4LjU2LDEzLjI5LDIuNTIsNC4xMiw0LjkyLDguMzEsNy4xNywxMi42MSwyLjI0LDQuMjgsNC40LDguODUsNi40OCwxMy43MiwyLjA4LDQuODYsNC4yNiwxMC40NCw2LjU4LDE2Ljc1LjQ1LDEuMTYsMS4yOSwyLjAyLDIuNTYsMi41NiwxLjI3LjU2LDIuNy45OCw0LjMsMS4yNywxLjEyLjIxLDIuMjQuMzUsMy4zOC40NSwxLjEyLjA4LDIuMTcuMTIsMy4xMS4wNy45NC0uMDUsMS43NS0uMTcsMi40NC0uMzcuNjgtLjE5LDEuMTItLjQ5LDEuMzQtLjg5LDcuMTEtMTMuMTUsMTQuNTMtMjUuNjIsMjIuMjctMzcuNDItLjQxLS43MS0uODItMS40NC0xLjI0LTIuMTVaTTU1OS4yOSwxLjc1Yy0uNjItLjU4LTEuNTEtLjk4LTIuNjktMS4xOS0zLjY5LS42NS03LjExLS43NC0xMC4yNi0uMjMtMy4xNS41Mi01LjU5LDEuNjMtNy4zNCwzLjMyLTE4LjAzLDE3LjE3LTM0Ljg2LDM2LjAzLTUwLjQ4LDU2LjU5LTEuNjMsMi4xNC0zLjI1LDQuMy00Ljg0LDYuNDYuNjMuNDEsMS4yMS44NywxLjczLDEuMzkuMDUuMDQuMDguMDguMTIuMTIuODkuOTEsMS44MiwyLjA2LDIuODUsMy41NSwxLjI0LDEuNzcsMi40NCwzLjU4LDMuNjIsNS40Mi40Mi42Ni44NCwxLjM0LDEuMjcsMi4wMiwyLjg1LTMuODUsNS43My03LjYxLDguNjUtMTEuMzIsOC44NS0xMS4yNCwxNy45MS0yMS44MSwyNy4yLTMxLjcsOS4yOS05LjkxLDE4LjcyLTE5LjI3LDI4LjI5LTI4LjEyLjk0LS44NCwxLjU3LTEuNTMsMS44OC0yLjA5LjMxLS41Ni41NC0xLjI2LjctMi4wOS4xNC0uODMtLjA4LTEuNTQtLjctMi4xMVpNNDczLjA4LDEwNC4xMWMtNy45MiwxMi4wMi0xNS42LDI0LjktMjIuODQsMzguMjktLjA0LjAxLS4wOC4wMi0uMTQuMDUtLjUyLjE0LTEuMTYuMjQtMS45Mi4yOC0uODQuMDUtMS43OS4wMi0yLjgyLS4wNi0xLjA2LS4xLTIuMTItLjI0LTMuMTYtLjQyLTEuNDItLjI1LTIuNy0uNjMtMy44MS0xLjExLS45Mi0uNC0xLjIxLS45MS0xLjM2LTEuMjktMi4zMi02LjMxLTQuNTQtMTEuOTgtNi42MS0xNi44Ni0yLjEtNC45Mi00LjMxLTkuNTktNi41Ny0xMy44OS0yLjI2LTQuMzEtNC42OS04LjU5LTcuMjQtMTIuNzMtMi41My00LjEzLTUuNDMtOC42My04LjU5LTEzLjM2bC0uMDItLjA0Yy0xLjI3LTEuODItMi4yOS0zLjQ1LTMuMDctNC44NS0uNzgtMS40Mi0uNzUtMi4wNS0uNzItMi4yMi4wNC0uMTcuMTEtLjU2Ljg0LS45OS44Ny0uNTEsMS44OS0uODgsMy4wNy0xLjExLDEuMTYtLjIzLDIuMzgtLjM1LDMuNjMtLjM1aC4zNGMxLjQyLjAyLDIuNjEuMTIsMy41Mi4yOS42NC4xMSwxLjEyLjMzLDEuNDQuNjUuNTMuNTQsMS4xOCwxLjM2LDEuOTIsMi40MSw1LjI2LDcuNTgsOS45MiwxNS42NSwxMy44MiwyMy45NywzLjkzLDguMzgsNy41MywxNi43NSwxMC43LDI0Ljg3bDEuNjgsNC4yOCwyLjMxLTMuOThjNi4yLTEwLjcsMTIuNzMtMjEuMjUsMTkuNTctMzEuNTgtLjQzLS42OC0uODgtMS4zNS0xLjMzLTIuMDQtNy4wNCwxMC42LTEzLjc2LDIxLjQzLTIwLjE3LDMyLjUxLTMuMi04LjE5LTYuNzgtMTYuNTItMTAuNzUtMjUtMy45OC04LjQ3LTguNjUtMTYuNTctMTQuMDEtMjQuMjktLjgxLTEuMTUtMS41Mi0yLjA1LTIuMTYtMi43LS42NC0uNjUtMS41MS0xLjA5LTIuNjMtMS4yOC0xLjA0LS4xOC0yLjMzLS4yOS0zLjg3LS4zMy0xLjU0LS4wMi0zLjAzLjExLTQuNDQuNC0xLjQxLjI4LTIuNjcuNzQtMy43NSwxLjM4LTEuMDcuNjMtMS43MSwxLjQ2LTEuODksMi41MS0uMTguOTguMTMsMi4yLjk1LDMuNjcuODEsMS40OCwxLjg3LDMuMTYsMy4xOSw1LjA2LDMuMTcsNC43Myw2LjAyLDkuMTYsOC41NiwxMy4yOSwyLjUyLDQuMTIsNC45Miw4LjMxLDcuMTcsMTIuNjEsMi4yNCw0LjI4LDQuNCw4Ljg1LDYuNDgsMTMuNzIsMi4wOCw0Ljg2LDQuMjYsMTAuNDQsNi41OCwxNi43NS40NSwxLjE2LDEuMjksMi4wMiwyLjU2LDIuNTYsMS4yNy41NiwyLjcuOTgsNC4zLDEuMjcsMS4xMi4yMSwyLjI0LjM1LDMuMzguNDUsMS4xMi4wOCwyLjE3LjEyLDMuMTEuMDcuOTQtLjA1LDEuNzUtLjE3LDIuNDQtLjM3LjY4LS4xOSwxLjEyLS40OSwxLjM0LS44OSw3LjExLTEzLjE1LDE0LjUzLTI1LjYyLDIyLjI3LTM3LjQyLS40MS0uNzEtLjgyLTEuNDQtMS4yNC0yLjE1Wk01NTkuMjksMS43NWMtLjYyLS41OC0xLjUxLS45OC0yLjY5LTEuMTktMy42OS0uNjUtNy4xMS0uNzQtMTAuMjYtLjIzLTMuMTUuNTItNS41OSwxLjYzLTcuMzQsMy4zMi0xOC4wMywxNy4xNy0zNC44NiwzNi4wMy01MC40OCw1Ni41OS0xLjYzLDIuMTQtMy4yNSw0LjMtNC44NCw2LjQ2LjYzLjQxLDEuMjEuODcsMS43MywxLjM5LDEuNjEtMi4xOCwzLjIzLTQuMzYsNC44OC02LjUyLDE1LjQ3LTIwLjM1LDMyLjM4LTM5LjI5LDUwLjI2LTU2LjMyLDEuNDEtMS4zOCwzLjQ4LTIuMjgsNi4xNC0yLjcyLDIuODgtLjQ3LDYuMDgtLjQsOS41MS4yMi43Mi4xMywxLjI4LjM1LDEuNTcuNjIuMDIuMDIuMDQuMDQuMDUuMDUsMCwuMDEsMCwuMDQtLjAxLjA3LS4xMy43Mi0uMzEsMS4xNS0uNDMsMS4zOC0uMDcuMTItLjM5LjU5LTEuNDcsMS41Ni05LjU3LDguODUtMTkuMTMsMTguMzQtMjguNCwyOC4yMy05LjI4LDkuOS0xOC40OCwyMC42MS0yNy4zMiwzMS44Ni0yLjc1LDMuNDgtNS40OCw3LjA0LTguMTgsMTAuNjcuNDIuNjYuODQsMS4zNCwxLjI3LDIuMDIsMi44NS0zLjg1LDUuNzMtNy42MSw4LjY1LTExLjMyLDguODUtMTEuMjQsMTcuOTEtMjEuODEsMjcuMi0zMS43LDkuMjktOS45MSwxOC43Mi0xOS4yNywyOC4yOS0yOC4xMi45NC0uODQsMS41Ny0xLjUzLDEuODgtMi4wOS4zMS0uNTYuNTQtMS4yNi43LTIuMDkuMTQtLjgzLS4wOC0xLjU0LS43LTIuMTFaTTYyMS40NSwxLjc1Yy0uNjItLjU4LTEuNTItLjk4LTIuNy0xLjE5LTMuNjktLjY1LTcuMTEtLjc0LTEwLjI1LS4yMy0zLjE1LjUyLTUuNiwxLjYzLTcuMzQsMy4zMi0xOC4wNCwxNy4xNy0zNC44NiwzNi4wMy01MC40OSw1Ni41OS0xNS42MiwyMC41NC0yOS45NCw0Mi4wOC00Mi45Nyw2NC42LTMuMi04LjE5LTYuNzgtMTYuNTItMTAuNzYtMjUtMi4wNC00LjM2LTQuMjctOC42Mi02LjY5LTEyLjc4LS40MS0uNy0uODEtMS40LTEuMjMtMi4wOS0uNDEtLjY5LS44My0xLjM2LTEuMjYtMi4wNS0xLjU0LTIuNS0zLjE2LTQuOTUtNC44NC03LjM3LS41NC0uNzctMS4wNC0xLjQ0LTEuNTEtMS45OS0uMjMtLjI3LS40My0uNDktLjY1LS43MS0uMjktLjMtLjYzLS41Ni0xLjAzLS43Ni0uNDYtLjI0LS45OS0uNDEtMS41OS0uNTItLjIyLS4wNC0uNDUtLjA3LS42OC0uMTEtLjkyLS4xMi0xLjk4LS4xOS0zLjItLjIyLTEuNTQtLjAyLTMuMDMuMTEtNC40NC40LTEuNDEuMjgtMi42Ny43NC0zLjc1LDEuMzgtMS4wOS42My0xLjcxLDEuNDYtMS45MSwyLjUxLS4xNy45OC4xNCwyLjIuOTUsMy42Ny44MiwxLjQ4LDEuODgsMy4xNiwzLjIsNS4wNi4wMi4wNC4wNS4wOC4wOC4xMy40NS42Ni44OCwxLjMzLDEuMzIsMS45OC40NS42OC44OSwxLjM1LDEuMzMsMi4wMiwyLjEsMy4yLDQuMDQsNi4yNSw1LjgyLDkuMTYuMTEuMTYuMjEuMzMuMy40OS40My42OS44NCwxLjM5LDEuMjcsMi4wOS40MS43LjgzLDEuNCwxLjI0LDIuMTEsMS41MSwyLjYxLDIuOTYsNS4yNCw0LjM2LDcuOTIsMi4yNiw0LjI4LDQuNCw4Ljg1LDYuNDgsMTMuNzIsMi4wOCw0Ljg2LDQuMjcsMTAuNDQsNi41OSwxNi43NS40MywxLjE2LDEuMjksMi4wMiwyLjU2LDIuNTYsMS4yNi41NiwyLjY5Ljk4LDQuMywxLjI3LDEuMTEuMjEsMi4yNC4zNSwzLjM3LjQ1LDEuMTMuMDgsMi4xNy4xMiwzLjExLjA3Ljk0LS4wNSwxLjc2LS4xNywyLjQ0LS4zNy42OS0uMTksMS4xMy0uNDksMS4zNS0uODksNy42NC0xNC4xNCwxNS42NS0yNy41LDI0LjAzLTQwLjA5LDguMzYtMTIuNTksMTYuOTctMjQuNSwyNS44MS0zNS43Myw4Ljg1LTExLjI0LDE3LjkyLTIxLjgxLDI3LjIxLTMxLjcsOS4yOS05LjkxLDE4LjcyLTE5LjI3LDI4LjI5LTI4LjEyLjkzLS44NCwxLjU3LTEuNTMsMS44OC0yLjA5LjMxLS41Ni41NC0xLjI2LjY5LTIuMDkuMTYtLjgzLS4wNy0xLjU0LS42OS0yLjExWk02MTkuOTYsMy40OGMtLjEzLjcyLS4zMSwxLjE1LS40NSwxLjM4LS4wNy4xMi0uMzcuNTktMS40NiwxLjU2LTkuNTcsOC44NS0xOS4xMywxOC4zNC0yOC40LDI4LjIzLTkuMjksOS45LTE4LjQ5LDIwLjYxLTI3LjMzLDMxLjg2LTguODUsMTEuMjQtMTcuNTcsMjMuMy0yNS45MywzNS44Ny04LjMxLDEyLjUxLTE2LjQsMjUuOTgtMjMuOTksNDAuMDQtLjA0LjAxLS4wOC4wMi0uMTQuMDUtLjUyLjE0LTEuMTYuMjQtMS45My4yOC0uODMuMDUtMS43Ny4wMi0yLjgxLS4wNi0xLjA2LS4xLTIuMTQtLjI0LTMuMTYtLjQyLTEuNDQtLjI1LTIuNzItLjYzLTMuODEtMS4xMS0uOTMtLjQtMS4yMi0uOTEtMS4zNi0xLjI5LTIuMzItNi4zMS00LjU1LTExLjk4LTYuNjMtMTYuODYtMi4wOS00LjkyLTQuMy05LjU5LTYuNTUtMTMuODktMS41OC0yLjk5LTMuMjMtNS45OS00Ljk1LTguOTItLjQyLS43LS44My0xLjQtMS4yNS0yLjEtLjM0LS41OC0uNjktMS4xNS0xLjA0LTEuNzEtLjA3LS4xMi0uMTQtLjI0LS4yMi0uMzYtMS44Ny0zLjA0LTMuOTMtNi4yNi02LjE0LTkuNjMtLjQzLS42NS0uODgtMS4zMy0xLjMzLTItLjMtLjQ2LS42LS45MS0uOTItMS4zNmwtLjAyLS4wNGMtLjEzLS4xOS0uMjUtLjM5LS4zNy0uNTctMS4xLTEuNTgtMS45OS0zLjAyLTIuNjktNC4yOC0uNzgtMS40Mi0uNzUtMi4wNS0uNzEtMi4yMi4wMi0uMTcuMS0uNTYuODQtLjk5Ljg3LS41MSwxLjg5LS44OCwzLjA3LTEuMTEsMS4xNi0uMjMsMi4zNy0uMzUsMy42Mi0uMzVoLjM1Yy42My4wMSwxLjIxLjA0LDEuNzQuMDcuNjguMDUsMS4yNy4xMiwxLjc3LjIyLjI1LjA0LjQ3LjEuNjguMTcuMzEuMTIuNTcuMjguNzYuNDguMjguMjguNTcuNjIuODksMS4wMy4zMy40LjY2Ljg3LDEuMDMsMS4zOSwxLjgzLDIuNjMsMy41OCw1LjMyLDUuMjYsOC4wNi40Mi42OC44MywxLjM2LDEuMjQsMi4wNS40MS43LjgyLDEuNCwxLjIyLDIuMTEsMi4yLDMuODQsNC4yNCw3Ljc2LDYuMTEsMTEuNzQsMy45Miw4LjM4LDcuNTMsMTYuNzUsMTAuNywyNC44N2wxLjY4LDQuMjgsMi4zMS0zLjk4YzEyLjkxLTIyLjM0LDI3LjMzLTQ0LDQyLjgyLTY0LjM4LDE1LjQ4LTIwLjM1LDMyLjM5LTM5LjI5LDUwLjI4LTU2LjMyLDEuNC0xLjM4LDMuNDYtMi4yOCw2LjE0LTIuNzIsMi44OC0uNDcsNi4wOC0uNCw5LjUxLjIyLjcyLjEzLDEuMjguMzUsMS41Ny42Mi4wMi4wMi4wNC4wNC4wNC4wNXYuMDdaTTYxOS45NiwzLjQxdi4wN2MtLjEzLjcyLS4zMSwxLjE1LS40NSwxLjM4LS4wNy4xMi0uMzcuNTktMS40NiwxLjU2LTkuNTcsOC44NS0xOS4xMywxOC4zNC0yOC40LDI4LjIzLTkuMjksOS45LTE4LjQ5LDIwLjYxLTI3LjMzLDMxLjg2LTguODUsMTEuMjQtMTcuNTcsMjMuMy0yNS45MywzNS44Ny04LjMxLDEyLjUxLTE2LjQsMjUuOTgtMjMuOTksNDAuMDQtLjA0LjAxLS4wOC4wMi0uMTQuMDUtLjUyLjE0LTEuMTYuMjQtMS45My4yOC0uODMuMDUtMS43Ny4wMi0yLjgxLS4wNi0xLjA2LS4xLTIuMTQtLjI0LTMuMTYtLjQyLTEuNDQtLjI1LTIuNzItLjYzLTMuODEtMS4xMS0uOTMtLjQtMS4yMi0uOTEtMS4zNi0xLjI5LTIuMzItNi4zMS00LjU1LTExLjk4LTYuNjMtMTYuODYtMi4wOS00LjkyLTQuMy05LjU5LTYuNTUtMTMuODktMS41OC0yLjk5LTMuMjMtNS45OS00Ljk1LTguOTItLjQyLS43LS44My0xLjQtMS4yNS0yLjEtLjM0LS41OC0uNjktMS4xNS0xLjA0LTEuNzEtLjA3LS4xMi0uMTQtLjI0LS4yMi0uMzYtMS44Ny0zLjA0LTMuOTMtNi4yNi02LjE0LTkuNjMtLjQzLS42NS0uODgtMS4zMy0xLjMzLTItLjMtLjQ2LS42LS45MS0uOTItMS4zNmwtLjAyLS4wNGMtLjEzLS4xOS0uMjUtLjM5LS4zNy0uNTctMS4xLTEuNTgtMS45OS0zLjAyLTIuNjktNC4yOC0uNzgtMS40Mi0uNzUtMi4wNS0uNzEtMi4yMi4wMi0uMTcuMS0uNTYuODQtLjk5Ljg3LS41MSwxLjg5LS44OCwzLjA3LTEuMTEsMS4xNi0uMjMsMi4zNy0uMzUsMy42Mi0uMzVoLjM1Yy42My4wMSwxLjIxLjA0LDEuNzQuMDcuNjguMDUsMS4yNy4xMiwxLjc3LjIyLjI1LjA0LjQ3LjEuNjguMTcuMzEuMTIuNTcuMjguNzYuNDguMjguMjguNTcuNjIuODksMS4wMy4zMy40LjY2Ljg3LDEuMDMsMS4zOSwxLjgzLDIuNjMsMy41OCw1LjMyLDUuMjYsOC4wNi40Mi42OC44MywxLjM2LDEuMjQsMi4wNS40MS43LjgyLDEuNCwxLjIyLDIuMTEsMi4yLDMuODQsNC4yNCw3Ljc2LDYuMTEsMTEuNzQsMy45Miw4LjM4LDcuNTMsMTYuNzUsMTAuNywyNC44N2wxLjY4LDQuMjgsMi4zMS0zLjk4YzEyLjkxLTIyLjM0LDI3LjMzLTQ0LDQyLjgyLTY0LjM4LDE1LjQ4LTIwLjM1LDMyLjM5LTM5LjI5LDUwLjI4LTU2LjMyLDEuNC0xLjM4LDMuNDYtMi4yOCw2LjE0LTIuNzIsMi44OC0uNDcsNi4wOC0uNCw5LjUxLjIyLjcyLjEzLDEuMjguMzUsMS41Ny42Mi4wMi4wMi4wNC4wNC4wNC4wNVoiLz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPg==" alt="TestNow">
+          <span class="route__who">State, region &amp; national officers</span>
+          <span class="route__title">TestNow dashboard</span>
+          <span class="route__desc">HIV self-test kit orders, results and risk assessments. Sign in with the Google account linked to your government email.</span>
+          <span class="route__cta route__cta--strong">Open the dashboard <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+      </a>
+      <a class="route route--guide" href="#guide">
+        <span class="route__bg"></span>
+        <span class="route__in">
+          <span class="route__who">Program Managers &amp; admins</span>
+          <span class="route__title">Link to Care guide</span>
+          <span class="route__desc">Update the actionTask, HIV, SYP and HEPC tabs and complete MyHCC verification, step by step.</span>
+          <span class="route__cta">Read the guide</span>
+        </span>
+      </a>
+      <a class="route route--fix" href="#correction">
+        <span class="route__bg"></span>
+        <span class="route__in">
+          <span class="route__who">Any registered user</span>
+          <span class="route__title">Data correction request</span>
+          <span class="route__desc">Report a wrong IC number, a duplicated client or a result in the wrong month to the M&amp;E team.</span>
+          <span class="route__cta">Send a correction</span>
+        </span>
+      </a>
+    </div>
+  </div>
+  <p class="launch-note">Signing in to the TestNow dashboard? Read the <a href="/legacy/testnow/privacy/">TestNow privacy notice</a>.</p>
 </section>
 
 <!-- ============ Access by NGO ============ -->
@@ -220,7 +290,7 @@
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-brand"><img src="/assets/logos/wordmark-light.svg" alt="HIVnext"><span>Health Information Vault</span></div>
-    <ul class="footer-links"><li><a href="/">Home</a></li><li><a href="/about/">About</a></li><li><a href="/legacy/">Legacy</a></li><li><a href="/myvas/">MyVAS</a></li><li><a data-site="email" href="#">Contact</a></li></ul>
+    <ul class="footer-links"><li><a href="/">Home</a></li><li><a href="/about/">About</a></li><li><a href="/legacy/">Legacy</a></li><li><a href="/legacy/testnow/">TestNow dashboard</a></li><li><a href="/legacy/testnow/privacy/">TestNow privacy notice</a></li><li><a href="/myvas/">MyVAS</a></li><li><a data-site="email" href="#">Contact</a></li></ul>
     <p class="copyright"></p>
   </div>
 </footer>
