@@ -1028,6 +1028,25 @@ var HIVST_CORE = (function () {
     });
     var nM = maxK - minK + 1;
 
+    // ---- unfinished months. A month that has not run its course is still SHOWN, but it is left out of the
+    // averages, medians, lowest/peak month and momentum, which would otherwise look too low. The last month is
+    // unfinished when its final day is after the cut-off: the feed's refresh date (opts.asOf), or an end date the
+    // person chose that really cuts the data short. The first month is unfinished only when the person chose a
+    // start date inside it; the programme's launch month (the first month of data) counts as a normal month.
+    function monthStartK(k) { return Math.floor(k / 12) * 10000 + ((k % 12) + 1) * 100 + 1; }
+    function monthEndK(k) { var yy = Math.floor(k / 12), mm = k % 12; return yy * 10000 + (mm + 1) * 100 + new Date(Date.UTC(yy, mm + 1, 0)).getUTCDate(); }
+    var asOfK = opts.asOf ? parseInt(String(opts.asOf).slice(0, 10).replace(/-/g, ""), 10) : null;
+    if (asOfK !== null && isNaN(asOfK)) asOfK = null;
+    var userToK = toK && toK < sMax ? toK : null;      // an end date that really cuts the data short
+    // finished only once the refresh date is AFTER the month's last day (that day's late orders are not in yet)
+    var partialLast = (asOfK !== null && monthEndK(maxK) >= asOfK) || (userToK !== null && monthEndK(maxK) > userToK);
+    var partialFirst = !!fromK && fromK > sMin && fromK > monthStartK(minK);
+    function isPartialIdx(ix) { return (ix === nM - 1 && partialLast) || (ix === 0 && partialFirst); }
+    var nFullM = 0;
+    for (var pi = 0; pi < nM; pi++) if (!isPartialIdx(pi)) nFullM++;
+    var allPartial = nFullM === 0;                       // a single unfinished month: nothing better to average, so use it
+    function counted(ix) { return allPartial || !isPartialIdx(ix); }
+
     var anyType = recs.some(function (r) { return r.orderType; });
     function isGeo(r) { return !anyType || r.orderType === "Delivery" || r.orderType === "SelfPickup"; }
 
@@ -1080,17 +1099,17 @@ var HIVST_CORE = (function () {
       var iso = y + "-" + pad2(m + 1);
       var month = MONTHS[m] + "-" + String(y).slice(2);
       cum += b.total;
-      var from = Math.max(0, idx - 2);
-      var win = buckets.slice(from, idx + 1);
-      var ma3 = round1(win.reduce(function (s, x) { return s + x.total; }, 0) / win.length);
+      var win = [];
+      for (var wq = Math.max(0, idx - 2); wq <= idx; wq++) if (counted(wq)) win.push(buckets[wq].total);
+      var ma3 = counted(idx) && win.length ? round1(win.reduce(function (s, x) { return s + x; }, 0) / win.length) : null;
       monthly.push({
-        month: month, iso: iso, total: b.total, delivery: b.delivery, selfpickup: b.selfpickup, event: b.event,
+        month: month, iso: iso, partial: isPartialIdx(idx), total: b.total, delivery: b.delivery, selfpickup: b.selfpickup, event: b.event,
         by_order: b.delivery + b.selfpickup, fingerprick: b.fingerprick, oralfluid: b.oralfluid, submitted: b.submitted,
         sub_rate: b.total >= min ? round1((b.submitted / b.total) * 100) : null,
         districts: Object.keys(b.dist).length, cumulative: cum, ma3: ma3
       });
       top5_by_month.push({
-        month: month, iso: iso, total: b.total,
+        month: month, iso: iso, partial: isPartialIdx(idx), total: b.total,
         top5: sortDist(b.dist).slice(0, 5).map(function (p) { return { district: p[0], count: p[1] }; })
       });
     });
@@ -1113,24 +1132,31 @@ var HIVST_CORE = (function () {
     for (var y = minY; y <= maxY; y++) {
       var ya2 = yearAgg[y] || { total: 0, delivery: 0, selfpickup: 0, event: 0, fingerprick: 0, oralfluid: 0, dist: {}, distN: 0 };
       var monthsActive = Math.min(maxK, y * 12 + 11) - Math.max(minK, y * 12) + 1;
-      var avg = round1(ya2.total / monthsActive);
+      var inYear = monthly.filter(function (mm) { return Number(mm.iso.slice(0, 4)) === y; });
+      var fullIn = monthly.filter(function (mm, ix) { return Number(mm.iso.slice(0, 4)) === y && counted(ix); });
+      var basisPartial = false;
+      if (!fullIn.length) { fullIn = inYear; basisPartial = true; }   // a year that so far has only an unfinished month
+      var avg = fullIn.length ? round1(fullIn.reduce(function (sx, mm) { return sx + mm.total; }, 0) / fullIn.length) : 0;
       var td = ya2.delivery + ya2.selfpickup + ya2.event, tk = ya2.fingerprick + ya2.oralfluid;
       var rowY = {
         year: y, total: ya2.total, delivery: ya2.delivery, selfpickup: ya2.selfpickup, event: ya2.event,
         fingerprick: ya2.fingerprick, oralfluid: ya2.oralfluid, districts: ya2.distN,
-        months_active: monthsActive, avg_per_month: avg,
+        months_active: monthsActive, avg_per_month: avg, avg_months: fullIn.length, avg_partial_basis: basisPartial,
+        partial_months: inYear.filter(function (mm) { return mm.partial; }).map(function (mm) { return mm.month; }),
         delivery_pct: pctOf(ya2.delivery, td), selfpickup_pct: pctOf(ya2.selfpickup, td), event_pct: pctOf(ya2.event, td),
         fingerprick_pct: pctOf(ya2.fingerprick, tk), oralfluid_pct: pctOf(ya2.oralfluid, tk),
-        yoy_avg_change_pct: prev && prev.avg_per_month > 0 ? round1(((avg - prev.avg_per_month) / prev.avg_per_month) * 100) : null
+        yoy_avg_change_pct: prev && prev.avg_per_month > 0 && !basisPartial && !prev.avg_partial_basis ? round1(((avg - prev.avg_per_month) / prev.avg_per_month) * 100) : null
       };
       yearly.push(rowY);
       prev = rowY;
     }
 
-    var totals = monthly.map(function (m) { return m.total; });
-    var peak = monthly.reduce(function (a, b) { return b.total > a.total ? b : a; });
-    var low = monthly.reduce(function (a, b) { return b.total < a.total ? b : a; });
-    var win6 = Math.min(6, Math.floor(nM / 2));
+    var statMonths = monthly.filter(function (m, ix) { return counted(ix); });
+    var totals = statMonths.map(function (m) { return m.total; });
+    var peak = statMonths.reduce(function (a, b) { return b.total > a.total ? b : a; });
+    var low = statMonths.reduce(function (a, b) { return b.total < a.total ? b : a; });
+    var nStat = statMonths.length;
+    var win6 = Math.min(6, Math.floor(nStat / 2));
     var first6 = null, last6 = null, growth = null;
     if (win6 >= 1) {
       first6 = round1(totals.slice(0, win6).reduce(function (s, x) { return s + x; }, 0) / win6);
@@ -1141,6 +1167,9 @@ var HIVST_CORE = (function () {
     var spFirst = null;
     for (var q = 0; q < monthly.length; q++) if (monthly[q].selfpickup > 0) { spFirst = monthly[q]; break; }
     var last = monthly[monthly.length - 1];
+    var lastStat = statMonths[statMonths.length - 1];
+    var partialNames = monthly.filter(function (m) { return m.partial; }).map(function (m) { return m.month; });
+    var partialLatest = partialLast && !allPartial ? { month: last.month, total: last.total } : null;
     function fmtD(n) { return pad2(n % 100) + " " + MONTHS[Math.floor((n % 10000) / 100) - 1] + " " + Math.floor(n / 10000); }
 
     var states = opts.states || [];
@@ -1328,14 +1357,15 @@ var HIVST_CORE = (function () {
     return {
       kpis: {
         total_kits: recs.length, by_order: tot.d + tot.s, n_districts: Object.keys(distAll).length, n_postcodes: nPost,
-        avg_per_month: round1(recs.length / nM), mean_per_month: round1(recs.length / nM), median_per_month: round1(median(totals)),
+        avg_per_month: round1(totals.reduce(function (sx, x) { return sx + x; }, 0) / nStat), mean_per_month: round1(totals.reduce(function (sx, x) { return sx + x; }, 0) / nStat), median_per_month: round1(median(totals)),
         peak_month: peak.month, peak_value: peak.total, low_month: low.month, low_value: low.total,
         first6_avg: first6, last6_avg: last6, growth_pct: growth, window: win6,
         top5_share: pctOf(top5sum, geoTotal),
         selfpickup_first_month: spFirst ? spFirst.month : null, selfpickup_total: tot.s,
         selfpickup_pct: pctOf(tot.s, typeDen), event_total: tot.e, delivery_total: tot.d,
         finger_total: tot.f, oral_total: tot.o,
-        latest_month: last.month, latest_month_total: last.total,
+        latest_month: lastStat.month, latest_month_total: lastStat.total, partial_latest: partialLatest,
+        partial_months: partialNames, n_full_months: nStat,
         date_min: fmtD(minD), date_max: fmtD(maxD), state: stateLabel, partner: opts.ngoFilter || "", n_months: nM
       },
       monthly: monthly, top5_by_month: top5_by_month, district_overall: district_overall, state_rank: state_rank,
@@ -1707,7 +1737,7 @@ var HIVST_DEMO = (function () {
     var k = D.kpis, ot = function (n) { return D.order_type_overall.filter(function (x) { return x.name === n; })[0] || { count: 0, pct: 0 }; };
     var kt = function (n) { return D.kit_type_overall.filter(function (x) { return x.name === n; })[0] || { count: 0, pct: 0 }; };
     var row1 = [
-      kpi("Total Distribution", fmtInt(k.total_kits), "Across " + k.n_months + " month" + (k.n_months > 1 ? "s" : "") + " · " + k.n_districts + " districts"),
+      kpi("Total Distribution", fmtInt(k.total_kits), "Across " + k.n_months + " month" + (k.n_months > 1 ? "s" : "") + (k.partial_months && k.partial_months.length ? " (" + k.partial_months.join(", ") + " in progress)" : "") + " · " + k.n_districts + " districts"),
       kpi("Finger Prick Orders", fmtInt(kt("Finger prick").count), fmtPct(kt("Finger prick").pct) + " of kit orders"),
       kpi("Oral Fluid Orders", fmtInt(kt("Oral fluid").count), fmtPct(kt("Oral fluid").pct) + " of kit orders"),
       kpi("Postages", fmtInt(k.delivery_total), fmtPct(ot("Delivery").pct) + " of orders"),
@@ -1716,10 +1746,10 @@ var HIVST_DEMO = (function () {
     ];
     var g = k.growth_pct, w = k.window || 6;
     var row2 = [
-      kpi("Average kits / month", k.avg_per_month, "Mean over all " + k.n_months + " months"),
+      kpi("Average kits / month", k.avg_per_month, k.partial_months && k.partial_months.length && k.n_full_months < k.n_months ? "Mean over " + k.n_full_months + " finished months" : "Mean over all " + k.n_months + " months"),
       kpi("Median kits / month", k.median_per_month, "Peak " + k.peak_value + " (" + k.peak_month + ") · low " + k.low_value),
-      g === null || g === undefined ? kpi("Momentum", "n/a", "Needs at least 2 months") : kpi("Momentum", (g >= 0 ? "+" : "") + fmtPct(g), "Last " + w + " mo. avg " + k.last6_avg + " vs first " + w + " mo. " + k.first6_avg, g >= 0 ? "pos" : "neg"),
-      kpi("Latest month", k.latest_month_total + ' <small>' + k.latest_month + "</small>", "Most recent month in view"),
+      g === null || g === undefined ? kpi("Momentum", "n/a", "Needs at least 2 months") : kpi("Momentum", (g >= 0 ? "+" : "") + fmtPct(g), "Last " + w + " mo. avg " + k.last6_avg + " vs first " + w + " mo. " + k.first6_avg + (k.partial_months && k.partial_months.length && k.n_full_months < k.n_months ? " (finished months)" : ""), g >= 0 ? "pos" : "neg"),
+      kpi("Latest month", k.latest_month_total + ' <small>' + k.latest_month + "</small>", k.partial_latest ? k.partial_latest.month + " so far: " + fmtInt(k.partial_latest.total) + " (month in progress)" : "Most recent month in view"),
       kpi("Geographic reach", k.n_districts + " <small>districts</small>", k.n_postcodes ? k.n_postcodes + " distinct postcodes served" : "Postcodes not in this data"),
       kpi("Top-5 districts", fmtPct(k.top5_share), "Share of delivered and picked-up kits")
     ];
@@ -1778,7 +1808,7 @@ var HIVST_DEMO = (function () {
     out.push({ tag: "Cadence", color: PAL.just[1], stat: top.day + " busiest", text: top.day + " is highest at " + fmtInt(top.count) + " orders (" + fmtPct((top.count / total) * 100) + ") and " + bot.day + " is lowest at " + fmtInt(bot.count) + ". " + (top.count / Math.max(1, bot.count) < 1.6 ? "Orders land fairly evenly across the week." : "Orders are uneven across the week, with " + top.day + " carrying noticeably more than " + bot.day + ".") });
     if (kpis.growth_pct !== null && kpis.growth_pct !== undefined) {
       var g = kpis.growth_pct, w0 = kpis.window || 6, w = w0 === 1 ? "month" : w0 + " months";
-      out.push({ tag: "Trajectory", color: PAL.green[1], stat: (g >= 0 ? "+" : "") + fmtPct(g), text: "The most recent " + w + " averaged " + kpis.last6_avg + " kits/month vs. " + kpis.first6_avg + " in the first " + w + ". " + (g >= 10 ? "Volume has grown steadily." : g <= -10 ? "Volume has declined." : "Volume is broadly flat.") });
+      out.push({ tag: "Trajectory", color: PAL.green[1], stat: (g >= 0 ? "+" : "") + fmtPct(g), text: "The most recent " + w + (kpis.partial_months && kpis.partial_months.length && kpis.n_full_months < kpis.n_months ? " of finished months" : "") + " averaged " + kpis.last6_avg + " kits/month vs. " + kpis.first6_avg + " in the first " + w + ". " + (g >= 10 ? "Volume has grown steadily." : g <= -10 ? "Volume has declined." : "Volume is broadly flat.") });
     }
     if (D.results) {
       var R = D.results;
@@ -1802,15 +1832,17 @@ var HIVST_DEMO = (function () {
     analysisKpis(D);
 
     // ---- kits ordered by month: total bars + 3-month moving average
-    $("subMonthly").textContent = "Monthly order volume, " + longMonth(monthly[0].iso) + " → " + longMonth(lastM.iso) + ", with a 3-month moving average";
+    var anyPartial = monthly.some(function (m) { return m.partial; });
+    $("subMonthly").textContent = "Monthly order volume, " + longMonth(monthly[0].iso) + " → " + longMonth(lastM.iso) + ", with a 3-month moving average" + (anyPartial ? " · * month still in progress: shown, but left out of the averages" : "");
     $("tagMonthly").textContent = monthly[0].month + " → " + lastM.month;
     $("lgMonthly").innerHTML = swatch(PAL.just[1], "Monthly total") + swatch(PAL.royal[1], "3-mo avg");
     if (!noChartLib()) {
-      mkChart("cMonthly", { type: "bar", data: { labels: monthly.map(function (m) { return m.month; }), datasets: [
-          { type: "bar", label: "Kits ordered", data: monthly.map(function (m) { return m.total; }), backgroundColor: grad(PAL.just), borderRadius: 3, barPercentage: 0.8, categoryPercentage: 0.9, order: 2 },
+      var barFill = grad(PAL.just);
+      mkChart("cMonthly", { type: "bar", data: { labels: monthly.map(function (m) { return m.partial ? m.month + "*" : m.month; }), datasets: [
+          { type: "bar", label: "Kits ordered", data: monthly.map(function (m) { return m.total; }), backgroundColor: function (ctx) { var m = monthly[ctx.dataIndex]; return m && m.partial ? PAL.sky[0] : barFill(ctx); }, borderRadius: 3, barPercentage: 0.8, categoryPercentage: 0.9, order: 2 },
           { type: "line", label: "3-month average", data: monthly.map(function (m) { return m.ma3; }), borderColor: PAL.royal[1], borderWidth: 2, borderDash: [5, 4], pointRadius: 0, tension: 0.35, order: 1 }] },
         options: { responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false }, layout: { padding: { top: 16 } },
-          plugins: { legend: { display: false }, tooltip: tipWith({}), yearDivider: { boundaries: yearBounds(monthly) } },
+          plugins: { legend: { display: false }, tooltip: tipWith({ title: function (it) { var m = monthly[it[0].dataIndex]; return m.partial ? m.month + " (in progress)" : m.month; } }), yearDivider: { boundaries: yearBounds(monthly) } },
           scales: { x: xMonthly(), y: yCount() } }, plugins: [yearDivider] });
     }
 
@@ -1826,6 +1858,7 @@ var HIVST_DEMO = (function () {
       if (i > 0 && yearly[i - 1].months_active === 1 && y.yoy_avg_change_pct !== null) badge = '<div class="yoy-sub">Not compared to ' + yearly[i - 1].year + " (1 month only)</div>";
       else if (y.yoy_avg_change_pct !== null) { var up = y.yoy_avg_change_pct >= 0; badge = '<div class="yoy-badge ' + (up ? "pos" : "neg") + '">' + (up ? "+" : "") + y.yoy_avg_change_pct + "% pace vs " + yearly[i - 1].year + "</div>"; }
       var sub = partial ? (y.months_active === 1 ? fName + " only · first month on file" : fName + "–" + lName + " · " + y.months_active + " months so far") : "Full calendar year · 12 months";
+      if (y.partial_months && y.partial_months.length) sub += y.avg_partial_basis ? " · average so far (" + y.partial_months.join(", ") + " in progress)" : " · " + y.partial_months.join(", ") + " in progress, not in the average";
       var dParts = [[y.delivery_pct, PAL.just[1]], [y.selfpickup_pct, PAL.green[1]]].concat(hasEvent ? [[y.event_pct, PAL.sky[1]]] : []);
       return '<div class="yoy-card"><div class="yh"><span class="year">' + y.year + "</span>" + ptag + '</div><div class="yoy-total">' + fmtInt(y.total) + " <small>kits</small></div><div class=\"yoy-sub\">" + sub + "</div>" + badge +
         '<div class="mix-block"><div class="mix-label-row"><span>Delivery ' + y.delivery_pct + "%</span><span>Pick-up " + y.selfpickup_pct + "%</span>" + (hasEvent ? "<span>Event " + y.event_pct + "%</span>" : "") + "</div>" + mixBar(dParts) + "</div>" +
@@ -1884,7 +1917,7 @@ var HIVST_DEMO = (function () {
         if (filterYear !== "all" && y !== filterYear) return;
         if (y !== lastYear) { rows += '<tr class="year-divider"><td colspan="7">' + y + "</td></tr>"; lastYear = y; }
         var cells = [0, 1, 2, 3, 4].map(function (i) { var e = row.top5[i]; return e ? '<td><span class="rank-pill' + (i === 0 ? " r1" : "") + '"><span class="rk">#' + (i + 1) + '</span><span class="dname">' + esc(e.district) + '</span><span class="cnt">' + e.count + "</span></span></td>" : "<td>—</td>"; }).join("");
-        rows += '<tr><td class="month-cell">' + row.month + "</td>" + cells + '<td class="total-cell">' + row.total + "</td></tr>";
+        rows += '<tr><td class="month-cell">' + row.month + (row.partial ? ' <span class="ptag">in progress</span>' : "") + "</td>" + cells + '<td class="total-cell">' + row.total + "</td></tr>";
       });
       $("top5Body").innerHTML = rows;
     };
@@ -2102,6 +2135,7 @@ var HIVST_DEMO = (function () {
       "<div><b>Scope:</b> " + fmtInt(k.total_kits) + " order records" + (meta.scopeText ? ", " + esc(meta.scopeText) : "") + ", " + esc(k.date_min) + " – " + esc(k.date_max) + ". " + esc(meta.statusText || "") + "</div>" +
       "<div><b>How orders are counted:</b> every order with an ORDER_ID counts once, including event hand-outs. State and district rankings count Delivery and Self pick-up only, as in the HIVnext dashboard. Results, assessments, gender, age and risk answers come from the same order records, so they are never mixed with the separate Risk Assessment or Result Submit tables.</div>" +
       "<div><b>Risk assessment and results:</b> people reach the assessment in three ways: the public “Take the Risk Assessment” page, when they order a kit for the first time, or when they reorder after 3–6 months (which needs the result of the previous kit). This dashboard counts the assessments completed with an order and the results recorded against orders; assessments taken on the public page without ordering are a separate table and are not included.</div>" +
+      "<div><b>Month in progress:</b> the latest month is shown while it is still running (marked with *), but it is left out of the averages, medians, lowest and peak month, momentum and yearly averages, because a part-month would make them look too low. It counts in every total. A start date picked inside a month does the same for that month. The first month of data (the launch month) is treated as a normal month.</div>" +
       "<div><b>Small numbers:</b> counts of 1 to " + (min - 1) + " in results, gender, age, risk and comparison figures show as “&lt;" + min + "” or are left out" + (min ? "; where exactly one small count is hidden, the next-smallest value is hidden with it and both read “hidden” (one of the two is under " + min + "), so a total cannot reveal it" : "") + ".</div>" +
       "<div><b>Source:</b> " + esc(meta.sourceText || "") + "</div>";
   }
@@ -2151,7 +2185,7 @@ var HIVST_DEMO = (function () {
     if (memo[key]) return Promise.resolve(memo[key]);
     var done = function (res) { if (res && res.ok) { if (memoCount > 40) { memo = {}; memoCount = 0; } memo[key] = res; memoCount++; } return res; };
     if (MODE === "upload") {
-      var D = C.computeData(RAW, { has: rawHas, stateFilter: S.state, states: ctxInfo.states, fileName: ctxInfo.fileName, suppressBelow: S.min, from: p.from, to: p.to });
+      var D = C.computeData(RAW, { has: rawHas, stateFilter: S.state, states: ctxInfo.states, fileName: ctxInfo.fileName, suppressBelow: S.min, from: p.from, to: p.to, asOf: new Date().toISOString() });
       return Promise.resolve(done({ ok: true, data: D }));
     }
     return fetch(CONFIG.apiUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ idToken: reader.idToken, view: S.view, from: p.from, to: p.to }) })
