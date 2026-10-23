@@ -235,10 +235,10 @@
   }
 
   /* ------------------------------------------------------------------ rendering ---- */
-  const periodText = () => S.from === S.to ? `${MONTHS[S.from - 1]} ${D.meta.yr}` : `${MONTHS[S.from - 1]}–${MONTHS[S.to - 1]} ${D.meta.yr}`;
+  const periodText = () => S.from === S.to ? `${MONTHS[S.from - 1]} ${D.meta.yr}` : `${MONTHS[S.from - 1]}-${MONTHS[S.to - 1]} ${D.meta.yr}`;
   function renderKpis() {
     const st = D.stats;
-    $("#lb-kpis").innerHTML = [["CHWs ranked", st.n], ["Average score", st.n ? fmt(st.avg) : "–"], ["Highest score", st.n ? fmt(st.max) : "–"], ["Period", periodText()]]
+    $("#lb-kpis").innerHTML = [["CHWs ranked", st.n], ["Average score", st.n ? fmt(st.avg) : "-"], ["Highest score", st.n ? fmt(st.max) : "-"], ["Period", periodText()]]
       .map(([l, v]) => `<div class="kpi"><small>${l}</small><b>${esc(v)}</b></div>`).join("");
   }
   function podiumCard(c, place) {
@@ -273,7 +273,7 @@
     const mine = D.me;
     if (!mine) {
       const why = D.meNote ? "You are not part of this ranking for the selected key populations and period. Tick all key populations or widen the period to see your position." : "Your position appears here once you have data in the leaderboard period.";
-      el.innerHTML = `<div class="me__rank"><small>Your position</small>–</div><h3>${esc(S.session.profile.role)}</h3><p>${esc(why)}</p>`; return;
+      el.innerHTML = `<div class="me__rank"><small>Your position</small>-</div><h3>${esc(S.session.profile.role)}</h3><p>${esc(why)}</p>`; return;
     }
     const tenth = D.top10[9], gap = tenth && mine.rank > 10 ? tenth.score.total - mine.score.total : 0;
     const note = mine.rank <= 10 ? "You are in the top 10. Keep it up!" : `${fmt(gap)} points from the top 10. The biggest gain: ${weakest(mine)}.`;
@@ -284,10 +284,10 @@
 
   function tableHTML(list, withAward) {
     if (!list.length) return `<p class="empty">No CHWs match.</p>`;
-    const pill = a => !a ? `<span class="tier-pill">Not eligible</span>` : `<span class="tier-pill tier-pill--${a.tier}">${rm(a.award)}</span>`;
+    const pill = a => !a ? `<span class="tier-pill">Not eligible</span>` : `<span class="tier-pill tier-pill--t" style="${palVars(a.tier, nT())}">${rm(a.award)}</span>`;
     return `<div class="tbl-wrap"><table class="tbl"><thead><tr><th class="num">Rank</th><th>CHW</th><th>NGO</th><th>KP</th><th class="num">Months</th>${GROUPS.map(g => `<th class="num">${GROUP_LABEL[g]}</th>`).join("")}<th class="num">Score</th>${withAward ? `<th>Award</th>` : ""}</tr></thead><tbody>${
       list.map(c => `<tr><td class="num"><b>${c.rank}</b></td><td class="who"><b>${esc(c.nick)}</b></td><td>${esc(c.ngo)}</td><td>${chips(c)}</td><td class="num">${c.score.months}</td>${
-        GROUPS.map(g => `<td class="num">${c.score.groups[g] != null ? fmt(c.score.groups[g]) : "–"}</td>`).join("")}<td class="num score">${fmt(c.score.total)}</td>${withAward ? `<td>${pill(AW.map.get(c.id))}</td>` : ""}</tr>`).join("")}</tbody></table></div><p class="tbl-note">Score columns show points earned out of each group's weight.</p>`;
+        GROUPS.map(g => `<td class="num">${c.score.groups[g] != null ? fmt(c.score.groups[g]) : "-"}</td>`).join("")}<td class="num score">${fmt(c.score.total)}</td>${withAward ? `<td>${pill(AW.map.get(c.id))}</td>` : ""}</tr>`).join("")}</tbody></table></div><p class="tbl-note">Score columns show points earned out of each group's weight.</p>`;
   }
   function fillNgoSelect(sel, tokens, allLabel, keep) {
     const sig = tokens.join("|");
@@ -348,41 +348,84 @@
   }
 
   /* ------------------------------------------------------------------ award model (MEmac / SuperAdmin) ---- */
-  const AWARD = {scope: "kp", method: "sd", zTop: 1.04, zBot: 1.28, pTop: 15, pBot: 10, small: 10, top: 500, mid: 300, low: 50, budget: 60000, reserve: 0, fit: "down", groups: {MSM: 1, TG: 2, WAR: 3, TGWAR: 4, PWUD: 5, COMP: 6}};
-  let AW = {map: new Map(), groups: [], everyone: null, N: {top: 0, mid: 0, low: 0}, n: 0, base: 0, avail: 0, factor: 1, fin: {top: 0, mid: 0, low: 0}, total: 0};
-  let chartKey = null;
+    /* Award model: any number of tiers (2 to 8). Each tier has its own amount and its own cut-off.
+     Tier 1 is the highest. A CHW gets the first tier whose cut-off their score reaches; below the last
+     cut-off they get the bottom tier. It is a what-if calculator: nothing is stored. */
   const erf = x => { const s = Math.sign(x); x = Math.abs(x); const t = 1 / (1 + .3275911 * x); return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - .284496736) * t + .254829592) * t * Math.exp(-x * x)); };
   const Phi = z => .5 * (1 + erf(z / Math.SQRT2));
-  const TIERS = ["top", "mid", "low"];
   const floor5 = v => Math.floor(v / 5) * 5;
+  const MIN_TIERS = 2, MAX_TIERS = 8;
+  // z = cut-off as a z-score (mean + z x SD); p = running share of CHWs from the top (%), used by percentile rank
+  const PRESETS = {
+    "3": [{amt: 500, z: 1.04, p: 15}, {amt: 300, z: -1.28, p: 90}, {amt: 50}],
+    "4": [{amt: 500, z: 1.04, p: 15}, {amt: 300, z: 0, p: 50}, {amt: 100, z: -1.28, p: 90}, {amt: 50}],
+    "6": [{amt: 500, z: 1.28, p: 10}, {amt: 400, z: 0.67, p: 25}, {amt: 300, z: 0, p: 50}, {amt: 200, z: -0.67, p: 75}, {amt: 100, z: -1.28, p: 90}, {amt: 50}]
+  };
+  const cloneTiers = k => JSON.parse(JSON.stringify(PRESETS[k]));
+  const AWARD = {scope: "kp", method: "sd", small: 10, budget: 60000, reserve: 0, fit: "down", preset: "3", tiers: cloneTiers("3"), groups: {MSM: 1, TG: 2, WAR: 3, TGWAR: 4, PWUD: 5, COMP: 6}};
+  let AW = {map: new Map(), groups: [], everyone: null, N: [], n: 0, base: 0, avail: 0, factor: 1, fin: [], total: 0, fixed: false};
+  let chartKey = null;
 
-  
+  const nT = () => AWARD.tiers.length;
+  const tierName = (i, T = nT()) => T === 3 ? ["Top performers", "Core performers", "Lower performers"][i] : i === 0 ? "Top tier" : i === T - 1 ? "Bottom tier" : "Tier " + (i + 1);
+  const tierShort = (i, T = nT()) => T === 3 ? ["Top", "Core", "Lower"][i] : i === 0 ? "Top" : i === T - 1 ? "Bottom" : "Tier " + (i + 1);
+  const coreIdx = T => Math.floor((T - 1) / 2);             // the tier everyone gets in a group too small to have cut-offs
+
+  // colours run green (top) > blue (middle) > light blue (bottom), whatever the number of tiers
+  const STOPS = [[118, 209, 102], [0, 89, 179], [99, 201, 227]];
+  const mixc = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  const hexc = c => "#" + c.map(v => v.toString(16).padStart(2, "0")).join("");
+  function palette(i, T) {
+    const t = T > 1 ? i / (T - 1) : 0, seg = t * 2, k = Math.min(1, Math.floor(seg)), base = mixc(STOPS[k], STOPS[k + 1], seg - k);
+    const lum = (0.299 * base[0] + 0.587 * base[1] + 0.114 * base[2]) / 255;
+    return {c1: hexc(mixc(base, [255, 255, 255], 0.22)), c2: hexc(base), fg: lum < 0.55 ? "#fff" : "#003366", line: hexc(mixc(base, [0, 0, 0], 0.25))};
+  }
+  const palVars = (i, T) => { const p = palette(i, T); return `--c1:${p.c1};--c2:${p.c2};--fg:${p.fg}`; };
+
+  // cut-offs always run from high to low, so tiers can never overlap
+  function cutSet() {
+    const T = nT(), z = [], p = [];
+    for (let i = 0; i < T - 1; i++) {
+      const t = AWARD.tiers[i], tz = Number(t.z) || 0, tp = Number(t.p) || 0;
+      z.push(i ? Math.min(tz, z[i - 1] - 0.01) : tz);
+      p.push(Math.min(100, i ? Math.max(tp, p[i - 1] + 0.1) : tp));
+    }
+    const key = AWARD.method === "sd" ? "z" : "p", arr = key === "z" ? z : p;
+    const fixed = AWARD.tiers.slice(0, T - 1).some((t, i) => Math.abs(arr[i] - (Number(t[key]) || 0)) > 1e-9);
+    return {z, p, fixed};
+  }
+
   function computeAwards() {
+    const T = nT(), cs = cutSet();
     // eligibility: every CHW the server scored in the selected window, including CHWs who have since left
     const cohort = (D && D.award ? D.award : []).filter(c => S.kps.has(c.kp))
       .map(c => ({id: c.id, nick: c.nick, kp: c.kp, also: c.also, ngo: c.ngo, active: c.active, score: {total: c.total, months: c.months, uniq: c.uniq}}));
     const keyOf = c => AWARD.scope === "kp" ? c.kp : AWARD.scope === "custom" ? "G" + AWARD.groups[c.kp] : "ALL";
     const buckets = new Map(); cohort.forEach(c => { const k = keyOf(c); if (!buckets.has(k)) buckets.set(k, []); buckets.get(k).push(c); });
-    const pT = AWARD.method === "pct" ? AWARD.pTop : (1 - Phi(AWARD.zTop)) * 100, pB = AWARD.method === "pct" ? AWARD.pBot : Phi(-AWARD.zBot) * 100;
     const labelOf = k => k === "ALL" ? "Everyone together" : k[0] === "G" ? KP_ORDER.filter(x => "G" + AWARD.groups[x] === k).map(x => KP_LABEL[x]).join(" + ") : KP_LABEL[k];
     const mk = (k, members) => {
       const sc = members.map(c => Math.round(c.score.total * 10) / 10), n = sc.length;
       const mean = sc.reduce((a, b) => a + b, 0) / n;
       const sd = n > 1 ? Math.sqrt(sc.reduce((a, b) => a + (b - mean) ** 2, 0) / (n - 1)) : 0;   // sample SD, like Excel STDEV.S
-      const g = {key: k, label: labelOf(k), n, mean, sd, scores: sc, members, counts: {top: 0, mid: 0, low: 0}, topCut: null, botCut: null, hasCuts: false, used: "none", fallback: false};
+      const g = {key: k, label: labelOf(k), n, mean, sd, scores: sc, members, counts: Array(T).fill(0), cuts: [], hasCuts: false, used: "none", fallback: false};
       if (n >= 3 && sd > 0) {
         const useSd = AWARD.method === "sd" && n >= AWARD.small;
         g.used = useSd ? "sd" : "pct"; g.fallback = AWARD.method === "sd" && !useSd;
-        if (useSd) { g.topCut = mean + AWARD.zTop * sd; g.botCut = mean - AWARD.zBot * sd; }
+        if (useSd) g.cuts = cs.z.map(z => mean + z * sd);
         else {
-          const sorted = sc.slice().sort((a, b) => b - a), t = Math.round(n * pT / 100), b = Math.round(n * pB / 100);
-          g.topCut = t > 0 ? sorted[t - 1] : Infinity;               // last score inside the top group
-          g.botCut = b > 0 ? sorted[n - b - 1] : -Infinity;          // lowest score that stays in the middle
+          const sorted = sc.slice().sort((a, b) => b - a);
+          // small group under the bell-curve method: use the percentile equivalent of the same z cut-offs
+          const pc = AWARD.method === "sd" ? cs.z.map(z => (1 - Phi(z)) * 100) : cs.p;
+          g.cuts = pc.map((p, i) => {          // lowest score still inside this tier or above
+            // the last boundary is rounded from the bottom, so "bottom 10%" rounds the way people expect
+            const c = (i === T - 2 && i > 0) ? n - Math.round(n * (100 - p) / 100) : Math.round(n * p / 100);
+            return c > 0 ? sorted[Math.min(n, c) - 1] : Infinity;
+          });
         }
         g.hasCuts = true;
       }
       // a score exactly on a cut-off goes to the higher tier
-      g.tiers = sc.map(s => !g.hasCuts ? "mid" : s >= g.topCut ? "top" : s < g.botCut ? "low" : "mid");
+      g.tiers = sc.map(s => { if (!g.hasCuts) return coreIdx(T); for (let i = 0; i < T - 1; i++) if (s >= g.cuts[i]) return i; return T - 1; });
       g.tiers.forEach(t => g.counts[t]++);
       return g;
     };
@@ -390,102 +433,169 @@
     const groups = []; order.forEach(k => { const m = buckets.get(k); if (m) groups.push(mk(k, m)); });
     // a view-only "everyone together" preview, so the manager can compare it with the chosen grouping
     const everyone = AWARD.scope === "all" || !cohort.length ? null : mk("ALL", cohort);
-    const N = {top: 0, mid: 0, low: 0}; groups.forEach(g => TIERS.forEach(t => N[t] += g.counts[t]));
-    const n = N.top + N.mid + N.low, base = N.top * AWARD.top + N.mid * AWARD.mid + N.low * AWARD.low;
+    const N = Array(T).fill(0); groups.forEach(g => g.counts.forEach((c, i) => N[i] += c));
+    const n = N.reduce((a, b) => a + b, 0), base = N.reduce((a, c, i) => a + c * AWARD.tiers[i].amt, 0);
     const avail = AWARD.budget * (1 - AWARD.reserve / 100);
     let factor = 1;
     if (AWARD.budget > 0 && base > 0) { if (AWARD.fit === "down") factor = Math.min(1, avail / base); else if (AWARD.fit === "full") factor = avail / base; }
-    const fin = {}; TIERS.forEach(t => fin[t] = factor === 1 ? AWARD[t] : floor5(AWARD[t] * factor));
+    const fin = AWARD.tiers.map(t => factor === 1 ? t.amt : floor5(t.amt * factor));
     const map = new Map();
     groups.forEach(g => g.members.forEach((c, i) => map.set(c.id, {tier: g.tiers[i], award: fin[g.tiers[i]], group: g.key})));
-    AW = {groups, everyone, N, n, base, avail, factor, fin, total: N.top * fin.top + N.mid * fin.mid + N.low * fin.low, map};
+    AW = {groups, everyone, N, n, base, avail, factor, fin, total: N.reduce((a, c, i) => a + c * fin[i], 0), map, fixed: cs.fixed};
     if (!(groups.some(g => g.key === chartKey) || (everyone && chartKey === "ALL"))) chartKey = (groups.slice().sort((a, b) => b.n - a.n)[0] || {}).key || null;
   }
 
-  
   function chartSVG(g) {
-    const W = 760, H = 320, L = 44, Rr = 16, T = 30, B = 38, iw = W - L - Rr, ih = H - T - B;
+    const T = nT(), W = 760, H = 336, L = 44, Rr = 16, TM = 46, B = 38, iw = W - L - Rr, ih = H - TM - B;
     const bins = Array(20).fill(0); g.scores.forEach(s => bins[Math.min(19, Math.floor(s / 5))]++);
     const pdf = x => Math.exp(-((x - g.mean) ** 2) / (2 * g.sd ** 2)) / (g.sd * Math.sqrt(2 * Math.PI));
     const peak = g.sd ? g.n * 5 * pdf(g.mean) : 0;
     const maxY = Math.ceil(Math.max(...bins, peak) * 1.18 / 2) * 2 || 2;
-    const X = v => L + Math.max(0, Math.min(100, v)) / 100 * iw, Y = v => T + (1 - v / maxY) * ih;
-    const tierAt = v => !g.hasCuts ? "mid" : v >= g.topCut ? "top" : v < g.botCut ? "low" : "mid";
-    const bx = X(g.hasCuts ? g.botCut : 0), tx = X(g.hasCuts ? g.topCut : 100);
-    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distribution of CHW scores with award cut-offs" class="chart">
-      <defs><linearGradient id="gTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#95E088"/><stop offset="1" stop-color="#76D166"/></linearGradient>
-      <linearGradient id="gMid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2D89E5"/><stop offset="1" stop-color="#0059B3"/></linearGradient>
-      <linearGradient id="gLow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8DE0F2"/><stop offset="1" stop-color="#63C9E3"/></linearGradient></defs>`;
-    if (g.hasCuts) s += `<rect x="${L}" y="${T}" width="${bx - L}" height="${ih}" fill="#63C9E3" opacity=".12"/><rect x="${bx}" y="${T}" width="${tx - bx}" height="${ih}" fill="#0059B3" opacity=".05"/><rect x="${tx}" y="${T}" width="${L + iw - tx}" height="${ih}" fill="#76D166" opacity=".14"/>`;
+    const X = v => L + Math.max(0, Math.min(100, v)) / 100 * iw, Y = v => TM + (1 - v / maxY) * ih;
+    const tierAt = v => { if (!g.hasCuts) return coreIdx(T); for (let i = 0; i < T - 1; i++) if (v >= g.cuts[i]) return i; return T - 1; };
+    const P = Array.from({length: T}, (_, i) => palette(i, T));
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distribution of CHW scores with award cut-offs" class="chart"><defs>${
+      P.map((p, i) => `<linearGradient id="gT${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${p.c1}"/><stop offset="1" stop-color="${p.c2}"/></linearGradient>`).join("")}</defs>`;
+    if (g.hasCuts) for (let i = 0; i < T; i++) {          // shaded band for each tier (lowest tier is at the left)
+      const x0 = X(i === T - 1 ? 0 : g.cuts[i]), x1 = X(i === 0 ? 100 : g.cuts[i - 1]);
+      if (x1 > x0) s += `<rect x="${x0}" y="${TM}" width="${x1 - x0}" height="${ih}" fill="${P[i].c2}" opacity=".12"/>`;
+    }
     for (let k = 0; k <= 4; k++) { const v = Math.round(maxY * k / 4); s += `<line x1="${L}" x2="${L + iw}" y1="${Y(v)}" y2="${Y(v)}" stroke="#D7E3EF" stroke-width="1"/><text x="${L - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="#4B6382">${v}</text>`; }
-    bins.forEach((c, i) => { if (!c) return; const t = tierAt(i * 5 + 2.5); s += `<rect x="${X(i * 5) + 1.5}" y="${Y(c)}" width="${iw / 20 - 3}" height="${Y(0) - Y(c)}" rx="4" fill="url(#g${t === "top" ? "Top" : t === "low" ? "Low" : "Mid"})"><title>${i * 5}–${i * 5 + 5}: ${c} CHW${c > 1 ? "s" : ""}</title></rect>`; });
+    bins.forEach((c, i) => { if (!c) return; s += `<rect x="${X(i * 5) + 1.5}" y="${Y(c)}" width="${iw / 20 - 3}" height="${Y(0) - Y(c)}" rx="4" fill="url(#gT${tierAt(i * 5 + 2.5)})"><title>${i * 5} to ${i * 5 + 5}: ${c} CHW${c > 1 ? "s" : ""}</title></rect>`; });
     if (g.sd && g.n >= 5) { let d = ""; for (let x = 0; x <= 100; x += 1) d += (x ? "L" : "M") + X(x).toFixed(1) + " " + Y(g.n * 5 * pdf(x)).toFixed(1); s += `<path d="${d}" fill="none" stroke="#003366" stroke-width="2.2"/>`; }
     for (let v = 0; v <= 100; v += 20) s += `<text x="${X(v)}" y="${H - 14}" text-anchor="middle" font-size="11" fill="#4B6382">${v}</text>`;
     s += `<text x="${L + iw / 2}" y="${H - 1}" text-anchor="middle" font-size="11" fill="#4B6382">Final score (out of 100)</text>`;
     if (g.hasCuts) {
-      const lab = (x, t, a) => `<text x="${x}" y="${T - 12}" text-anchor="${a}" font-size="11.5" font-weight="700" fill="#003366">${t}</text>`;
-      s += `<line x1="${bx}" x2="${bx}" y1="${T}" y2="${T + ih}" stroke="#0B7FB3" stroke-width="2" stroke-dasharray="5 4"/><line x1="${tx}" x2="${tx}" y1="${T}" y2="${T + ih}" stroke="#2F7D24" stroke-width="2" stroke-dasharray="5 4"/>`;
-      s += lab(bx, `< ${fmt(g.botCut)}`, "end") + lab(tx, `≥ ${fmt(g.topCut)}`, "start");
-      s += `<line x1="${X(g.mean)}" x2="${X(g.mean)}" y1="${T}" y2="${T + ih}" stroke="#003366" stroke-width="1.2"/><text x="${X(g.mean)}" y="${T + 36}" text-anchor="middle" font-size="11" fill="#003366" font-weight="700" paint-order="stroke" stroke="#fff" stroke-width="3">Mean ${fmt(g.mean)}</text>`;
-      const reg = (x, t, col) => `<text x="${x}" y="${T + 18}" text-anchor="middle" font-size="12.5" font-weight="700" fill="${col}" paint-order="stroke" stroke="#fff" stroke-width="3.5">${t}</text>`;
-      s += reg((L + bx) / 2, rm(AW.fin.low), "#0B7FB3") + reg((bx + tx) / 2 - 38, rm(AW.fin.mid), "#0059B3") + reg((tx + L + iw) / 2, rm(AW.fin.top), "#2F7D24");
+      for (let i = 0; i < T - 1; i++) {                    // one dashed line per cut-off, labels staggered so they do not collide
+        const c = g.cuts[i]; if (!isFinite(c) || c < 0 || c > 100) continue;
+        s += `<line x1="${X(c)}" x2="${X(c)}" y1="${TM}" y2="${TM + ih}" stroke="${P[i].line}" stroke-width="2" stroke-dasharray="5 4"/>` +
+             `<text x="${X(c)}" y="${TM - 8 - (i % 2) * 14}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#003366">≥ ${fmt(c)}</text>`;
+      }
+      s += `<line x1="${X(g.mean)}" x2="${X(g.mean)}" y1="${TM}" y2="${TM + ih}" stroke="#003366" stroke-width="1.2"/><text x="${X(g.mean)}" y="${TM + 36}" text-anchor="middle" font-size="11" fill="#003366" font-weight="700" paint-order="stroke" stroke="#fff" stroke-width="3">Mean ${fmt(g.mean)}</text>`;
+      for (let i = 0; i < T; i++) {                        // the award sits inside each band when the band is wide enough
+        const x0 = X(i === T - 1 ? 0 : g.cuts[i]), x1 = X(i === 0 ? 100 : g.cuts[i - 1]);
+        if (x1 - x0 >= 40) s += `<text x="${(x0 + x1) / 2}" y="${TM + 18}" text-anchor="middle" font-size="12" font-weight="700" fill="${P[i].line}" paint-order="stroke" stroke="#fff" stroke-width="3.5">${rm(AW.fin[i])}</text>`;
+      }
     }
     return s + "</svg>";
   }
 
+  /* ---- tier editor ---- */
+  function shareText(i, cs) {
+    const T = nT(); let sh;
+    if (AWARD.method === "sd") sh = (i === 0 ? 1 : Phi(cs.z[i - 1])) - (i === T - 1 ? 0 : Phi(cs.z[i]));
+    else sh = ((i === T - 1 ? 100 : cs.p[i]) - (i === 0 ? 0 : cs.p[i - 1])) / 100;
+    return `about ${Math.max(0, Math.round(sh * 100))}% of CHWs`;
+  }
+  function refreshTierShare() {
+    const cs = cutSet();
+    $$("#aw-tier-rows [data-share]").forEach(el => el.textContent = shareText(+el.dataset.share, cs));
+  }
+  function renderTierEditor() {
+    const T = nT(), sd = AWARD.method === "sd";
+    $("#aw-preset").value = AWARD.preset;
+    $("#aw-addtier").disabled = T >= MAX_TIERS;
+    $("#aw-tier-help").textContent = sd
+      ? "Tier 1 is the highest. A CHW gets the first tier whose cut-off their score reaches. Cut-offs are z-scores: 0 is the group average, 1.04 is about the top 15%, -1.28 is about the bottom 10%. Each cut-off must be lower than the one above it."
+      : "Tier 1 is the highest. Enter the running share of CHWs from the top: 15 means the top 15% get tier 1, 50 means the top half have been placed by the end of tier 2. Each running total must be higher than the one above it.";
+    $("#aw-tier-rows").innerHTML = AWARD.tiers.map((t, i) => {
+      const last = i === T - 1;
+      const cut = last ? `<span class="tier-row__last">Everyone below the cut-off above</span>`
+        : `<input type="number" data-tf="${sd ? "z" : "p"}" data-i="${i}" step="${sd ? "0.01" : "1"}" min="${sd ? "-3" : "0"}" max="${sd ? "3" : "100"}" value="${sd ? t.z : t.p}" aria-label="${esc(tierName(i))} cut-off">`;
+      return `<div class="tier-row"><span class="tier-row__tag" style="${palVars(i, T)}">${esc(tierShort(i))}</span>
+        <label>Award (RM)<input type="number" data-tf="amt" data-i="${i}" step="10" min="0" value="${t.amt}" aria-label="${esc(tierName(i))} award in RM"></label>
+        <label>${sd ? "Cut-off (z)" : "Running share (%)"}${cut}</label>
+        <span class="tier-row__share" data-share="${i}"></span>
+        <button class="tier-row__x" type="button" data-rm="${i}" aria-label="Remove ${esc(tierName(i))}"${T <= MIN_TIERS ? " disabled" : ""}>×</button></div>`;
+    }).join("");
+    refreshTierShare();
+  }
+  function afterTierChange() { computeAwards(); renderPanels(); }
+  function applyPreset(k) { if (!PRESETS[k]) return; AWARD.tiers = cloneTiers(k); AWARD.preset = k; renderTierEditor(); afterTierChange(); }
+  function addTier() {
+    const T = nT(); if (T >= MAX_TIERS) return;
+    const prev = AWARD.tiers[T - 2], last = AWARD.tiers[T - 1];
+    AWARD.tiers.splice(T - 1, 0, {amt: floor5((prev.amt + last.amt) / 2), z: Math.max(-3, +(prev.z - 0.5).toFixed(2)), p: Math.min(99, Math.round(prev.p + (100 - prev.p) / 2))});
+    AWARD.preset = "custom"; renderTierEditor(); afterTierChange();
+  }
+  function removeTier(i) {
+    if (nT() <= MIN_TIERS) return;
+    AWARD.tiers.splice(i, 1); AWARD.preset = "custom"; renderTierEditor(); afterTierChange();
+  }
+
+  /* ---- the award panel ---- */
   function renderAward() {
     $$("[data-m]").forEach(l => l.hidden = l.dataset.m !== AWARD.method);
-    const r = AW, avail = r.avail;
-    // notes
+    const r = AW, T = nT(), avail = r.avail, cs = cutSet();
+    const finText = r.fin.map(rm).join(" / "), typedText = AWARD.tiers.map(t => rm(t.amt)).join(" / ");
     const notes = [];
     if (!r.n) notes.push("No eligible CHWs for these filters.");
+    if (r.fixed) notes.push("Some cut-offs were out of order. For the calculation they are kept running from high to low, so tiers never overlap.");
     const fb = r.groups.filter(g => g.fallback);
     if (fb.length) notes.push(`${fb.map(g => `${g.label} (${g.n})`).join(", ")} ${fb.length > 1 ? "have" : "has"} fewer than ${AWARD.small} CHWs, so ${fb.length > 1 ? "they use" : "it uses"} percentile rank instead of mean ± SD.`);
-    const tiny = r.groups.filter(g => g.n < 3); if (tiny.length) notes.push(`${tiny.map(g => g.label).join(", ")}: fewer than 3 CHWs, so everyone gets the core award.`);
-    if (r.factor < 1) notes.push(`Awards scaled to ×${r.factor.toFixed(2)} so the total fits the budget: ${rm(r.fin.top)} / ${rm(r.fin.mid)} / ${rm(r.fin.low)}.`);
-    if (r.factor > 1) notes.push(`Awards scaled up ×${r.factor.toFixed(2)} to use the full budget: ${rm(r.fin.top)} / ${rm(r.fin.mid)} / ${rm(r.fin.low)}.`);
+    const tiny = r.groups.filter(g => g.n < 3); if (tiny.length) notes.push(`${tiny.map(g => g.label).join(", ")}: fewer than 3 CHWs, so everyone gets the ${tierShort(coreIdx(T))} award (${rm(r.fin[coreIdx(T)])}).`);
+    if (r.factor < 1) notes.push(`Awards scaled to ×${r.factor.toFixed(2)} so the total fits the budget: ${finText}.`);
+    if (r.factor > 1) notes.push(`Awards scaled up ×${r.factor.toFixed(2)} to use the full budget: ${finText}.`);
     if (AWARD.budget > 0 && AWARD.fit === "none" && r.base > avail) notes.push(`Total is ${rm(r.base - avail)} over the available budget. Switch “Fit awards to budget” on, or lower an award.`);
     notes.push("Eligible: every CHW with scores in the period, including CHWs who have since left. The Active switch above does not change this. CHN awards are separate and not included here.");
     $("#aw-notes").innerHTML = notes.map(n => `<p class="note-line">${esc(n)}</p>`).join("");
 
     // tier cards
-    const share = t => r.n ? Math.round(r.N[t] / r.n * 100) : 0;
-    const card = (key, title, sub) => `<div class="tier-card tier-card--${key}"><span class="tier-card__amt">${rm(r.fin[key])}</span><b>${title}</b><small>${sub}</small>
-      <div class="tier-card__stats"><span><em>${r.N[key]}</em> CHWs</span><span><em>${share(key)}%</em> of eligible</span><span><em>${rm(r.N[key] * r.fin[key])}</em> total</span></div></div>`;
-    $("#aw-cards").innerHTML = card("top", "Top performers", "Right tail of each curve") + card("mid", "Core performers", "The bulk of each curve") + card("low", "Lower performers", "Left tail of each curve") +
-      `<div class="tier-card tier-card--sum"><span class="tier-card__amt">${rm(r.total)}</span><b>Total payout</b><small>${r.n} eligible CHWs · average ${r.n ? rm(r.total / r.n) : "–"}</small></div>`;
+    const share = i => r.n ? Math.round(r.N[i] / r.n * 100) : 0;
+    const subText = i => {
+      if (T === 3) return ["Right tail of each curve", "The bulk of each curve", "Left tail of each curve"][i];
+      const sd = AWARD.method === "sd", f = v => +v.toFixed(2);
+      if (sd) return i === 0 ? `z at or above ${f(cs.z[0])}` : i === T - 1 ? `z below ${f(cs.z[T - 2])}` : `z from ${f(cs.z[i])} up to ${f(cs.z[i - 1])}`;
+      return i === 0 ? `Top ${f(cs.p[0])}%` : i === T - 1 ? `Bottom ${f(100 - cs.p[T - 2])}%` : `Next ${f(cs.p[i] - cs.p[i - 1])}%`;
+    };
+    const card = i => `<div class="tier-card tier-card--t" style="${palVars(i, T)}"><span class="tier-card__amt">${rm(r.fin[i])}</span><b>${esc(tierName(i))}</b><small>${esc(subText(i))}</small>
+      <div class="tier-card__stats"><span><em>${r.N[i]}</em> CHWs</span><span><em>${share(i)}%</em> of eligible</span><span><em>${rm(r.N[i] * r.fin[i])}</em> total</span></div></div>`;
+    $("#aw-cards").innerHTML = AWARD.tiers.map((_, i) => card(i)).join("") +
+      `<div class="tier-card tier-card--sum"><span class="tier-card__amt">${rm(r.total)}</span><b>Total payout</b><small>${r.n} eligible CHWs · average ${r.n ? rm(r.total / r.n) : "-"}</small></div>`;
 
     // budget analysis
     const unspent = avail - r.total;
     $("#aw-bstats").innerHTML = [
       ["Budget available", rm(avail), AWARD.reserve > 0 ? `${rm(AWARD.budget)} less ${AWARD.reserve}% reserve` : "Annual CHW pool"],
-      ["Cost at the amounts typed", rm(r.base), `${rm(AWARD.top)} / ${rm(AWARD.mid)} / ${rm(AWARD.low)}`],
+      ["Cost at the amounts typed", rm(r.base), typedText],
       ["Total after fitting", rm(r.total), r.n ? `${rm(r.total / r.n)} per CHW (budget allows ${rm(avail / r.n)})` : ""],
       [unspent >= 0 ? "Unspent" : "Over budget", rm(Math.abs(unspent)), unspent >= 0 ? "Can be used for other items in this category" : "Reduce awards or the top share"]
     ].map(([l, v, s], i) => `<div class="bud-stat${i === 3 ? (unspent >= 0 ? " bud-stat--ok" : " bud-stat--bad") : ""}"><small>${l}</small><b>${v}</b><span>${s}</span></div>`).join("");
 
     const sugg = [];
     if (r.n && r.base > 0) {
-      const f = avail / r.base;
-      sugg.push(`<b>Keep the same ratios:</b> a budget of ${rm(avail)} supports ${rm(floor5(AWARD.top * f))} / ${rm(floor5(AWARD.mid * f))} / ${rm(floor5(AWARD.low * f))} (×${f.toFixed(2)}).`);
-      if (r.N.top > 0) { const topAmt = (avail - AWARD.mid * r.N.mid - AWARD.low * r.N.low) / r.N.top;
-        if (topAmt < AWARD.top) sugg.push(topAmt >= AWARD.mid ? `<b>Lower only the top award:</b> to fit the budget with the core and lower awards unchanged, the top award would be ${rm(floor5(topAmt))}.` : `<b>Lower only the top award:</b> not enough, because even the core award for every top performer leaves the budget exceeded.`); }
-      const b = r.N.low / r.n, perHead = avail / r.n;
-      if (AWARD.top > AWARD.mid) { const pmax = (perHead - AWARD.mid - b * (AWARD.low - AWARD.mid)) / (AWARD.top - AWARD.mid); sugg.push(pmax > 0 ? `<b>Keep all three amounts:</b> the budget covers a top tier of up to about ${Math.min(100, Math.round(pmax * 100))}% of eligible CHWs (about ${Math.round(Math.max(0, pmax) * r.n)}), with the lower tier at ${Math.round(b * 100)}%. Currently ${share("top")}%.` : `<b>Keep all three amounts:</b> the budget does not cover any top tier with these amounts.`); }
+      const f = avail / r.base, perHead = avail / r.n, a = AWARD.tiers.map(t => t.amt);
+      sugg.push(`<b>Keep the same ratios:</b> a budget of ${rm(avail)} supports ${a.map(x => rm(floor5(x * f))).join(" / ")} (×${f.toFixed(2)}).`);
+      if (r.N[0] > 0) {
+        const rest = r.N.reduce((acc, c, i) => i ? acc + c * a[i] : acc, 0), topAmt = (avail - rest) / r.N[0];
+        if (topAmt < a[0]) sugg.push(topAmt >= a[1] ? `<b>Lower only the top award:</b> to fit the budget with every other award unchanged, the top award would be ${rm(floor5(topAmt))}.` : `<b>Lower only the top award:</b> not enough, because even the second-tier award for every top performer leaves the budget exceeded.`);
+      }
+      if (a[0] > a[1]) {
+        const s = r.N.map(c => c / r.n), tail = s.reduce((acc, v, i) => i >= 2 ? acc + v * a[i] : acc, 0);
+        const pmax = (perHead - (s[0] + s[1]) * a[1] - tail) / (a[0] - a[1]), cap = s[0] + s[1];   // the top tier can grow by taking people from tier 2
+        if (pmax <= 0) sugg.push(`<b>Keep all ${T} amounts:</b> the budget does not cover any top tier with these amounts.`);
+        else if (pmax >= cap) sugg.push(`<b>Keep all ${T} amounts:</b> the budget is large enough for the top tier to be as big as the top two tiers combined (about ${Math.round(cap * 100)}% of eligible CHWs). Currently ${share(0)}%.`);
+        else sugg.push(`<b>Keep all ${T} amounts:</b> the budget covers a top tier of up to about ${Math.round(pmax * 100)}% of eligible CHWs (about ${Math.round(pmax * r.n)}), with the rest of the split unchanged. Currently ${share(0)}%.`);
+      }
       sugg.push(`<b>One flat award:</b> ${rm(floor5(perHead))} for each of ${r.n} CHWs.`);
       if (unspent > 0 && AWARD.fit !== "full") sugg.push(`<b>Use the saving:</b> ${rm(unspent)} is unspent. Options are a small “most improved” pool, a reserve for appeals, or other items under the same category.`);
     }
     $("#aw-sugg").innerHTML = sugg.map(x => `<li>${x}</li>`).join("") || "<li>No eligible CHWs.</li>";
+
+    const bg = $(".bud-grid"); if (bg) bg.classList.toggle("bud-grid--wide", T > 4);
+    $("#aw-scen-head").innerHTML = `<tr><th>Budget</th>${AWARD.tiers.map((_, i) => `<th class="num">${esc(tierShort(i))}</th>`).join("")}<th class="num">Per CHW</th></tr>`;
     $("#aw-scen").innerHTML = r.base > 0 ? [.6, .8, 1, 1.2, 1.5].map(m => {
       const bud = AWARD.budget * m, f = bud * (1 - AWARD.reserve / 100) / r.base;
-      return `<tr${m === 1 ? ' class="is-cur"' : ""}><td data-l="Budget">${rm(bud)}${m === 1 ? " (current)" : ""}</td><td class="num" data-l="Top">${rm(floor5(AWARD.top * f))}</td><td class="num" data-l="Core">${rm(floor5(AWARD.mid * f))}</td><td class="num" data-l="Lower">${rm(floor5(AWARD.low * f))}</td><td class="num" data-l="Per CHW">${r.n ? rm(bud / r.n) : "–"}</td></tr>`;
-    }).join("") : `<tr><td colspan="5" class="empty">Enter a budget.</td></tr>`;
+      return `<tr${m === 1 ? ' class="is-cur"' : ""}><td data-l="Budget">${rm(bud)}${m === 1 ? " (current)" : ""}</td>${AWARD.tiers.map((t, i) => `<td class="num" data-l="${esc(tierShort(i))}">${rm(floor5(t.amt * f))}</td>`).join("")}<td class="num" data-l="Per CHW">${r.n ? rm(bud / r.n) : "-"}</td></tr>`;
+    }).join("") : `<tr><td colspan="${T + 2}" class="empty">Enter a budget.</td></tr>`;
 
-    // by key population
+    // by group
+    $("#aw-kp-head").innerHTML = `<tr><th>Group</th><th class="num">Eligible</th><th class="num">Mean</th><th class="num">SD</th><th>Method</th>${AWARD.tiers.map((_, i) => `<th class="num">${esc(tierShort(i))}</th>`).join("")}<th class="num">Payout</th><th class="num">Share</th></tr>`;
+    $("#aw-kp").closest("table").style.minWidth = (560 + T * 70) + "px";
     $("#aw-kp").innerHTML = r.groups.length ? r.groups.map(g => {
-      const pay = g.counts.top * r.fin.top + g.counts.mid * r.fin.mid + g.counts.low * r.fin.low;
-      return `<tr><td>${g.key in KP_LABEL ? chip(g.key) : `<span class="kp-chip" data-kp="GROUP">${esc(g.label)}</span>`}</td><td class="num">${g.n}</td><td class="num">${fmt(g.mean)}</td><td class="num">${g.sd ? fmt(g.sd) : "–"}</td><td>${g.used === "sd" ? "Mean ± SD" : g.used === "pct" ? "Percentile" + (g.fallback ? " (small group)" : "") : "Core only"}</td><td class="num">${g.counts.top}</td><td class="num">${g.counts.mid}</td><td class="num">${g.counts.low}</td><td class="num"><b>${rm(pay)}</b></td><td class="num">${r.total ? Math.round(pay / r.total * 100) : 0}%</td></tr>`;
-    }).join("") + `<tr class="tot"><td>Total</td><td class="num">${r.n}</td><td></td><td></td><td></td><td class="num">${r.N.top}</td><td class="num">${r.N.mid}</td><td class="num">${r.N.low}</td><td class="num"><b>${rm(r.total)}</b></td><td class="num">100%</td></tr>` : `<tr><td colspan="10" class="empty">No eligible CHWs.</td></tr>`;
+      const pay = g.counts.reduce((a, c, i) => a + c * r.fin[i], 0);
+      return `<tr><td>${g.key in KP_LABEL ? chip(g.key) : `<span class="kp-chip" data-kp="GROUP">${esc(g.label)}</span>`}</td><td class="num">${g.n}</td><td class="num">${fmt(g.mean)}</td><td class="num">${g.sd ? fmt(g.sd) : "-"}</td><td>${g.used === "sd" ? "Mean ± SD" : g.used === "pct" ? "Percentile" + (g.fallback ? " (small group)" : "") : esc(tierShort(coreIdx(T))) + " only"}</td>${g.counts.map(c => `<td class="num">${c}</td>`).join("")}<td class="num"><b>${rm(pay)}</b></td><td class="num">${r.total ? Math.round(pay / r.total * 100) : 0}%</td></tr>`;
+    }).join("") + `<tr class="tot"><td>Total</td><td class="num">${r.n}</td><td></td><td></td><td></td>${r.N.map(c => `<td class="num">${c}</td>`).join("")}<td class="num"><b>${rm(r.total)}</b></td><td class="num">100%</td></tr>` : `<tr><td colspan="${T + 7}" class="empty">No eligible CHWs.</td></tr>`;
 
     // chart
     const sel = $("#aw-chartkp");
@@ -495,16 +605,16 @@
     $("#aw-chartnote").textContent = !g ? "" : g === r.everyone ? "Preview only: this is how everyone would look ranked together. Awards still use the grouping chosen above." : !g.hasCuts ? "Not enough spread or CHWs in this group to draw cut-offs." : "";
     $("#aw-custom").hidden = AWARD.scope !== "custom";
 
-    // recommended splits (pooled)
+    // standard 3-tier splits, for comparison (only meaningful when there are three tiers)
     const opts = [["10 / 80 / 10", "+1.28 / −1.28", .10, .10], ["15 / 75 / 10 (recommended)", "+1.04 / −1.28", .15, .10], ["20 / 70 / 10", "+0.84 / −1.28", .20, .10], ["16 / 68 / 16 (textbook ±1 SD)", "+1.00 / −1.00", .16, .16]];
-    $("#aw-splits").innerHTML = opts.map(([nm, z, t, bb]) => { const cost = r.n * (t * AWARD.top + (1 - t - bb) * AWARD.mid + bb * AWARD.low); return `<tr><td>${nm}</td><td>${z}</td><td class="num">${rm(cost)}</td><td class="num">${cost <= avail ? "Within" : "Over"} budget</td></tr>`; }).join("");
+    $("#aw-splits").innerHTML = T === 3 ? opts.map(([nm, z, t, bb]) => { const a = AWARD.tiers.map(x => x.amt), cost = r.n * (t * a[0] + (1 - t - bb) * a[1] + bb * a[2]); return `<tr><td>${nm}</td><td>${z}</td><td class="num">${rm(cost)}</td><td class="num">${cost <= avail ? "Within" : "Over"} budget</td></tr>`; }).join("")
+      : `<tr><td colspan="4" class="empty">These standard splits are for three tiers. Choose “3 tiers” under Award tiers to compare them.</td></tr>`;
   }
 
-  
   const csvSafe = v => { v = String(v); return /^[=+\-@\t\r]/.test(v) ? "'" + v : v; };   // stops Excel treating a nickname as a formula
   function exportCsv() {
     const rows = [["Rank","CHW","NGO","KP","Months in service","Unique Clients Reached (pts)","Reactive Cases (pts)","Link to Care (pts)","Score","Tier","Award (RM)"]];
-    (D.all || []).forEach(c => { const a = AW.map.get(c.id); rows.push([c.rank, c.nick, c.ngo, KP_LABEL[c.kp] + (c.also ? " + " + c.also : ""), c.score.months, ...GROUPS.map(g => fmt(c.score.groups[g] || 0)), fmt(c.score.total), a ? {top: "Top", mid: "Core", low: "Lower"}[a.tier] : "Not eligible", a ? a.award : 0]); });
+    (D.all || []).forEach(c => { const a = AW.map.get(c.id); rows.push([c.rank, c.nick, c.ngo, KP_LABEL[c.kp] + (c.also ? " + " + c.also : ""), c.score.months, ...GROUPS.map(g => fmt(c.score.groups[g] || 0)), fmt(c.score.total), a ? tierShort(a.tier) : "Not eligible", a ? a.award : 0]); });
     const csv = rows.map(r => r.map(v => `"${csvSafe(v).replace(/"/g, '""')}"`).join(",")).join("\n");
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\ufeff" + csv], {type: "text/csv"})); a.download = "hivnext-award-model.csv"; a.click();
   }
@@ -650,7 +760,7 @@
   function build() {
     $("#set-tabs").innerHTML = KP_ORDER.map(k => `<button type="button" data-set="${k}" aria-pressed="${k === setKp}">${KP_LABEL[k]}</button>`).join("");
     $("#aw-custom .aw-custom__grid").innerHTML = KP_ORDER.map(k => `<label>${KP_LABEL[k]}<select data-grp="${k}">${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}"${AWARD.groups[k] === n ? " selected" : ""}>Group ${n}</option>`).join("")}</select></label>`).join("");
-    buildKpMenu();
+    buildKpMenu(); renderTierEditor();
   }
   function setPeriod(from, to) { S.from = from; S.to = to; $("#f-from").value = from; $("#f-to").value = to; queueLoad(); }
 
@@ -695,9 +805,20 @@
   $("#aw-chartkp").addEventListener("change", e => { chartKey = e.target.value; renderAward(); });
   // award controls (what-if only: nothing is stored)
   const AW_STR = {"aw-scope": "scope", "aw-method": "method", "aw-fit": "fit"};
-  const AW_NUM = {"aw-ztop": "zTop", "aw-zbot": "zBot", "aw-ptop": "pTop", "aw-pbot": "pBot", "aw-small": "small", "aw-top": "top", "aw-mid": "mid", "aw-low": "low", "aw-budget": "budget", "aw-reserve": "reserve"};
-  Object.keys(AW_STR).forEach(id => document.getElementById(id).addEventListener("input", e => { AWARD[AW_STR[id]] = e.target.value; computeAwards(); renderPanels(); }));
+  const AW_NUM = {"aw-small": "small", "aw-budget": "budget", "aw-reserve": "reserve"};
+  Object.keys(AW_STR).forEach(id => document.getElementById(id).addEventListener("input", e => { AWARD[AW_STR[id]] = e.target.value; if (id === "aw-method") renderTierEditor(); computeAwards(); renderPanels(); }));
   Object.keys(AW_NUM).forEach(id => document.getElementById(id).addEventListener("input", e => { AWARD[AW_NUM[id]] = Math.max(0, parseFloat(e.target.value) || 0); computeAwards(); renderPanels(); }));
+  // award tiers: edit amounts and cut-offs, add or remove a tier, or start from a preset
+  $("#aw-tier-rows").addEventListener("input", e => {
+    const f = e.target.closest("[data-tf]"); if (!f) return;
+    const v = parseFloat(f.value); if (isNaN(v)) return;
+    AWARD.tiers[+f.dataset.i][f.dataset.tf] = f.dataset.tf === "amt" ? Math.max(0, v) : v;
+    AWARD.preset = "custom"; $("#aw-preset").value = "custom";
+    refreshTierShare(); afterTierChange();
+  });
+  $("#aw-tier-rows").addEventListener("click", e => { const x = e.target.closest("[data-rm]"); if (x) removeTier(+x.dataset.rm); });
+  $("#aw-addtier").addEventListener("click", addTier);
+  $("#aw-preset").addEventListener("change", e => { if (e.target.value !== "custom") applyPreset(e.target.value); else AWARD.preset = "custom"; });
   $("#gate-email").addEventListener("submit", onEmail);
   $("#gate-code").addEventListener("submit", onCode);
 

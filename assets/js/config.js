@@ -16,7 +16,7 @@ const SITE = {
   youtube: "https://youtube.com/@HIVnext",
   // Legacy > Data Correction Request.
   // correctionFormEmbed: leave "" to show a card with an "Open the form" button (required while the
-  //   form has a File Upload question — Google will not embed those). To embed instead, remove the
+  //   form has a File Upload question: Google will not embed those). To embed instead, remove the
   //   upload question and paste the Send -> <> address ending in ?embedded=true.
   correctionFormEmbed: "",
   correctionFormOpen:  "https://forms.gle/wGQ2BJzuuaeJHn6H6"
@@ -251,7 +251,7 @@ const CHANGELOG = [
   {
     "date": "2026-06-05",
     "title": "HIVnext Legacy completely re-engineered",
-    "desc": "Full architectural overhaul of the Legacy system completed — rebuilt from the ground up on the previous data architecture with improved structure, reliability, and maintainability."
+    "desc": "Full architectural overhaul of the Legacy system completed: rebuilt from the ground up on the previous data architecture with improved structure, reliability, and maintainability."
   },
   {
     "date": "2026-06-06",
@@ -271,7 +271,7 @@ const CHANGELOG = [
   {
     "date": "2026-06-19",
     "title": "Dashboard redesign: complete overhaul and new core architecture",
-    "desc": "All NGO dashboards underwent a comprehensive redesign — new visual layout, restructured data architecture, and performance optimisations resulting in significantly faster load times."
+    "desc": "All NGO dashboards underwent a comprehensive redesign: new visual layout, restructured data architecture, and performance optimisations resulting in significantly faster load times."
   },
   {
     "date": "2026-06-21",
@@ -286,7 +286,7 @@ const CHANGELOG = [
   {
     "date": "2026-06-25",
     "title": "New data architecture deployed to further improve dashboard performance",
-    "desc": "Advanced data architecture update pushed live — automated workflow triggers activated. Structural refinements further reduce query times and dashboard load latency across all NGO views."
+    "desc": "Advanced data architecture update pushed live: automated workflow triggers activated. Structural refinements further reduce query times and dashboard load latency across all NGO views."
   },
   {
     "date": "2026-06-26",
@@ -296,7 +296,7 @@ const CHANGELOG = [
   {
     "date": "2026-06-30",
     "title": "Interactive illustrated guide in progress",
-    "desc": "Development of a fully illustrated, interactive guide is underway to assist Program Managers in navigating and operating the HIVnext system — combining visual walkthroughs with step-by-step instructions for a more intuitive onboarding experience."
+    "desc": "Development of a fully illustrated, interactive guide is underway to assist Program Managers in navigating and operating the HIVnext system - combining visual walkthroughs with step-by-step instructions for a more intuitive onboarding experience."
   },
   {
     "date": "2026-09-12",
@@ -318,7 +318,7 @@ const CHANGELOG = [
 const FAQ = [
   {
     "q": "What is HIVnext?",
-    "a": "HIVnext is Malaysia's unified Health Information Vault for Differentiated HIV Services — a cloud-based platform replacing Google Workspace setup across 50+ sites implemented by 21 NGOs."
+    "a": "HIVnext is Malaysia's unified Health Information Vault for Differentiated HIV Services: a cloud-based platform replacing Google Workspace setup across 50+ sites implemented by 21 NGOs."
   },
   {
     "q": "Who can use HIVnext?",

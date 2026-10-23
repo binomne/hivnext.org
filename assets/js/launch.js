@@ -1,4 +1,4 @@
-/* HIVnext — launch screen. Depth effects run only on pointer devices that can hover
+/* HIVnext | launch screen. Depth effects run only on pointer devices that can hover
    and only when the visitor has not asked for reduced motion; phones get the flat, cheap version. */
 (function(){
   "use strict";

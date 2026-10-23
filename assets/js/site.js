@@ -1,4 +1,4 @@
-/* HIVnext — shared behaviour. Reads from config.js (SITE, LINKS, NGOS, CHANGELOG, FAQ). */
+/* HIVnext | shared behaviour. Reads from config.js (SITE, LINKS, NGOS, CHANGELOG, FAQ). */
 (function(){
   "use strict";
   const $ = (s, r=document) => r.querySelector(s);
@@ -39,7 +39,7 @@
       `<a href="${LINKS.myprep}" target="_blank" rel="noopener"><img src="${root}assets/logos/mypreplocator.webp" alt="MyPrEP Locator"></a>` +
       `<a href="${LINKS.myvasLogin}" target="_blank" rel="noopener"><img src="${root}assets/logos/myvas.svg" alt="MyVAS"></a>`;
   }
-  $$(".copyright").forEach(el => el.innerHTML = `© ${new Date().getFullYear()} HIVnext — ${esc(SITE.org)}. Built by community, for community.`);
+  $$(".copyright").forEach(el => el.innerHTML = `© ${new Date().getFullYear()} HIVnext | ${esc(SITE.org)}. Built by community, for community.`);
 
   /* ---- changelog: collapsed entries, click to expand ---- */
   const tl = $("#changelog-list");
@@ -92,7 +92,7 @@
   if (bug) {
     const report = () => {
       const f = new FormData(bug);
-      const subject = `[HIVnext bug] ${f.get("area")} — ${f.get("title")}`;
+      const subject = `[HIVnext bug] ${f.get("area")} - ${f.get("title")}`;
       const body = [
         `Name: ${f.get("name")}`, `NGO / site: ${f.get("ngo")}`, `Area: ${f.get("area")}`, "",
         "Details:", f.get("desc"), "",
@@ -111,7 +111,7 @@
       if (!bug.reportValidity()) return;
       const {subject, body} = report();
       try { await navigator.clipboard.writeText(subject + "\n\n" + body); status.textContent = `Copied. Paste it into an email to ${SITE.email}.`; }
-      catch { status.textContent = "Couldn't access the clipboard — select the text in the form and copy it manually."; }
+      catch { status.textContent = "Couldn't access the clipboard: select the text in the form and copy it manually."; }
     });
   }
 
