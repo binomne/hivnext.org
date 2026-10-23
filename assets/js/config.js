@@ -316,7 +316,7 @@ const CHANGELOG = [
    {
     "date": "2026-10-24",
     "title": "Lead to Compete",
-    "desc": "We are taking community-driven impact to the next level! Community Health Workers (CHWs) across Malaysia can now see where they stand on the brand-new, real-time CHW Leaderboard within the Legacy platform.."
+    "desc": "We are taking community-driven impact to the next level! Community Health Workers (CHWs) across Malaysia can now see where they stand on the brand-new, real-time (updated monthly) CHW Leaderboard within the Legacy platform."
   }
 ];
 
