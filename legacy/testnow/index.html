@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Legacy · TestNow HIVST Dashboard</title>
+<link rel="icon" href="/assets/logos/testnow-favicon.ico" sizes="32x32">
+<link rel="icon" href="/assets/logos/testnow-icon.svg" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="/assets/logos/testnow-apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -562,12 +565,12 @@ var HIVST_CORE = (function () {
   var DEFAULT_MIN = 5; // counts of 1-4 are hidden in sensitive breakdowns
 
   // Labels (display order matters)
-  var LAST_TEST_LABELS = ["Within 3 months", "3–6 months", "More than 6 months", "Never tested"];
+  var LAST_TEST_LABELS = ["Within 3 months", "3-6 months", "More than 6 months", "Never tested"];
   var STATUS_LABELS = ["HIV negative", "HIV positive", "Not sure", "Never"];
   var RISK_LABELS = ["High risk", "Low risk", "No risk", "Reactive", "Reactive, on treatment"];
   var GENDER_LABELS = ["Male", "Female", "Transgender", "Rather not say"];
   var AGE_LABELS = ["17 below", "18-19", "20-29", "30-39", "40-49", "50-59", "60+"];
-  var TT_LABELS = ["0–3 days", "4–7 days", "8–14 days", "15–30 days", "Over 30 days"];
+  var TT_LABELS = ["0-3 days", "4-7 days", "8-14 days", "15-30 days", "Over 30 days"];
   var KP_LABELS = ["MSM", "MEN HETERO", "WAR", "PWID/PWUD", "TG", "Unclassified"];
   var PREP_LABELS = ["PrEP Daily", "PrEP on Demand", "Not on PrEP", "Unclassified"];
   var EFF_LABELS = ["Protected on PrEP", "Possible Breakthrough", "Unprotected Negative", "HIV Positive (No PrEP)", "Unclassified"];
@@ -720,7 +723,7 @@ var HIVST_CORE = (function () {
     var t = String(s).toLowerCase().trim();
     if (!t) return "";
     if (t === "a4" || /never/.test(t)) return LAST_TEST_LABELS[3];
-    if (t === "a2" || /3\s*[-–to]+\s*6|between/.test(t)) return LAST_TEST_LABELS[1];
+    if (t === "a2" || /3\s*[-\u2013to]+\s*6|between/.test(t)) return LAST_TEST_LABELS[1];
     if (t === "a3" || /more than 6|over 6|>\s*6/.test(t)) return LAST_TEST_LABELS[2];
     if (t === "a1" || /within|past 3|less than 3|<\s*3/.test(t)) return LAST_TEST_LABELS[0];
     return "?";
@@ -2072,7 +2075,7 @@ var HIVST_DEMO = (function () {
     }
 
     // ---- year over year
-    $("yoyTag").textContent = yearly[0].year + " – " + yearly[yearly.length - 1].year + " · " + yearly.length + " year" + (yearly.length > 1 ? "s" : "");
+    $("yoyTag").textContent = yearly[0].year + " - " + yearly[yearly.length - 1].year + " · " + yearly.length + " year" + (yearly.length > 1 ? "s" : "");
     function mixBar(parts) { return '<div class="mix-bar">' + parts.map(function (p) { return '<span style="width:' + p[0] + "%;background:" + p[1] + '"></span>'; }).join("") + "</div>"; }
     $("yoyRow").innerHTML = yearly.map(function (y, i) {
       var list = monthly.filter(function (m) { return m.iso.indexOf(String(y.year)) === 0; });
@@ -2082,7 +2085,7 @@ var HIVST_DEMO = (function () {
       var badge = "";
       if (i > 0 && yearly[i - 1].months_active === 1 && y.yoy_avg_change_pct !== null) badge = '<div class="yoy-sub">Not compared to ' + yearly[i - 1].year + " (1 month only)</div>";
       else if (y.yoy_avg_change_pct !== null) { var up = y.yoy_avg_change_pct >= 0; badge = '<div class="yoy-badge ' + (up ? "pos" : "neg") + '">' + (up ? "+" : "") + y.yoy_avg_change_pct + "% pace vs " + yearly[i - 1].year + "</div>"; }
-      var sub = partial ? (y.months_active === 1 ? fName + " only · first month on file" : fName + "–" + lName + " · " + y.months_active + " months so far") : "Full calendar year · 12 months";
+      var sub = partial ? (y.months_active === 1 ? fName + " only · first month on file" : fName + "-" + lName + " · " + y.months_active + " months so far") : "Full calendar year · 12 months";
       if (y.partial_months && y.partial_months.length) sub += y.avg_partial_basis ? " · average so far (" + y.partial_months.join(", ") + " in progress)" : " · " + y.partial_months.join(", ") + " in progress, not in the average";
       var dParts = [[y.delivery_pct, PAL.just[1]], [y.selfpickup_pct, PAL.green[1]]].concat(hasEvent ? [[y.event_pct, PAL.sky[1]]] : []);
       return '<div class="yoy-card"><div class="yh"><span class="year">' + y.year + "</span>" + ptag + '</div><div class="yoy-total">' + fmtInt(y.total) + " <small>kits</small></div><div class=\"yoy-sub\">" + sub + "</div>" + badge +
@@ -2113,7 +2116,7 @@ var HIVST_DEMO = (function () {
 
     // ---- demand: states (only when the view holds 2+), districts
     $("districtTag").textContent = k.n_districts + " districts total";
-    $("demandSub").textContent = "State and district ranking of delivered and picked-up kits, " + longMonth(monthly[0].iso) + " – " + longMonth(lastM.iso);
+    $("demandSub").textContent = "State and district ranking of delivered and picked-up kits, " + longMonth(monthly[0].iso) + " - " + longMonth(lastM.iso);
     var multiState = D.state_rank.length >= 2;
     show("statesCard", multiState);
     $("cumCard").style.gridColumn = multiState ? "1 / -1" : "";
@@ -2121,7 +2124,7 @@ var HIVST_DEMO = (function () {
       $("capStates").textContent = D.state_rank.length + " states · kits delivered or picked up";
       $("statesBox").innerHTML = barList(D.state_rank.slice(0, 16).map(function (s) { return { label: s.name, sub: s.region, value: s.count }; }), { total: D.state_rank.reduce(function (n, s) { return n + s.count; }, 0), tone: "royal" });
     }
-    $("capDistricts").textContent = "Kits ordered, " + monthly[0].month + " – " + lastM.month;
+    $("capDistricts").textContent = "Kits ordered, " + monthly[0].month + " - " + lastM.month;
     $("districtsBox").innerHTML = barList(D.district_overall.slice(0, 12).map(function (d) { return { label: d.district, value: d.count }; }), { total: D.district_overall.reduce(function (n, d) { return n + d.count; }, 0), tone: "" });
 
     // ---- order status (STATUS column)
@@ -2141,7 +2144,7 @@ var HIVST_DEMO = (function () {
         var y = row.iso.slice(0, 4);
         if (filterYear !== "all" && y !== filterYear) return;
         if (y !== lastYear) { rows += '<tr class="year-divider"><td colspan="7">' + y + "</td></tr>"; lastYear = y; }
-        var cells = [0, 1, 2, 3, 4].map(function (i) { var e = row.top5[i]; return e ? '<td><span class="rank-pill' + (i === 0 ? " r1" : "") + '"><span class="rk">#' + (i + 1) + '</span><span class="dname">' + esc(e.district) + '</span><span class="cnt">' + e.count + "</span></span></td>" : "<td>—</td>"; }).join("");
+        var cells = [0, 1, 2, 3, 4].map(function (i) { var e = row.top5[i]; return e ? '<td><span class="rank-pill' + (i === 0 ? " r1" : "") + '"><span class="rk">#' + (i + 1) + '</span><span class="dname">' + esc(e.district) + '</span><span class="cnt">' + e.count + "</span></span></td>" : "<td>-</td>"; }).join("");
         rows += '<tr><td class="month-cell">' + row.month + (row.partial ? ' <span class="ptag">in progress</span>' : "") + "</td>" + cells + '<td class="total-cell">' + row.total + "</td></tr>";
       });
       $("top5Body").innerHTML = rows;
@@ -2208,12 +2211,12 @@ var HIVST_DEMO = (function () {
       if (hasKp) {
         var visK = A.kp.items.filter(function (i) { return !i.suppressed && i.value > 0; });
         var nHid = A.kp.items.filter(function (i) { return i.suppressed; }).length;
-        $("capKp").innerHTML = "<b>Q8–Q12</b> · Worked out from gender, sex assigned at birth, who you have sex with and exposures · " + nNote(A.kp.n, "classified") + (nHid ? " · " + nHid + " group" + (nHid > 1 ? "s" : "") + " under " + min + " hidden" : "");
+        $("capKp").innerHTML = "<b>Q8-Q12</b> · Worked out from gender, sex assigned at birth, who you have sex with and exposures · " + nNote(A.kp.n, "classified") + (nHid ? " · " + nHid + " group" + (nHid > 1 ? "s" : "") + " under " + min + " hidden" : "");
         mkChart("cKp", { type: "doughnut", data: { labels: visK.map(function (i) { return i.label; }), datasets: [{ data: visK.map(function (i) { return i.value; }), backgroundColor: visK.map(function (i) { return KP_COLOR[i.label] || GREY; }), borderColor: "#fff", borderWidth: 2 }] },
           options: { responsive: true, maintainAspectRatio: false, cutout: "50%", plugins: { legend: { display: false }, tooltip: tipWith({ label: function (i) { return i.label + ": " + fmtInt(i.parsed) + " (" + fmtPct((i.parsed / A.kp.n) * 100) + ")"; } }), sliceLabels: { on: true } } }, plugins: [sliceLabels] });
         $("kpTiles").innerHTML = A.kp.items.map(function (i) {
           var c = KP_COLOR[i.label] || GREY;
-          return '<div class="kp-tile' + (LIGHT_FILLS[c] ? " dark-text" : "") + '" style="background:' + c + '"><div>' + esc(i.label) + "<b>" + (i.suppressed ? hid(min, i) : fmtInt(i.value)) + '</b></div><span class="p">' + (i.suppressed ? "—" : fmtPct((i.value / A.kp.n) * 100)) + "</span></div>";
+          return '<div class="kp-tile' + (LIGHT_FILLS[c] ? " dark-text" : "") + '" style="background:' + c + '"><div>' + esc(i.label) + "<b>" + (i.suppressed ? hid(min, i) : fmtInt(i.value)) + '</b></div><span class="p">' + (i.suppressed ? "-" : fmtPct((i.value / A.kp.n) * 100)) + "</span></div>";
         }).join("");
       } else { killChart("cKp"); $("capKp").textContent = ""; $("kpWait").innerHTML = "<b>Waiting for key-population data.</b> This fills in once a KP_GROUP column is added to the data (MSM, MEN HETERO, WAR, PWID/PWUD, TG, Unclassified)."; }
 
@@ -2311,13 +2314,13 @@ var HIVST_DEMO = (function () {
     $("cmpMode").value = S.cmpMode;
     show("cmpCustom", S.cmpMode === "custom");
     if (S.cmpMode === "custom") { $("cmpFromB").value = S.cmpFrom || rb.from; $("cmpToB").value = S.cmpTo || rb.to; }
-    $("cmpPeriodSub").textContent = "A: " + fmtDate(ra.from) + " – " + fmtDate(ra.to) + " · B: " + fmtDate(rb.from) + " – " + fmtDate(rb.to);
+    $("cmpPeriodSub").textContent = "A: " + fmtDate(ra.from) + " - " + fmtDate(ra.to) + " · B: " + fmtDate(rb.from) + " - " + fmtDate(rb.to);
     $("cmpPeriodTag").textContent = "A vs B";
     var bEmpty = !B || B.empty;
     show("cmpBNote", bEmpty);
     if (bEmpty) {
       var sugFrom = addDays(addMonths(D.meta.dataMax, -12), 1), canSuggest = addDays(sugFrom, -1) >= D.meta.dataMin && !(S.from === sugFrom && S.to === D.meta.dataMax);
-      $("cmpBNote").innerHTML = "There are no orders in period B (" + fmtDate(rb.from) + " – " + fmtDate(rb.to) + "), so there is nothing to compare against." +
+      $("cmpBNote").innerHTML = "There are no orders in period B (" + fmtDate(rb.from) + " - " + fmtDate(rb.to) + "), so there is nothing to compare against." +
         (canSuggest ? ' <button class="btn" id="cmpSuggest" type="button" style="margin-left:8px">Compare the last 12 months with the year before</button>' : " Try another comparison.");
       var sg = $("cmpSuggest"); if (sg) sg.onclick = function () { S.cmpMode = "prev"; S.cmpFrom = ""; S.cmpTo = ""; setRange(sugFrom, D.meta.dataMax); };
     }
@@ -2349,7 +2352,7 @@ var HIVST_DEMO = (function () {
       { label: "A", data: labels.map(function (_, i2) { return D.monthly[i2] ? D.monthly[i2].total : null; }), backgroundColor: grad(PAL.just), borderRadius: 3, barPercentage: 0.9, categoryPercentage: 0.8 },
       { label: "B", data: labels.map(function (_, i2) { return !bEmpty && B.monthly[i2] ? B.monthly[i2].total : null; }), backgroundColor: grad(PAL.sky), borderRadius: 3, barPercentage: 0.9, categoryPercentage: 0.8 }] },
       options: { responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false }, layout: { padding: { top: 10 } },
-        plugins: { legend: { display: false }, tooltip: tipWith({ title: function (it) { var i2 = it[0].dataIndex; return (D.monthly[i2] ? "A: " + D.monthly[i2].month : "A: —") + "   ·   " + (!bEmpty && B.monthly[i2] ? "B: " + B.monthly[i2].month : "B: —"); }, label: function (i) { return i.dataset.label + ": " + (i.parsed.y === null ? "—" : fmtInt(i.parsed.y)); } }) },
+        plugins: { legend: { display: false }, tooltip: tipWith({ title: function (it) { var i2 = it[0].dataIndex; return (D.monthly[i2] ? "A: " + D.monthly[i2].month : "A: -") + "   ·   " + (!bEmpty && B.monthly[i2] ? "B: " + B.monthly[i2].month : "B: -"); }, label: function (i) { return i.dataset.label + ": " + (i.parsed.y === null ? "-" : fmtInt(i.parsed.y)); } }) },
         scales: { x: { grid: { display: false }, border: { color: "#B8C4D0" }, ticks: { color: LABEL, font: { size: 10 } } }, y: yCount() } } });
   }
 
@@ -2357,9 +2360,9 @@ var HIVST_DEMO = (function () {
   function renderFooter(D) {
     var k = D.kpis, meta = D.meta, min = meta.suppressBelow;
     $("footerNotes").innerHTML =
-      "<div><b>Scope:</b> " + fmtInt(k.total_kits) + " order records" + (meta.scopeText ? ", " + esc(meta.scopeText) : "") + ", " + esc(k.date_min) + " – " + esc(k.date_max) + ". " + esc(meta.statusText || "") + "</div>" +
+      "<div><b>Scope:</b> " + fmtInt(k.total_kits) + " order records" + (meta.scopeText ? ", " + esc(meta.scopeText) : "") + ", " + esc(k.date_min) + " - " + esc(k.date_max) + ". " + esc(meta.statusText || "") + "</div>" +
       "<div><b>How orders are counted:</b> every order with an ORDER_ID counts once, including event hand-outs. State and district rankings count Delivery and Self pick-up only, as in the HIVnext dashboard. Results, assessments, gender, age and risk answers come from the same order records, so they are never mixed with the separate Risk Assessment or Result Submit tables.</div>" +
-      "<div><b>Risk assessment and results:</b> people reach the assessment in three ways: the public “Take the Risk Assessment” page, when they order a kit for the first time, or when they reorder after 3–6 months (which needs the result of the previous kit). This dashboard counts the assessments completed with an order and the results recorded against orders; assessments and results submitted outside the ordering process are kept in separate tables with no order ID, state or district, so they cannot be shown by area and are not included. Totals here will therefore be lower than any figure that counts those separate submissions.</div>" +
+      "<div><b>Risk assessment and results:</b> people reach the assessment in three ways: the public “Take the Risk Assessment” page, when they order a kit for the first time, or when they reorder after 3-6 months (which needs the result of the previous kit). This dashboard counts the assessments completed with an order and the results recorded against orders; assessments and results submitted outside the ordering process are kept in separate tables with no order ID, state or district, so they cannot be shown by area and are not included. Totals here will therefore be lower than any figure that counts those separate submissions.</div>" +
       "<div><b>Month in progress:</b> the latest month is shown while it is still running (marked with *), but it is left out of the averages, medians, lowest and peak month, momentum and yearly averages, because a part-month would make them look too low. It counts in every total. A start date picked inside a month does the same for that month. The first month of data (the launch month) is treated as a normal month.</div>" +
       "<div><b>Small numbers:</b> counts of 1 to " + (min - 1) + " in results, gender, age, risk and comparison figures show as “&lt;" + min + "” or are left out" + (min ? "; where exactly one small count is hidden, the next-smallest value is hidden with it and both read “hidden” (one of the two is under " + min + "), so a total cannot reveal it" : "") + ".</div>" +
       "<div><b>Source:</b> " + esc(meta.sourceText || "") + "</div>";
@@ -2368,11 +2371,11 @@ var HIVST_DEMO = (function () {
     if (HERO_SUB_ORDERS !== null) $("heroSub").textContent = HERO_SUB_ORDERS;
     if (D && D.meta && D.meta.dataMin) BOUNDS = { min: D.meta.dataMin, max: D.meta.dataMax };
     var f = S.from || BOUNDS.min, t = S.to || BOUNDS.max;
-    $("dateLabel").textContent = BOUNDS.min ? (S.from || S.to ? fmtDate(f) + " – " + fmtDate(t) : "All data · " + fmtDate(f) + " – " + fmtDate(t)) : "All data";
+    $("dateLabel").textContent = BOUNDS.min ? (S.from || S.to ? fmtDate(f) + " - " + fmtDate(t) : "All data · " + fmtDate(f) + " - " + fmtDate(t)) : "All data";
     if (D && !D.empty && D.kpis) {
       var k = D.kpis;
-      $("heroTitle").textContent = "HIV Self-Test Kit Distribution" + (k.state ? " — " + k.state : "");
-      $("bPeriod").textContent = longMonth(D.monthly[0].iso) + " – " + longMonth(D.monthly[D.monthly.length - 1].iso);
+      $("heroTitle").textContent = "HIV Self-Test Kit Distribution" + (k.state ? " - " + k.state : "");
+      $("bPeriod").textContent = longMonth(D.monthly[0].iso) + " - " + longMonth(D.monthly[D.monthly.length - 1].iso);
       $("bState").textContent = k.state || "All";
       $("bRecords").textContent = fmtInt(k.total_kits) + " orders";
     }
@@ -2401,9 +2404,9 @@ var HIVST_DEMO = (function () {
     var lo = "", hi = "";
     [D.meta.results, D.meta.ra].forEach(function (m) { if (m.dataMin && (!lo || m.dataMin < lo)) lo = m.dataMin; if (m.dataMax && m.dataMax > hi) hi = m.dataMax; });
     var f = S.from && S.from > lo ? S.from : lo, t = S.to && S.to < hi ? S.to : hi;
-    $("heroTitle").textContent = "Standalone Submissions — National";
-    if (!S.from && !S.to && lo && hi) $("dateLabel").textContent = "All data · " + fmtDate(lo) + " – " + fmtDate(hi);   // the range of THIS data, not of the orders
-    $("bPeriod").textContent = f && t ? longMonth(f.slice(0, 7)) + " – " + longMonth(t.slice(0, 7)) : "—";
+    $("heroTitle").textContent = "Standalone Submissions - National";
+    if (!S.from && !S.to && lo && hi) $("dateLabel").textContent = "All data · " + fmtDate(lo) + " - " + fmtDate(hi);   // the range of THIS data, not of the orders
+    $("bPeriod").textContent = f && t ? longMonth(f.slice(0, 7)) + " - " + longMonth(t.slice(0, 7)) : "-";
     $("bState").textContent = "National";
     $("bRecords").textContent = [D.results ? fmtInt(D.results.submitted) + " results" : "", D.ra ? fmtInt(D.ra.submitted) + " assessments" : ""].filter(Boolean).join(" · ") || "none";
   }
@@ -2469,7 +2472,7 @@ var HIVST_DEMO = (function () {
     if (D.meta.ra.undated) und.push(fmtInt(D.meta.ra.undated) + " assessments");
     $("footerNotes").innerHTML = "<div><b>Scope:</b> national totals from results and risk assessments sent in outside the ordering process. They have no order ID, state or district, so they cannot be shown by area. They are never mixed with the order-based tabs.</div>"
       + "<div><b>How these are counted:</b> results are counted by the date the test was taken, and only recognised outcomes (non-reactive, reactive, not valid) count as submitted; Need Assistance counts every result where help was asked for. Assessments are counted by the date they were collected." + (und.length ? " " + und.join(" and ") + " have no date, so they cannot be placed in any period and are not counted." : "") + "</div>"
-      + "<div><b>Small numbers:</b> counts of 1–" + (D.meta.suppressBelow - 1) + " are hidden so that no individual can be identified.</div>";
+      + "<div><b>Small numbers:</b> counts of 1-" + (D.meta.suppressBelow - 1) + " are hidden so that no individual can be identified.</div>";
   }
   function queryStandalone(p) {
     var key = JSON.stringify([p.from, p.to]);
