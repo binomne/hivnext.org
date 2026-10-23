@@ -312,6 +312,11 @@ const CHANGELOG = [
     "date": "2026-10-06",
     "title": "The All-new TestNow Dashboard",
     "desc": "Introduced the brand-new TestNow Dashboard within the Legacy system. Authorized users can now view their state's dashboard to track real-time testing progress and key program metrics at a glance."
+  },
+   {
+    "date": "2026-10-24",
+    "title": "Lead to Compete",
+    "desc": "We are taking community-driven impact to the next level! Community Health Workers (CHWs) across Malaysia can now see where they stand on the brand-new, real-time CHW Leaderboard within the Legacy platform.."
   }
 ];
 
