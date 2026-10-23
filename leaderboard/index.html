@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WN6DGTR9DK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-WN6DGTR9DK');
+</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DHSKP Leaderboard | HIVnext</title>
+<meta name="description" content="DHSKP Leaderboard: recognising Community Health Workers who reach clients, find cases and link them to care on the way to ending AIDS by 2030.">
+<meta name="theme-color" content="#020B1C">
+<link rel="icon" href="/assets/logos/leaderboard-favicon.ico" sizes="32x32">
+<link rel="icon" href="/assets/logos/leaderboard-icon.svg" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="/assets/logos/leaderboard-apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/leaderboard.css">
+
+</head>
+<body class="lb-page">
+<header class="site-nav">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/logos/wordmark-dark.svg" alt="HIVnext" width="123" height="26"><span class="brand__tag">DHSKP Leaderboard</span></a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/about/">About</a></li>
+      <li><a href="/legacy/" aria-current="true">Legacy</a></li>
+      <li><a href="/myvas/" >MyVAS</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
+<main>
+  <section class="lb-bar" aria-label="Leaderboard filters">
+    <div class="wrap lb-bar__in">
+      <div class="lb-title">
+        <span class="lb-kicker">DHSKP · Ending AIDS by 2030</span>
+        <h1>Leaderboard</h1>
+        <p>Every client reached and every case linked to care brings us closer to ending AIDS. Here is how our Community Health Workers are doing.</p>
+      </div>
+      <div class="lb-filters" hidden>
+        <div class="filter-row">
+          <div class="kp-select" id="kp-select">
+            <button type="button" class="kp-select__btn" id="kp-btn" aria-haspopup="true" aria-expanded="false" aria-controls="kp-menu"><span class="kp-select__k">Key population</span><span id="kp-btn-label">All key populations</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+            <div class="kp-select__menu" id="kp-menu" role="group" aria-label="Key populations" hidden></div>
+          </div>
+          <div class="period"><span>Period</span>
+            <label class="sr-only" for="f-from">From month</label><select id="f-from"></select>
+            <span>to</span>
+            <label class="sr-only" for="f-to">To month</label><select id="f-to"></select>
+          </div>
+          <label class="switch"><input type="checkbox" id="f-active"><span>Active CHWs only</span></label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap lb-body">
+    <p class="lb-meta" id="lb-meta" aria-live="polite"></p>
+    <div class="lb-status" id="lb-status" role="status" aria-live="polite" hidden></div>
+
+    <!-- signed out -->
+    <section class="gate-lb" id="lb-gate" hidden aria-labelledby="gate-h">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <h2 id="gate-h">Sign in to see the leaderboard</h2>
+      <p id="gate-lead">The leaderboard is for registered HIVnext users. Enter the email address linked to your HIVnext profile.</p>
+
+      <form class="gate-form" id="gate-email" novalidate>
+        <label for="g-email">Email address</label>
+        <input id="g-email" type="email" inputmode="email" autocomplete="username" placeholder="name@example.org" required>
+        <button class="btn btn--primary" type="submit">Continue</button>
+      </form>
+
+      <div class="gate-step" id="gate-google" hidden>
+        <p>Sign in with the Google account for <b id="g-who"></b>.</p>
+        <div class="g-host" id="g-btn-host"></div>
+        <button class="linkbtn" type="button" id="g-codeinstead" hidden>Email me a code instead</button>
+      </div>
+
+      <form class="gate-form gate-step" id="gate-code" hidden novalidate>
+        <p>We sent a 6-digit code to <b id="c-who"></b>. It works for 10 minutes.</p>
+        <label for="g-code">6-digit code</label>
+        <input id="g-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="123456">
+        <button class="btn btn--primary" type="submit">Sign in</button>
+        <button class="linkbtn" type="button" id="g-resend">Send a new code</button>
+      </form>
+
+      <p class="gate-msg" id="gate-msg" role="alert" aria-live="assertive"></p>
+      <button class="linkbtn" type="button" id="g-change" hidden>Use a different email</button>
+    </section>
+
+    <div id="lb-app" hidden>
+      <section class="lb-sec" aria-labelledby="top-h">
+        <div class="lb-sec__head" style="justify-content:center;text-align:center;margin-bottom:0"><div><h2 id="top-h" style="margin-bottom:2px">Top 10</h2><p>Hover or tap a name for details.</p></div></div>
+        <div class="podium" id="podium"></div>
+        <div class="podium-base" aria-hidden="true"></div>
+        <div class="rows" id="toplist"></div>
+      </section>
+
+      <section class="me" id="me" hidden></section>
+
+      <section class="lb-sec" aria-label="At a glance"><div class="lb-kpis" id="lb-kpis" aria-live="polite"></div></section>
+
+      <!-- PM/PC and AO -->
+      <section class="lb-sec" id="scope-panel" hidden>
+        <div class="lb-sec__head"><div><h2 id="scope-title">Your CHWs</h2><p id="scope-sub"></p></div></div>
+        <div class="card-box">
+          <div class="tbl-tools" id="scope-tools" hidden><label class="sr-only" for="f-ngo2">Filter by NGO</label><select id="f-ngo2"></select></div>
+          <div id="scope-table"></div>
+        </div>
+      </section>
+
+      <!-- MOH and M&E -->
+      <section class="lb-sec" id="all-panel" hidden>
+        <div class="lb-sec__head"><div><h2>Full ranking</h2><p id="all-sub"></p></div><p id="all-count"></p></div>
+        <div class="card-box">
+          <div class="tbl-tools">
+            <label class="sr-only" for="f-q">Search by nickname</label><input id="f-q" type="search" placeholder="Search nickname">
+            <label class="sr-only" for="f-ngo">Filter by NGO</label><select id="f-ngo"></select>
+            <button class="btn btn--ghost btn--sm" type="button" id="f-export" hidden>Download CSV</button>
+          </div>
+          <div id="all-table"></div>
+        </div>
+      </section>
+
+      <!-- M&E only: award model -->
+      <section class="lb-sec" id="award-panel" hidden>
+        <div class="lb-sec__head"><div><h2>Performance award model</h2><p>M&amp;E only. The award is known to M&amp;E and MOH only and is never shown to CHWs, PM/PCs or AOs. This is a what-if calculator: nothing here is saved, and no score or data changes.</p></div></div>
+        <div class="card-box">
+          <div class="aw-window"><button class="btn btn--ghost btn--sm" type="button" id="aw-window">Use the last 6 months</button><span>This year's award window is Apr-Sep 2026, the last 6 months.</span></div>
+
+          <h3 class="aw-h">Rules</h3>
+          <div class="aw-controls">
+            <label>Compare CHWs<select id="aw-scope"><option value="kp">By key population</option><option value="all">Everyone together</option><option value="custom">Custom groups</option></select></label>
+            <label>Method<select id="aw-method"><option value="sd">Mean ± SD</option><option value="pct">Percentile rank</option></select></label>
+            <label data-m="sd">Smallest group for a bell curve<input id="aw-small" type="number" step="1" min="3" value="10"></label>
+          </div>
+          <div class="aw-custom" id="aw-custom" hidden>
+            <p>Give key populations the same group number to rank them together, for example when the categories are not reliable this year.</p>
+            <div class="aw-custom__grid"></div>
+          </div>
+          <h3 class="aw-h">Award tiers</h3>
+          <div class="aw-tiers">
+            <div class="aw-tiers__bar">
+              <label>Start from<select id="aw-preset"><option value="3">3 tiers: RM500 / RM300 / RM50</option><option value="4">4 tiers: RM500 / RM300 / RM100 / RM50</option><option value="6">6 tiers: RM500 / RM400 / RM300 / RM200 / RM100 / RM50</option><option value="custom">Custom</option></select></label>
+              <button class="btn btn--ghost btn--sm" type="button" id="aw-addtier">Add a tier</button>
+            </div>
+            <div class="tier-rows" id="aw-tier-rows"></div>
+            <p class="tbl-note" id="aw-tier-help"></p>
+          </div>
+          <h3 class="aw-h">Budget</h3>
+          <div class="aw-controls">
+            <label>Annual CHW budget (RM)<input id="aw-budget" type="number" step="500" min="0" value="60000"></label>
+            <label>Hold back as reserve (%)<input id="aw-reserve" type="number" step="1" min="0" max="50" value="0"></label>
+            <label>Fit awards to budget<select id="aw-fit"><option value="down">Scale down only</option><option value="full">Use the full budget</option><option value="none">As typed</option></select></label>
+          </div>
+          <div id="aw-notes"></div>
+          <div class="tier-cards" id="aw-cards"></div>
+
+          <h3 class="aw-h">Budget analysis</h3>
+          <div class="bud-stats" id="aw-bstats"></div>
+          <div class="bud-grid">
+            <div><h4>Suggestions</h4><ul class="sugg" id="aw-sugg"></ul></div>
+            <div><h4>What different budgets would support</h4>
+              <div class="tbl-wrap"><table class="tbl tbl--stack"><thead id="aw-scen-head"></thead><tbody id="aw-scen"></tbody></table></div>
+              <p class="tbl-note">Same award ratios, same eligible CHWs. Use this when next year's budget changes.</p>
+            </div>
+          </div>
+
+          <h3 class="aw-h">By group</h3>
+          <div class="tbl-wrap"><table class="tbl" style="min-width:860px"><thead id="aw-kp-head"></thead><tbody id="aw-kp"></tbody></table></div>
+
+          <div class="chart-head"><h3 class="aw-h" style="margin:0">Score distribution</h3><label>Show<select id="aw-chartkp"></select></label></div>
+          <div class="chart-wrap" id="aw-chart"></div>
+          <p class="tbl-note" style="text-align:center">Bars show how many CHWs fall in each 5-point score band; the line is the bell curve fitted to the group. <span id="aw-chartnote"></span></p>
+
+          <details class="fold fold--inner" data-anim>
+            <summary><div><h3 style="margin:0">How the model works</h3><p>Method, recommended splits and edge cases.</p></div><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+            <div class="fold__body" style="padding-top:12px">
+              <h4>Step by step (spreadsheet or code)</h4>
+              <ol class="how-list">
+                <li><b>Choose who is eligible:</b> every CHW with scores in the award window (the last 6 months), including CHWs who have since left. New starters are scored on the months they served.</li>
+                <li><b>Group them:</b> by key population, everyone together, or custom groups, whichever M&amp;E chooses. Each group is compared with its own members. Use the final score (0-100).</li>
+                <li><b>Mean and standard deviation</b> of each group: <code>=AVERAGE(scores)</code> and <code>=STDEV.S(scores)</code>.</li>
+                <li><b>Cut-offs:</b> every tier except the last has a cut-off = mean + z × SD, where z can be negative and each cut-off is lower than the one above. A z of 1.04 is about the top 15%, 0 is the middle, and -1.28 is about the bottom 10%.</li>
+                <li><b>Assign tiers:</b> a CHW gets the first tier whose cut-off their score reaches, and the bottom tier below the last cut-off. For three tiers: <code>=IF(score&gt;=Cut1, 500, IF(score&gt;=Cut2, 300, 50))</code>.</li>
+                <li><b>Fit to the budget:</b> total cost = Σ (CHWs in tier × award). If it is over the available budget, scale all awards by budget ÷ cost and round down to the nearest RM5.</li>
+                <li><b>Keep it internal:</b> the rule is shared with M&amp;E and MOH only. The leaderboard is for friendly competition, so CHWs never see awards.</li>
+              </ol>
+              <h4 style="margin-top:22px">Recommended three-tier splits (current eligible CHWs, amounts as typed)</h4>
+              <div class="tbl-wrap"><table class="tbl" style="min-width:560px"><thead><tr><th>Top / Core / Lower (%)</th><th>z cut-offs (top / bottom)</th><th class="num">Cost</th><th class="num">Against the budget</th></tr></thead><tbody id="aw-splits"></tbody></table></div>
+              <p class="tbl-note">15 / 75 / 10 keeps the lower tier small and rewards about the top sixth.</p>
+              <h4 style="margin-top:22px">Edge cases</h4>
+              <ul class="how-list">
+                <li><b>Several CHWs exactly on a cut-off:</b> scores are compared at one decimal place, and anyone exactly on a cut-off goes to the higher tier. The total can then be slightly above plan.</li>
+                <li><b>Small groups:</b> a group with fewer than the chosen size (10) uses percentile rank instead, because its mean and SD are unreliable. With fewer than 3 CHWs everyone gets the award of the middle tier.</li>
+                <li><b>Many CHWs at 100:</b> scores are capped, so the curve is not truly normal and the real top share can exceed the target. That is fair, since each earned it. Use percentile rank for a fixed budget.</li>
+                <li><b>Skewed scores:</b> compare the target split with the actual split in the table above. If they differ a lot, prefer percentile rank.</li>
+                <li><b>Leavers and joiners:</b> everyone scored in the window is included, even if they have since left. Anyone who joined later is scored on the months they served.</li>
+                <li><b>Budget:</b> the model never pays more than the available budget when “Scale down” or “Use the full budget” is on.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </section>
+
+      <!-- M&E only: scoring settings -->
+      <section class="lb-sec" id="settings-panel" hidden>
+        <details class="fold" data-anim>
+          <summary><div><h2>Scoring settings</h2><p>M&amp;E only. Change the targets and weights used to calculate scores.</p></div><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="fold__body" style="padding-top:8px">
+            <div class="how-tabs" id="set-tabs" role="group" aria-label="Key population"></div>
+            <div id="set-body"></div>
+            <p class="form__status" id="set-msg" role="status"></p>
+            <div class="bug__actions" style="justify-content:flex-start;margin-top:10px">
+              <button class="btn btn--primary btn--sm" type="button" id="set-apply" disabled>Apply changes</button>
+              <button class="btn btn--ghost btn--sm" type="button" id="set-discard" disabled>Discard changes</button>
+              <button class="btn btn--ghost btn--sm" type="button" id="set-reset">Reset this group to defaults</button>
+            </div>
+            <p class="tbl-note">Edits are held here until you click Apply changes, so the leaderboard recalculates once, not on every keystroke. In production, Apply saves the settings (logged with who and when) and scores use them from the next monthly refresh.</p>
+          </div>
+        </details>
+      </section>
+
+      <section class="lb-sec">
+        <details class="fold" data-anim id="how">
+          <summary><div><h2>How scoring works</h2><p>The weight of each indicator, for every key population.</p></div><span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></summary>
+          <div class="fold__body" style="padding-top:8px">
+            <div class="how-grid" id="how-grid" style="margin-top:16px"></div>
+            <ul class="how-list">
+              <li>Your score is out of 100. Each indicator earns up to its weight, and is capped at 100% of its target.</li>
+              <li>Targets are prorated by months in service, so new CHWs are not penalised.</li>
+              <li>Rankings refresh on the 10th of every month and cover closed months only.</li>
+            </ul>
+          </div>
+        </details>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div class="tip" id="tip" role="status" hidden></div>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-brand"><img src="/assets/logos/wordmark-light.svg" alt="HIVnext"><span>Health Information Vault</span></div>
+    <ul class="footer-links"><li><a href="/">Home</a></li><li><a href="/about/">About</a></li><li><a href="/legacy/">Legacy</a></li><li><a href="/myvas/">MyVAS</a></li><li><a data-site="email" href="#">Contact</a></li></ul>
+    <p class="copyright"></p>
+  </div>
+</footer>
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/site.js"></script>
+<script src="/assets/js/leaderboard-config.js"></script>
+<script src="/assets/js/leaderboard.js"></script>
+</body>
+</html>

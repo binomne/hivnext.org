@@ -1,4 +1,4 @@
-# hivnext.org — v2.0
+# hivnext.org | v2.0
 
 Static site for GitHub Pages (later AWS). No build step, no CMS.
 
@@ -14,7 +14,7 @@ assets/js/            config.js (EDIT THIS) · site.js · launch.js
 assets/logos/         All logos (SVG/WebP)
 ```
 
-## Editing content — assets/js/config.js
+## Editing content - assets/js/config.js
 - **Add a changelog entry**: append `{ "date": "YYYY-MM-DD", "title": "...", "desc": "..." }` to `CHANGELOG`. Order doesn't matter; it sorts by date.
 - **Change an NGO link**: edit `db` / `dash` in `NGOS`. Add a new NGO by copying an entry and setting `region` to one of `REGIONS`.
 - **External URLs / email / YouTube / Google Form**: `SITE` and `LINKS`.
