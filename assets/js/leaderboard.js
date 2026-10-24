@@ -316,7 +316,7 @@
       S.ngo = fillNgoSelect($("#f-ngo"), ngoTokens(rows), "All NGOs", S.ngo);
       const list = rows.filter(c => (S.ngo === "ALL" || c.ngo.split(" / ").includes(S.ngo)) && (!q || c.nick.toLowerCase().includes(q)));
       $("#all-count").textContent = `${list.length} of ${rows.length} CHWs`;
-      $("#all-sub").textContent = v === "moh" ? "Visible to MOH and MAFMAC." : "Visible to MOH, MAFMAC and M&E. Awards come from the M&E model below.";
+      $("#all-sub").textContent = v === "moh" ? "Visible to MOH and MAFMAC." : "Visible to MOH, MAFMAC and M&E. The Award column is visible to MAFMAC and M&E only.";
       $("#all-table").innerHTML = tableHTML(list, v === "me");
       $("#f-export").hidden = v !== "me";
     }
