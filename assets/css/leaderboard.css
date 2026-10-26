@@ -417,6 +417,17 @@ body.lb-page{background:linear-gradient(180deg,#EAF8EF 0,#F4FBF6 420px,#FFFFFF 1
 .tier-row__x{align-self:center;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(3,18,46,.2);background:#fff;color:var(--ink);font:600 1.2rem/1 var(--font-body);cursor:pointer}
 .tier-row__x:disabled{opacity:.35;cursor:default}
 .bud-grid--wide{grid-template-columns:minmax(0,1fr)!important}
+/* "How scoring works" cards: the top strip is cut from the card's own rounded outline, so it follows the corners exactly and reads as the card's top edge */
+.hc::before,.hc::after{inset:-1.5px;height:auto;border-radius:22px;pointer-events:none}
+.hc::before{clip-path:inset(0 0 calc(100% - 10px) 0)}
+.hc::after{clip-path:polygon(0 0,100% 0,calc(100% - 18px) 10px,0 10px)}
+/* dropdown text must not touch the line under the heading */
+.fold__body{padding-top:24px}
+.pub-box{display:grid;gap:10px;background:#F4F9FF;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;margin:16px 0 20px}
+.pub-box p{margin:4px 0 0;font-size:.9rem;color:var(--ink-2)}
+.pub-box__hint{color:#B42318!important;font-weight:600}
+.pub-box__hint:empty{display:none}
+.pub-box__btns{display:flex;flex-wrap:wrap;gap:10px}
 @media (max-width:700px){.tier-row{grid-template-columns:1fr 1fr}.tier-row__tag{grid-column:1/-1}.tier-row__share{grid-column:1/2}.tier-row__x{justify-self:end}}
 @media (max-width:400px){
   .period>span:first-child{display:none}
@@ -430,6 +441,3 @@ body.lb-page{background:linear-gradient(180deg,#EAF8EF 0,#F4FBF6 420px,#FFFFFF 1
 
 /* the leaderboard belongs to Legacy: keep that menu item underlined here */
 .nav-links a[aria-current="true"]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--blue)}
-
-/* dropdown text must not touch the line under the heading */
-.fold__body{padding-top:24px}

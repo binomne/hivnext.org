@@ -177,6 +177,8 @@
     S.kps = new Set(KP_ORDER); S.from = null; S.to = null; S.activeOnly = false; S.ngo = "ALL"; S.q = ""; S.aoNgo = "ALL"; S.periodBuilt = false;
     $("#f-active").checked = false; syncKpMenu(); renderMeta();
     await load();
+    // MAFMAC opens on the period the awards were published for, so scores and awards line up on first sight
+    if (view() === "moh" && D && D.awardInfo && !D.awardInfo.none && (S.from !== D.awardInfo.from || S.to !== D.awardInfo.to)) { S.from = D.awardInfo.from; S.to = D.awardInfo.to; await load(); }
     if (view() === "me" && D) loadSettings();
   }
 
@@ -205,7 +207,7 @@
   }
   function norm(r) {
     return {id: r.id, nick: r.nick, kp: r.kp, also: r.also || "", ngo: r.ngo || "", active: r.active, rank: r.rank, firstY: r.firstY, firstMo: r.firstMo, monthsSince: r.monthsSince,
-            score: {total: r.total, months: r.months, groups: r.groups || {}, parts: r.parts || null, uniq: r.uniq, newC: r.newC, repC: r.repC}};
+            aw: r.aw, awt: r.awt, score: {total: r.total, months: r.months, groups: r.groups || {}, parts: r.parts || null, uniq: r.uniq, newC: r.newC, repC: r.repC}};
   }
   function buildPeriod() {
     const opts = Array.from({length: D.meta.lastM}, (_, i) => `<option value="${i + 1}">${MONTHS[i]} ${D.meta.yr}</option>`).join("");
@@ -284,10 +286,10 @@
 
   function tableHTML(list, withAward) {
     if (!list.length) return `<p class="empty">No CHWs match.</p>`;
-    const pill = a => !a ? `<span class="tier-pill">Not eligible</span>` : `<span class="tier-pill tier-pill--t" style="${palVars(a.tier, nT())}">${rm(a.award)}</span>`;
+    const pill = (a, T) => !a ? `<span class="tier-pill">Not eligible</span>` : `<span class="tier-pill tier-pill--t" style="${palVars(a.tier, T)}">${rm(a.award)}</span>`;
     return `<div class="tbl-wrap"><table class="tbl"><thead><tr><th class="num">Rank</th><th>CHW</th><th>NGO</th><th>KP</th><th class="num">Months</th>${GROUPS.map(g => `<th class="num">${GROUP_LABEL[g]}</th>`).join("")}<th class="num">Score</th>${withAward ? `<th>Award</th>` : ""}</tr></thead><tbody>${
       list.map(c => `<tr><td class="num"><b>${c.rank}</b></td><td class="who"><b>${esc(c.nick)}</b></td><td>${esc(c.ngo)}</td><td>${chips(c)}</td><td class="num">${c.score.months}</td>${
-        GROUPS.map(g => `<td class="num">${c.score.groups[g] != null ? fmt(c.score.groups[g]) : "-"}</td>`).join("")}<td class="num score">${fmt(c.score.total)}</td>${withAward ? `<td>${pill(AW.map.get(c.id))}</td>` : ""}</tr>`).join("")}</tbody></table></div><p class="tbl-note">Score columns show points earned out of each group's weight.</p>`;
+        GROUPS.map(g => `<td class="num">${c.score.groups[g] != null ? fmt(c.score.groups[g]) : "-"}</td>`).join("")}<td class="num score">${fmt(c.score.total)}</td>${withAward ? `<td>${withAward === "pub" ? pill(c.aw != null ? {tier: c.awt, award: c.aw} : null, D.awardInfo.T) : pill(AW.map.get(c.id), nT())}</td>` : ""}</tr>`).join("")}</tbody></table></div><p class="tbl-note">Score columns show points earned out of each group's weight.</p>`;
   }
   function fillNgoSelect(sel, tokens, allLabel, keep) {
     const sig = tokens.join("|");
@@ -316,8 +318,15 @@
       S.ngo = fillNgoSelect($("#f-ngo"), ngoTokens(rows), "All NGOs", S.ngo);
       const list = rows.filter(c => (S.ngo === "ALL" || c.ngo.split(" / ").includes(S.ngo)) && (!q || c.nick.toLowerCase().includes(q)));
       $("#all-count").textContent = `${list.length} of ${rows.length} CHWs`;
-      $("#all-sub").textContent = v === "moh" ? "Visible to MOH and MAFMAC." : "Visible to MOH, MAFMAC and M&E. The Award column is visible to MAFMAC and M&E only.";
-      $("#all-table").innerHTML = tableHTML(list, v === "me");
+      const pubAw = v === "moh" && D.awardInfo && !D.awardInfo.none;
+      $("#all-sub").textContent = v === "moh" ? (D.awardInfo ? "Visible to MOH and MAFMAC. The Award column is visible to MAFMAC and M&E only." : "Visible to MOH and MAFMAC.") : "Visible to MOH, MAFMAC and M&E. The Award column is visible to MAFMAC and M&E only.";
+      $("#all-table").innerHTML = tableHTML(list, v === "me" ? "work" : pubAw ? "pub" : false);
+      const an = $("#all-award-note");
+      if (v === "moh" && D.awardInfo) {
+        an.hidden = false;
+        an.textContent = D.awardInfo.none ? (D.awardInfo.none === "old_year" ? "The published awards are for an earlier year and are no longer shown." : "Awards have not been published yet.")
+          : `Award amounts come from the model M&E published on ${dateText(new Date(D.awardInfo.at))} for ${D.awardInfo.from === D.awardInfo.to ? MONTHS[D.awardInfo.from - 1] : MONTHS[D.awardInfo.from - 1] + "-" + MONTHS[D.awardInfo.to - 1]} ${D.awardInfo.yr}. They do not change with the filters above.`;
+      } else an.hidden = true;
       $("#f-export").hidden = v !== "me";
     }
     if (v === "me") renderAward();
@@ -348,12 +357,76 @@
   }
 
   /* ------------------------------------------------------------------ award model (MEmac / SuperAdmin) ---- */
+  /* ===== AWARD CORE =====
+   This exact code runs in BOTH places: the leaderboard page (the what-if calculator) and the Apps Script backend
+   (the published award model). One copy means the two can never disagree. Do not edit it in either place on its
+   own: edit award_core.js and rebuild. ===== */
+const erf = x => { const s = Math.sign(x); x = Math.abs(x); const t = 1 / (1 + .3275911 * x); return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - .284496736) * t + .254829592) * t * Math.exp(-x * x)); };
+const Phi = z => .5 * (1 + erf(z / Math.SQRT2));
+const floor5 = v => Math.floor(v / 5) * 5;
+const coreIdx = T => Math.floor((T - 1) / 2);             // the tier everyone gets in a group too small to have cut-offs
+
+function awardCutSet(A) {
+  const T = A.tiers.length, z = [], p = [];
+  for (let i = 0; i < T - 1; i++) {
+    const t = A.tiers[i], tz = Number(t.z) || 0, tp = Number(t.p) || 0;
+    z.push(i ? Math.min(tz, z[i - 1] - 0.01) : tz);
+    p.push(Math.min(100, i ? Math.max(tp, p[i - 1] + 0.1) : tp));
+  }
+  const key = A.method === "sd" ? "z" : "p", arr = key === "z" ? z : p;
+  const fixed = A.tiers.slice(0, T - 1).some((t, i) => Math.abs(arr[i] - (Number(t[key]) || 0)) > 1e-9);
+  return {z, p, fixed};
+}
+
+function awardCompute(cohort, A, KP_ORDER, KP_LABEL) {
+  const T = A.tiers.length, cs = awardCutSet(A);
+  const keyOf = c => A.scope === "kp" ? c.kp : A.scope === "custom" ? "G" + A.groups[c.kp] : "ALL";
+  const buckets = new Map(); cohort.forEach(c => { const k = keyOf(c); if (!buckets.has(k)) buckets.set(k, []); buckets.get(k).push(c); });
+  const labelOf = k => k === "ALL" ? "Everyone together" : k[0] === "G" ? KP_ORDER.filter(x => "G" + A.groups[x] === k).map(x => KP_LABEL[x]).join(" + ") : KP_LABEL[k];
+  const mk = (k, members) => {
+    const sc = members.map(c => Math.round(c.score.total * 10) / 10), n = sc.length;
+    const mean = sc.reduce((a, b) => a + b, 0) / n;
+    const sd = n > 1 ? Math.sqrt(sc.reduce((a, b) => a + (b - mean) ** 2, 0) / (n - 1)) : 0;   // sample SD, like Excel STDEV.S
+    const g = {key: k, label: labelOf(k), n, mean, sd, scores: sc, members, counts: Array(T).fill(0), cuts: [], hasCuts: false, used: "none", fallback: false};
+    if (n >= 3 && sd > 0) {
+      const useSd = A.method === "sd" && n >= A.small;
+      g.used = useSd ? "sd" : "pct"; g.fallback = A.method === "sd" && !useSd;
+      if (useSd) g.cuts = cs.z.map(z => mean + z * sd);
+      else {
+        const sorted = sc.slice().sort((a, b) => b - a);
+        // small group under the bell-curve method: use the percentile equivalent of the same z cut-offs
+        const pc = A.method === "sd" ? cs.z.map(z => (1 - Phi(z)) * 100) : cs.p;
+        g.cuts = pc.map((p, i) => {          // lowest score still inside this tier or above
+          // the last boundary is rounded from the bottom, so "bottom 10%" rounds the way people expect
+          const c = (i === T - 2 && i > 0) ? n - Math.round(n * (100 - p) / 100) : Math.round(n * p / 100);
+          return c > 0 ? sorted[Math.min(n, c) - 1] : Infinity;
+        });
+      }
+      g.hasCuts = true;
+    }
+    // a score exactly on a cut-off goes to the higher tier
+    g.tiers = sc.map(s => { if (!g.hasCuts) return coreIdx(T); for (let i = 0; i < T - 1; i++) if (s >= g.cuts[i]) return i; return T - 1; });
+    g.tiers.forEach(t => g.counts[t]++);
+    return g;
+  };
+  const order = A.scope === "kp" ? KP_ORDER : A.scope === "custom" ? Array.from(new Set(KP_ORDER.map(x => "G" + A.groups[x]))) : ["ALL"];
+  const groups = []; order.forEach(k => { const m = buckets.get(k); if (m) groups.push(mk(k, m)); });
+  // a view-only "everyone together" preview, so the manager can compare it with the chosen grouping
+  const everyone = A.scope === "all" || !cohort.length ? null : mk("ALL", cohort);
+  const N = Array(T).fill(0); groups.forEach(g => g.counts.forEach((c, i) => N[i] += c));
+  const n = N.reduce((a, b) => a + b, 0), base = N.reduce((a, c, i) => a + c * A.tiers[i].amt, 0);
+  const avail = A.budget * (1 - A.reserve / 100);
+  let factor = 1;
+  if (A.budget > 0 && base > 0) { if (A.fit === "down") factor = Math.min(1, avail / base); else if (A.fit === "full") factor = avail / base; }
+  const fin = A.tiers.map(t => factor === 1 ? t.amt : floor5(t.amt * factor));
+  const map = new Map();
+  groups.forEach(g => g.members.forEach((c, i) => map.set(c.id, {tier: g.tiers[i], award: fin[g.tiers[i]], group: g.key})));
+  return {groups, everyone, N, n, base, avail, factor, fin, total: N.reduce((a, c, i) => a + c * fin[i], 0), map, fixed: cs.fixed};
+}
+
     /* Award model: any number of tiers (2 to 8). Each tier has its own amount and its own cut-off.
      Tier 1 is the highest. A CHW gets the first tier whose cut-off their score reaches; below the last
      cut-off they get the bottom tier. It is a what-if calculator: nothing is stored. */
-  const erf = x => { const s = Math.sign(x); x = Math.abs(x); const t = 1 / (1 + .3275911 * x); return s * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - .284496736) * t + .254829592) * t * Math.exp(-x * x)); };
-  const Phi = z => .5 * (1 + erf(z / Math.SQRT2));
-  const floor5 = v => Math.floor(v / 5) * 5;
   const MIN_TIERS = 2, MAX_TIERS = 8;
   // z = cut-off as a z-score (mean + z x SD); p = running share of CHWs from the top (%), used by percentile rank
   const PRESETS = {
@@ -369,7 +442,6 @@
   const nT = () => AWARD.tiers.length;
   const tierName = (i, T = nT()) => T === 3 ? ["Top performers", "Core performers", "Lower performers"][i] : i === 0 ? "Top tier" : i === T - 1 ? "Bottom tier" : "Tier " + (i + 1);
   const tierShort = (i, T = nT()) => T === 3 ? ["Top", "Core", "Lower"][i] : i === 0 ? "Top" : i === T - 1 ? "Bottom" : "Tier " + (i + 1);
-  const coreIdx = T => Math.floor((T - 1) / 2);             // the tier everyone gets in a group too small to have cut-offs
 
   // colours run green (top) > blue (middle) > light blue (bottom), whatever the number of tiers
   const STOPS = [[118, 209, 102], [0, 89, 179], [99, 201, 227]];
@@ -382,67 +454,13 @@
   }
   const palVars = (i, T) => { const p = palette(i, T); return `--c1:${p.c1};--c2:${p.c2};--fg:${p.fg}`; };
 
-  // cut-offs always run from high to low, so tiers can never overlap
-  function cutSet() {
-    const T = nT(), z = [], p = [];
-    for (let i = 0; i < T - 1; i++) {
-      const t = AWARD.tiers[i], tz = Number(t.z) || 0, tp = Number(t.p) || 0;
-      z.push(i ? Math.min(tz, z[i - 1] - 0.01) : tz);
-      p.push(Math.min(100, i ? Math.max(tp, p[i - 1] + 0.1) : tp));
-    }
-    const key = AWARD.method === "sd" ? "z" : "p", arr = key === "z" ? z : p;
-    const fixed = AWARD.tiers.slice(0, T - 1).some((t, i) => Math.abs(arr[i] - (Number(t[key]) || 0)) > 1e-9);
-    return {z, p, fixed};
-  }
-
+  const cutSet = () => awardCutSet(AWARD);
   function computeAwards() {
-    const T = nT(), cs = cutSet();
     // eligibility: every CHW the server scored in the selected window, including CHWs who have since left
     const cohort = (D && D.award ? D.award : []).filter(c => S.kps.has(c.kp))
       .map(c => ({id: c.id, nick: c.nick, kp: c.kp, also: c.also, ngo: c.ngo, active: c.active, score: {total: c.total, months: c.months, uniq: c.uniq}}));
-    const keyOf = c => AWARD.scope === "kp" ? c.kp : AWARD.scope === "custom" ? "G" + AWARD.groups[c.kp] : "ALL";
-    const buckets = new Map(); cohort.forEach(c => { const k = keyOf(c); if (!buckets.has(k)) buckets.set(k, []); buckets.get(k).push(c); });
-    const labelOf = k => k === "ALL" ? "Everyone together" : k[0] === "G" ? KP_ORDER.filter(x => "G" + AWARD.groups[x] === k).map(x => KP_LABEL[x]).join(" + ") : KP_LABEL[k];
-    const mk = (k, members) => {
-      const sc = members.map(c => Math.round(c.score.total * 10) / 10), n = sc.length;
-      const mean = sc.reduce((a, b) => a + b, 0) / n;
-      const sd = n > 1 ? Math.sqrt(sc.reduce((a, b) => a + (b - mean) ** 2, 0) / (n - 1)) : 0;   // sample SD, like Excel STDEV.S
-      const g = {key: k, label: labelOf(k), n, mean, sd, scores: sc, members, counts: Array(T).fill(0), cuts: [], hasCuts: false, used: "none", fallback: false};
-      if (n >= 3 && sd > 0) {
-        const useSd = AWARD.method === "sd" && n >= AWARD.small;
-        g.used = useSd ? "sd" : "pct"; g.fallback = AWARD.method === "sd" && !useSd;
-        if (useSd) g.cuts = cs.z.map(z => mean + z * sd);
-        else {
-          const sorted = sc.slice().sort((a, b) => b - a);
-          // small group under the bell-curve method: use the percentile equivalent of the same z cut-offs
-          const pc = AWARD.method === "sd" ? cs.z.map(z => (1 - Phi(z)) * 100) : cs.p;
-          g.cuts = pc.map((p, i) => {          // lowest score still inside this tier or above
-            // the last boundary is rounded from the bottom, so "bottom 10%" rounds the way people expect
-            const c = (i === T - 2 && i > 0) ? n - Math.round(n * (100 - p) / 100) : Math.round(n * p / 100);
-            return c > 0 ? sorted[Math.min(n, c) - 1] : Infinity;
-          });
-        }
-        g.hasCuts = true;
-      }
-      // a score exactly on a cut-off goes to the higher tier
-      g.tiers = sc.map(s => { if (!g.hasCuts) return coreIdx(T); for (let i = 0; i < T - 1; i++) if (s >= g.cuts[i]) return i; return T - 1; });
-      g.tiers.forEach(t => g.counts[t]++);
-      return g;
-    };
-    const order = AWARD.scope === "kp" ? KP_ORDER : AWARD.scope === "custom" ? Array.from(new Set(KP_ORDER.map(x => "G" + AWARD.groups[x]))) : ["ALL"];
-    const groups = []; order.forEach(k => { const m = buckets.get(k); if (m) groups.push(mk(k, m)); });
-    // a view-only "everyone together" preview, so the manager can compare it with the chosen grouping
-    const everyone = AWARD.scope === "all" || !cohort.length ? null : mk("ALL", cohort);
-    const N = Array(T).fill(0); groups.forEach(g => g.counts.forEach((c, i) => N[i] += c));
-    const n = N.reduce((a, b) => a + b, 0), base = N.reduce((a, c, i) => a + c * AWARD.tiers[i].amt, 0);
-    const avail = AWARD.budget * (1 - AWARD.reserve / 100);
-    let factor = 1;
-    if (AWARD.budget > 0 && base > 0) { if (AWARD.fit === "down") factor = Math.min(1, avail / base); else if (AWARD.fit === "full") factor = avail / base; }
-    const fin = AWARD.tiers.map(t => factor === 1 ? t.amt : floor5(t.amt * factor));
-    const map = new Map();
-    groups.forEach(g => g.members.forEach((c, i) => map.set(c.id, {tier: g.tiers[i], award: fin[g.tiers[i]], group: g.key})));
-    AW = {groups, everyone, N, n, base, avail, factor, fin, total: N.reduce((a, c, i) => a + c * fin[i], 0), map, fixed: cs.fixed};
-    if (!(groups.some(g => g.key === chartKey) || (everyone && chartKey === "ALL"))) chartKey = (groups.slice().sort((a, b) => b.n - a.n)[0] || {}).key || null;
+    AW = awardCompute(cohort, AWARD, KP_ORDER, KP_LABEL);
+    if (!(AW.groups.some(g => g.key === chartKey) || (AW.everyone && chartKey === "ALL"))) chartKey = (AW.groups.slice().sort((a, b) => b.n - a.n)[0] || {}).key || null;
   }
 
   function chartSVG(g) {
@@ -609,7 +627,63 @@
     const opts = [["10 / 80 / 10", "+1.28 / −1.28", .10, .10], ["15 / 75 / 10 (recommended)", "+1.04 / −1.28", .15, .10], ["20 / 70 / 10", "+0.84 / −1.28", .20, .10], ["16 / 68 / 16 (textbook ±1 SD)", "+1.00 / −1.00", .16, .16]];
     $("#aw-splits").innerHTML = T === 3 ? opts.map(([nm, z, t, bb]) => { const a = AWARD.tiers.map(x => x.amt), cost = r.n * (t * a[0] + (1 - t - bb) * a[1] + bb * a[2]); return `<tr><td>${nm}</td><td>${z}</td><td class="num">${rm(cost)}</td><td class="num">${cost <= avail ? "Within" : "Over"} budget</td></tr>`; }).join("")
       : `<tr><td colspan="4" class="empty">These standard splits are for three tiers. Choose “3 tiers” under Award tiers to compare them.</td></tr>`;
+    renderPublish();
   }
+
+  /* ---- publish the model to MAFMAC (MEmac and SuperAdmin only) ---- */
+  const pubFields = A => JSON.stringify({scope: A.scope, method: A.method, small: +A.small, budget: +A.budget, reserve: +A.reserve, fit: A.fit,
+    groups: KP_ORDER.reduce((o, k) => (o[k] = +A.groups[k], o), {}),
+    tiers: A.tiers.map((t, i) => i < A.tiers.length - 1 ? {amt: +t.amt, z: +t.z, p: +t.p} : {amt: +t.amt})});
+  const winText = (yr, from, to) => from === to ? `${MONTHS[from - 1]} ${yr}` : `${MONTHS[from - 1]}-${MONTHS[to - 1]} ${yr}`;
+  const stamp = at => { const d = new Date(at); return `${dateText(d)}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
+  const setPubMsg = (t, cls) => { const m = $("#aw-pub-msg"); if (m) { m.textContent = t || ""; m.className = "form__status" + (cls ? " " + cls : ""); } };
+
+  function renderPublish() {
+    if (!$("#aw-pub") || !D) return;
+    const p = D.published, allKp = S.kps.size === KP_ORDER.length;
+    let st;
+    if (!p) st = "Nothing is published yet, so MAFMAC cannot see any award.";
+    else {
+      st = `Published ${stamp(p.at)} by ${p.role} for ${winText(p.yr, p.from, p.to)}: ${p.n} CHWs, total ${rm(p.total)}, awards ${p.fin.map(rm).join(" / ")}.`;
+      if (p.yr !== D.meta.yr) st += ` This is for ${p.yr}, so MAFMAC no longer sees it.`;
+      else st += pubFields(AWARD) === pubFields(p.model) && S.from === p.from && S.to === p.to ? " Your calculator matches it." : " Your calculator differs from it: nothing changes for MAFMAC until you publish again.";
+    }
+    $("#aw-pub-status").textContent = st;
+    const hint = !allKp ? "Tick all key populations above to publish: the published model always covers everyone." : AW.fixed ? "Fix the out-of-order cut-offs first." : !AW.n ? "No eligible CHWs in this period." : "";
+    $("#aw-pub-hint").textContent = hint;
+    $("#aw-publish").disabled = !!hint;
+    $("#aw-loadpub").disabled = !p;
+  }
+
+  async function publishAward() {
+    if (!S.session || view() !== "me" || $("#aw-publish").disabled) return;
+    const ok = confirm(`Publish this award model?\n\nPeriod: ${winText(D.meta.yr, S.from, S.to)}\nTiers: ${AWARD.tiers.map(t => rm(t.amt)).join(" / ")}\nAfter fitting to the budget: ${AW.fin.map(rm).join(" / ")}\nEligible CHWs: ${AW.n}, total payout ${rm(AW.total)}\n\nMAFMAC will see each CHW's award from this model. MOH, CHWs, PM/PCs and AOs will not. Publishing again replaces it.`);
+    if (!ok) return;
+    $("#aw-publish").disabled = true; setPubMsg("Publishing…", "pending");
+    try {
+      const r = await api("awardPublish", {token: S.session.token, model: JSON.parse(pubFields(AWARD)), from: S.from, to: S.to});
+      if (r.error === "session_expired" || r.error === "no_access") { signOut(msg(r.error)); return; }
+      if (r.error) { setPubMsg(r.message || msg(r.error), "bad"); renderPublish(); return; }
+      D.published = r.published; setPubMsg("Published. MAFMAC now sees these awards. The change is logged.", "ok"); renderPublish();
+    } catch (err) { setPubMsg(msg(err.message), "bad"); renderPublish(); }
+  }
+
+  function syncAwardControls() {
+    $("#aw-scope").value = AWARD.scope; $("#aw-method").value = AWARD.method; $("#aw-fit").value = AWARD.fit;
+    $("#aw-small").value = AWARD.small; $("#aw-budget").value = AWARD.budget; $("#aw-reserve").value = AWARD.reserve;
+    $$("#aw-custom [data-grp]").forEach(sel => { sel.value = AWARD.groups[sel.dataset.grp]; });
+    renderTierEditor();
+  }
+  async function loadPublished() {
+    const p = D && D.published; if (!p || !p.model) return;
+    const m = JSON.parse(JSON.stringify(p.model));
+    Object.assign(AWARD, {scope: m.scope, method: m.method, small: m.small, budget: m.budget, reserve: m.reserve, fit: m.fit, groups: m.groups, tiers: m.tiers, preset: "custom"});
+    S.kps = new Set(KP_ORDER); syncKpMenu(); syncAwardControls();
+    S.from = p.from; S.to = p.to; $("#f-from").value = p.from; $("#f-to").value = p.to;
+    await load();                                   // the calculator needs the published window and every key population
+    setPubMsg("Loaded the published model and its period into the calculator.", "ok");
+  }
+
 
   const csvSafe = v => { v = String(v); return /^[=+\-@\t\r]/.test(v) ? "'" + v : v; };   // stops Excel treating a nickname as a formula
   function exportCsv() {
@@ -779,6 +853,8 @@
     if (e.target.closest("#g-codeinstead")) { gateBusy(true); requestCode().catch(err => gateMsg(msg(err.message))).finally(() => gateBusy(false)); }
     if (e.target.closest("#g-resend")) { gateBusy(true); requestCode().catch(err => gateMsg(msg(err.message))).finally(() => gateBusy(false)); }
     if (e.target.closest("#f-export")) exportCsv();
+    if (e.target.closest("#aw-publish")) publishAward();
+    if (e.target.closest("#aw-loadpub")) loadPublished();
     if (e.target.closest("#aw-window") && D) setPeriod(Math.max(1, D.meta.lastM - 5), D.meta.lastM);
   });
   document.addEventListener("click", e => {

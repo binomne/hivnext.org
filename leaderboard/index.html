@@ -128,15 +128,21 @@
             <button class="btn btn--ghost btn--sm" type="button" id="f-export" hidden>Download CSV</button>
           </div>
           <div id="all-table"></div>
+          <p class="tbl-note" id="all-award-note" hidden></p>
         </div>
       </section>
 
       <!-- M&E only: award model -->
       <section class="lb-sec" id="award-panel" hidden>
-        <div class="lb-sec__head"><div><h2>Performance award model</h2><p>M&amp;E only. The award is visible to MAFMAC, MEmac and SuperAdmin only. It is never shown to CHWs, PM/PCs, AOs or MOH. This is a what-if calculator: nothing here is saved, and no score or data changes.</p></div></div>
+        <div class="lb-sec__head"><div><h2>Performance award model</h2><p>M&amp;E only. The award is visible to MAFMAC, MEmac and SuperAdmin only. It is never shown to CHWs, PM/PCs, AOs or MOH. Use it as a what-if calculator: nothing is shared until you click Publish, and no score or data changes.</p></div></div>
         <div class="card-box">
           <div class="aw-window"><button class="btn btn--ghost btn--sm" type="button" id="aw-window">Use the last 6 months</button><span>This year's award window is Apr-Sep 2026, the last 6 months.</span></div>
 
+          <div class="pub-box" id="aw-pub">
+            <div class="pub-box__txt"><b>Publish to MAFMAC</b><p id="aw-pub-status"></p><p class="pub-box__hint" id="aw-pub-hint"></p></div>
+            <div class="pub-box__btns"><button class="btn btn--primary btn--sm" type="button" id="aw-publish">Publish this model</button><button class="btn btn--ghost btn--sm" type="button" id="aw-loadpub">Load the published model</button></div>
+            <p class="form__status" id="aw-pub-msg" role="status"></p>
+          </div>
           <h3 class="aw-h">Rules</h3>
           <div class="aw-controls">
             <label>Compare CHWs<select id="aw-scope"><option value="kp">By key population</option><option value="all">Everyone together</option><option value="custom">Custom groups</option></select></label>
