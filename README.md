@@ -1,4 +1,4 @@
-# hivnext.org | v2.0
+# hivnext.org
 
 Static site for GitHub Pages (later AWS). No build step, no CMS.
 
