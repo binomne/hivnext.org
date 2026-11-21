@@ -441,6 +441,28 @@ body.lb-page{background:linear-gradient(180deg,#EAF8EF 0,#F4FBF6 420px,#FFFFFF 1
 }
 
 /* the leaderboard belongs to Legacy: keep that menu item underlined here */
-.nav-links a[aria-current="true"]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--blue)}
+
 
 .fund-paste{display:flex;flex-direction:column;gap:6px;margin-top:14px;font-size:.85rem;color:var(--ink-2)}.fund-paste textarea{font:400 .85rem var(--font-mono);padding:10px 12px;border:1.5px solid rgba(3,18,46,.18);border-radius:12px;background:#fff;color:var(--ink);resize:vertical}
+
+/* ===== Finish aligned with trp.hivnext.org (Nov 2026): lighter tables, 1px lines, soft panels, calmer controls.
+   Layout and content are unchanged; delete this block to go back. ===== */
+.lb-page{--ctl-line:rgba(3,18,46,.16);--page:#F6FAFF;--panel-shadow:0 14px 34px -28px rgba(0,51,102,.55);--hdr:#E4E8ED}
+body.lb-page{background:var(--page)}
+.card-box{border:1px solid var(--line);border-radius:20px;box-shadow:var(--panel-shadow)}
+.chart-wrap,.bud-stat,.tier-row,.pub-box{border-width:1px}
+.fold:not(.fold--inner){box-shadow:var(--panel-shadow)}
+/* tables: light header, no stripes */
+.tbl th{background:var(--hdr);color:var(--navy,#03122E);font:600 .8rem var(--font-body);padding:10px 12px}
+.tbl tr:nth-child(even) td{background:transparent}
+.tbl tbody tr:hover td{background:#F6FAFF}
+.tbl td{padding:9px 12px}
+.tbl tr.tot td{background:#F5F7FA!important;border-top:1px solid var(--line)}
+/* inputs and selects: 1px line, blue on hover, focus ring */
+.card-box input,.card-box select,.card-box textarea,.fold__body input,.fold__body select,.fold__body textarea,.tbl-tools input,.tbl-tools select,.period select,.chart-head select,.aw-controls input,.aw-controls select{border:1px solid var(--ctl-line)!important;transition:border-color .16s}
+.card-box input:hover,.card-box select:hover,.fold__body input:hover,.fold__body select:hover,.fold__body textarea:hover,.tbl-tools input:hover,.tbl-tools select:hover{border-color:var(--blue)!important}
+.lb-page :where(input,select,textarea,button,summary):focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* small outline buttons: TRP pill */
+.lb-page .btn--sm{border-radius:999px}
+.lb-page .btn--ghost{border:1px solid var(--ctl-line);background:#fff;color:var(--navy,#03122E);font-weight:600}
+.lb-page .btn--ghost:hover:not(:disabled){border-color:var(--blue);color:var(--blue);background:#fff}
