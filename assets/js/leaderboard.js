@@ -274,7 +274,7 @@
     el.hidden = false;
     const mine = D.me;
     if (!mine) {
-      const why = D.meNote ? "You are not part of this ranking for the selected key populations and period. Tick all key populations or widen the period to see your position." : "Your position appears here once you have data in the leaderboard period.";
+      const why = D.meNote === "pc" ? "As a PC with an assigned key population, you are ranked in the separate PC ranking used by M&E." : D.meNote ? "You are not part of this ranking for the selected key populations and period. Tick all key populations or widen the period to see your position." : "Your position appears here once you have data in the leaderboard period.";
       el.innerHTML = `<div class="me__rank"><small>Your position</small>-</div><h3>${esc(S.session.profile.role)}</h3><p>${esc(why)}</p>`; return;
     }
     const tenth = D.top10[9], gap = tenth && mine.rank > 10 ? tenth.score.total - mine.score.total : 0;
@@ -287,10 +287,11 @@
   function tableHTML(list, withAward) {
     if (!list.length) return `<p class="empty">No CHWs match.</p>`;
     const pill = (a, T) => !a ? `<span class="tier-pill">Not eligible</span>` : `<span class="tier-pill tier-pill--t" style="${palVars(a.tier, T)}">${rm(a.award)}</span>`;
-    return `<div class="tbl-wrap"><table class="tbl"><thead><tr><th class="num">Rank</th><th>CHW</th><th>NGO</th><th>KP</th><th class="num">Months</th>${GROUPS.map(g => `<th class="num">${GROUP_LABEL[g]}</th>`).join("")}<th class="num">Score</th>${withAward ? `<th>Award</th>` : ""}</tr></thead><tbody>${
-      list.map(c => `<tr><td class="num"><b>${c.rank}</b></td><td class="who"><b>${esc(c.nick)}</b></td><td>${esc(c.ngo)}</td><td>${chips(c)}</td><td class="num">${c.score.months}</td>${
-        GROUPS.map(g => `<td class="num">${c.score.groups[g] != null ? fmt(c.score.groups[g]) : "-"}</td>`).join("")}<td class="num score">${fmt(c.score.total)}</td>${withAward ? `<td>${withAward === "pub" ? pill(c.aw != null ? {tier: c.awt, award: c.aw} : null, D.awardInfo.T) : pill(AW.map.get(c.id), nT())}</td>` : ""}</tr>`).join("")}</tbody></table></div><p class="tbl-note">Score columns show points earned out of each group's weight.</p>`;
+    return `<div class="tbl-wrap"><table class="tbl"><thead><tr><th class="num">Rank</th><th>CHW</th><th>NGO</th><th>KP</th><th>Since</th><th class="num">In service</th><th class="num">Months scored</th>${GROUPS.map(g => `<th class="num">${GROUP_LABEL[g]}</th>`).join("")}<th class="num">Score</th>${withAward ? `<th>Award</th>` : ""}</tr></thead><tbody>${
+      list.map(c => `<tr><td class="num"><b>${c.rank}</b></td><td class="who"><b>${esc(c.nick)}</b></td><td>${esc(c.ngo)}</td><td>${chips(c)}</td><td>${sinceText(c)}</td><td class="num">${c.monthsSince ? c.monthsSince + " mo" : "-"}</td><td class="num">${c.score.months}</td>${
+        GROUPS.map(g => `<td class="num">${c.score.groups[g] != null ? fmt(c.score.groups[g]) : "-"}</td>`).join("")}<td class="num score">${fmt(c.score.total)}</td>${withAward ? `<td>${withAward === "pub" ? pill(c.aw != null ? {tier: c.awt, award: c.aw} : null, D.awardInfo.T) : pill(AW.map.get(c.id), nT())}</td>` : ""}</tr>`).join("")}</tbody></table></div><p class="tbl-note">Since and In service count from the CHW's first month in DHSKP. Months scored counts the months inside the selected period. Score columns show points earned out of each group's weight.</p>`;
   }
+  const sinceText = c => c.firstMo && c.firstY ? `${MONTHS[c.firstMo - 1]} ${c.firstY}` : "-";
   function fillNgoSelect(sel, tokens, allLabel, keep) {
     const sig = tokens.join("|");
     if (sel.dataset.sig !== sig) { sel.innerHTML = `<option value="ALL">${esc(allLabel)}</option>` + tokens.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join(""); sel.dataset.sig = sig; }
@@ -303,6 +304,7 @@
     $("#scope-panel").hidden = !(v === "pm" || v === "ao");
     $("#all-panel").hidden = !FULL_VIEW.includes(v);
     $("#award-panel").hidden = v !== "me";
+    $("#ngo-panel").hidden = v !== "me";
     $("#settings-panel").hidden = v !== "me";
     if (v === "pm" || v === "ao") {
       const rows = D.scope || [], tokens = ngoTokens(rows);
@@ -329,7 +331,20 @@
       } else an.hidden = true;
       $("#f-export").hidden = v !== "me";
     }
-    if (v === "me") renderAward();
+    if (v === "me") { renderWindowText(); renderNgoPc(); renderAward(); }
+  }
+  const sc = v => v == null ? "-" : fmt(v);
+  function renderNgoPc() {
+    const ngos = D.ngos || [], pcs = D.pcs || [];
+    $("#ngo-table").innerHTML = !ngos.length ? `<p class="empty">No NGOs match.</p>` : `<div class="tbl-wrap"><table class="tbl" style="min-width:680px"><thead><tr><th class="num">Rank</th><th>NGO</th><th>PM</th><th class="num">CHWs ranked</th><th class="num">Average CHW score</th><th class="num">Funded positions</th><th class="num">PM score</th></tr></thead><tbody>${
+      ngos.map(n => `<tr><td class="num"><b>${n.rank}</b></td><td class="who"><b>${esc(n.ngo)}</b></td><td>${esc(n.pm || "-")}</td><td class="num">${n.n}</td><td class="num">${sc(n.avg)}</td><td class="num">${n.funded == null ? "-" : +n.funded.toFixed(2)}</td><td class="num score">${sc(n.pmScore)}</td></tr>`).join("")}</tbody></table></div>`;
+    $("#pc-table").innerHTML = !pcs.length ? `<p class="empty">No PCs with an assigned key population match these filters.</p>` : `<div class="tbl-wrap"><table class="tbl" style="min-width:680px"><thead><tr><th class="num">Rank</th><th>PC</th><th>Site</th><th>KP</th><th class="num">Team CHWs</th><th class="num">Team average</th><th class="num">PC's own score</th><th class="num">PC score</th></tr></thead><tbody>${
+      pcs.map(p => `<tr><td class="num"><b>${p.rank}</b></td><td class="who"><b>${esc(p.nick)}</b></td><td>${esc(p.site || p.ngo)}</td><td>${chip(p.kp)}</td><td class="num">${p.n}</td><td class="num">${sc(p.teamAvg)}</td><td class="num">${sc(p.own)}</td><td class="num score">${sc(p.pcScore)}</td></tr>`).join("")}</tbody></table></div>`;
+  }
+  // the "last 6 months" button always ends on the latest closed month in the data
+  function renderWindowText() {
+    const to = D.meta.lastM, from = Math.max(1, to - 5), n = to - from + 1;
+    $("#aw-window-txt").textContent = `Sets the period to ${winText(D.meta.yr, from, to)}, the last ${n} closed month${n > 1 ? "s" : ""} of data.`;
   }
 
   function renderHow() {
@@ -686,9 +701,18 @@ function awardCompute(cohort, A, KP_ORDER, KP_LABEL) {
 
 
   const csvSafe = v => { v = String(v); return /^[=+\-@\t\r]/.test(v) ? "'" + v : v; };   // stops Excel treating a nickname as a formula
-  function exportCsv() {
-    const rows = [["Rank","CHW","NGO","KP","Months in service","Unique Clients Reached (pts)","Reactive Cases (pts)","Link to Care (pts)","Score","Tier","Award (RM)"]];
-    (D.all || []).forEach(c => { const a = AW.map.get(c.id); rows.push([c.rank, c.nick, c.ngo, KP_LABEL[c.kp] + (c.also ? " + " + c.also : ""), c.score.months, ...GROUPS.map(g => fmt(c.score.groups[g] || 0)), fmt(c.score.total), a ? tierShort(a.tier) : "Not eligible", a ? a.award : 0]); });
+  async function exportCsv() {
+    const b = $("#f-export"); b.disabled = true; const label = b.textContent; b.textContent = "Preparing…";
+    let who = {};
+    try {
+      const r = await api("export", {token: S.session.token});
+      if (r.error === "session_expired" || r.error === "no_access") { signOut(msg(r.error)); return; }
+      if (r.error) { status(msg(r.error), true); return; }
+      who = r.people || {};
+    } catch (err) { status(msg(err.message), true); return; }
+    finally { b.disabled = false; b.textContent = label; }
+    const rows = [["Rank","CHW","Full name","Email","Current NGO","NGO","KP","Since","Months in service","Months scored in period","Unique Clients Reached (pts)","Reactive Cases (pts)","Link to Care (pts)","Score","Tier","Award (RM)"]];
+    (D.all || []).forEach(c => { const a = AW.map.get(c.id); const w = who[c.id] || {}; rows.push([c.rank, c.nick, w.name || "", w.email || "", w.ngo || "", c.ngo, KP_LABEL[c.kp] + (c.also ? " + " + c.also : ""), sinceText(c), c.monthsSince || "", c.score.months, ...GROUPS.map(g => fmt(c.score.groups[g] || 0)), fmt(c.score.total), a ? tierShort(a.tier) : "Not eligible", a ? a.award : 0]); });
     const csv = rows.map(r => r.map(v => `"${csvSafe(v).replace(/"/g, '""')}"`).join(",")).join("\n");
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\ufeff" + csv], {type: "text/csv"})); a.download = "hivnext-award-model.csv"; a.click();
   }
@@ -710,7 +734,7 @@ function awardCompute(cohort, A, KP_ORDER, KP_LABEL) {
     try {
       const r = await api("settingsGet", {token: S.session.token});
       if (r.error) { setMsg(msg(r.error), "bad"); return; }
-      S.settings = r; renderSettings();
+      S.settings = r; renderSettings(); renderFunded();
     } catch (err) { setMsg(msg(err.message), "bad"); }
   }
   function renderSettings() {
@@ -747,6 +771,44 @@ function awardCompute(cohort, A, KP_ORDER, KP_LABEL) {
     else setMsg(`Unapplied changes in ${names(dirty)}. Click Apply changes to update the leaderboard.`, "pending");
     $("#set-apply").disabled = !dirty.length || bad.length > 0;
     $("#set-discard").disabled = !dirty.length;
+  }
+  /* funded positions: one row per site and key population, pasted from Google Sheets (3 columns) */
+  const FUND_KPS = ["MSM", "TG", "WAR", "TGWAR", "PWUD", "COMP"];
+  const num = v => v ? +(+v).toFixed(2) : "-";
+  function renderFunded() {
+    const f = S.settings && S.settings.funded;
+    if (!f) { $("#fund-body").innerHTML = `<p class="empty">Loading…</p>`; return; }
+    const tot = f.totals.reduce((a, t) => a + t.total, 0);
+    $("#fund-body").innerHTML = `<p class="tbl-note" style="margin:0 0 8px">${f.seed ? "Using the starting list from M&amp;E (" + f.rows.length + " site rows)." : "Using the list saved on this page (" + f.rows.length + " site rows)."} A site's TG 0.5 + WAR 0.5 counts as one TG/WAR position.</p>` +
+      (f.unmatched.length ? `<p class="note-line">Not matched to an NGO on the leaderboard, so not counted: ${esc(f.unmatched.join(", "))}. Check the NGO part of the site name (before the first “-”).</p>` : "") +
+      `<div class="tbl-wrap" style="max-height:340px"><table class="tbl" style="min-width:620px"><thead><tr><th>NGO</th>${FUND_KPS.map(k => `<th class="num">${KP_LABEL[k]}</th>`).join("")}<th class="num">Total</th></tr></thead><tbody>${
+        f.totals.map(t => `<tr><td class="who"><b>${esc(t.ngo)}</b></td>${FUND_KPS.map(k => `<td class="num">${num(t.kp[k])}</td>`).join("")}<td class="num score">${num(t.total)}</td></tr>`).join("")
+      }<tr class="tot"><td>Total</td>${FUND_KPS.map(() => "<td></td>").join("")}<td class="num"><b>${num(tot)}</b></td></tr></tbody></table></div>`;
+    $("#fund-paste").value = ""; $("#fund-save").disabled = true; $("#fund-msg").textContent = "";
+  }
+  function parseFunded(text) {
+    const rows = [], bad = [];
+    text.split(/\r?\n/).forEach((line, i) => {
+      if (!line.trim()) return;
+      const c = line.split("\t").map(x => x.trim());
+      if (c.length < 3 || c[2] === "" || isNaN(+c[2])) { if (!/count/i.test(c[2] || "")) bad.push(i + 1); return; }   // skips the header row
+      rows.push([c[0], c[1].toUpperCase(), +c[2]]);
+    });
+    return {rows, bad};
+  }
+  async function saveFunded() {
+    const {rows, bad} = parseFunded($("#fund-paste").value), m = $("#fund-msg");
+    if (bad.length) { m.textContent = `Line ${bad.slice(0, 5).join(", ")} could not be read. Paste three columns from Sheets: site, key population, CHW count.`; m.className = "form__status bad"; return; }
+    if (!rows.length) { m.textContent = "Paste the list first."; m.className = "form__status bad"; return; }
+    if (!confirm(`Replace the funded positions with these ${rows.length} rows? PM and PC scores will use them straight away.`)) return;
+    $("#fund-save").disabled = true; m.textContent = "Saving…"; m.className = "form__status pending";
+    try {
+      const r = await api("fundedSave", {token: S.session.token, rows});
+      if (r.error === "session_expired" || r.error === "no_access") { signOut(msg(r.error)); return; }
+      if (r.error) { m.textContent = r.message || msg(r.error); m.className = "form__status bad"; $("#fund-save").disabled = false; return; }
+      S.settings.funded = r.funded; renderFunded(); await load();
+      m.textContent = "Saved. PM and PC scores now use these positions. The change is logged."; m.className = "form__status ok";
+    } catch (err) { m.textContent = msg(err.message); m.className = "form__status bad"; $("#fund-save").disabled = false; }
   }
   async function applySettings() {
     const dirty = dirtyKps(); if (!dirty.length || dirty.some(k => !validKp(drafts[k]))) return;
@@ -853,6 +915,7 @@ function awardCompute(cohort, A, KP_ORDER, KP_LABEL) {
     if (e.target.closest("#g-codeinstead")) { gateBusy(true); requestCode().catch(err => gateMsg(msg(err.message))).finally(() => gateBusy(false)); }
     if (e.target.closest("#g-resend")) { gateBusy(true); requestCode().catch(err => gateMsg(msg(err.message))).finally(() => gateBusy(false)); }
     if (e.target.closest("#f-export")) exportCsv();
+    if (e.target.closest("#fund-save")) saveFunded();
     if (e.target.closest("#aw-publish")) publishAward();
     if (e.target.closest("#aw-loadpub")) loadPublished();
     if (e.target.closest("#aw-window") && D) setPeriod(Math.max(1, D.meta.lastM - 5), D.meta.lastM);
@@ -870,6 +933,7 @@ function awardCompute(cohort, A, KP_ORDER, KP_LABEL) {
     else if (t.matches("[data-kp]")) { t.checked ? S.kps.add(t.dataset.kp) : S.kps.delete(t.dataset.kp); }
     syncKpMenu(); queueLoad();
   });
+  $("#fund-paste").addEventListener("input", () => { $("#fund-save").disabled = false; $("#fund-msg").textContent = "Unsaved changes."; $("#fund-msg").className = "form__status pending"; });
   $("#set-body").addEventListener("input", () => { readSettingInputs(); refreshSettings(); });   // staged only: nothing changes until Apply
   $("#f-from").addEventListener("change", e => { S.from = +e.target.value; if (S.from > S.to) { S.to = S.from; $("#f-to").value = S.to; } queueLoad(); });
   $("#f-to").addEventListener("change", e => { S.to = +e.target.value; if (S.to < S.from) { S.from = S.to; $("#f-from").value = S.from; } queueLoad(); });
